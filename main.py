@@ -1,1 +1,6 @@
-print("04e5385cd5709e9c3aee1e857079849c")
+import json
+
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
+print(config['key'])
