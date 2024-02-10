@@ -1,6 +1,20 @@
 import json
+import base64
 import telnyx
 import requests
+
+def process_sms(event, context):
+    # Extract message content from Pub/Sub event
+    pubsub_message = base64.b64decode(event['data']).decode('utf-8')
+    # Process message content and determine response
+    response = process_message(pubsub_message)
+    # Send response SMS using Telnyx to the sender's phone number
+    sender_number = event['attributes']['from']  # Assuming the sender's number is included as an attribute
+
+def process_message(message):
+    # Modify the message content as needed
+    modified_message = message.upper()  # Example: Convert message to uppercase
+    return modified_message
 
 with open('config.json', 'r') as f:
     config = json.load(f)

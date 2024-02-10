@@ -1,0 +1,2 @@
+- name: Cloud Functions Deploy
+  uses: google-github-actions/deploy-cloud-functions@v2.1.0           
