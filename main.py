@@ -1,10 +1,17 @@
 import json
+import telnyx
 import requests
 
 with open('config.json', 'r') as f:
     config = json.load(f)
 
-api_key = config['key']
+T_KEY = config["T_KEY"]
+A_KEY = config["A_KEY"]
+
+telnyx.api_key = T_KEY
+
+number = "+12193519673"
+destination = "+19493573901"
 
 book_dict = {
     "genesis": "GEN",
@@ -12,7 +19,7 @@ book_dict = {
     "leviticus": "LEV",
     "numbers": "NUM",
     "deutoronomy": "DEU",
-    "josiah": "JOS",
+    "joshua": "JOS",
     "judges": "JDG",
     "ruth": "RUT",
     "1 samuel": "1SA",
@@ -25,10 +32,10 @@ book_dict = {
     "nehemiah": "NEH",
     "esther": "EST",
     "job": "JOB",
-    "psalms": "PSA",
+    "psalm": "PSA",
     "proverbs": "PRO",
     "ecclesiastes": "ECC",
-    "song of solomon": "SNG",
+    "song of songs": "SNG",
     "isaiah": "ISA",
     "jeremiah": "JER",
     "lamentations": "LAM",
@@ -54,9 +61,9 @@ book_dict = {
     "roman": "ROM",
     "1 corinthians": "1CO",
     "2 corinthians": "2CO",
-    "galations": "GAL",
+    "galatians": "GAL",
     "ephesians": "EPH",
-    "phillipians": "PHP",
+    "philippians": "PHP",
     "colossians": "COL",
     "1 thessalonians": "1TH",
     "2 thessalonians": "1TH",
@@ -64,7 +71,7 @@ book_dict = {
     "2 timothy": "2TI",
     "titus": "TIT",
     "philemon": "PHM",
-    "hebrew": "HEB",
+    "hebrews": "HEB",
     "james": "JAS",
     "1 peter": "1PE",
     "2 peter": "2PE",
@@ -83,25 +90,23 @@ book_dict = {
 
 # unit = input("Unit (chapters/verses): ")
 query = input("Query: ").lower()
-space_split = query.split()
-book = space_split[0]
-chapter = space_split[1]
-
 try:
     colon_split = query.split(':')
-    print(colon_split)
+    print(f"colon_split: {colon_split}")
     verse = colon_split[1]
     unit = "verses"
 except:
     unit = "chapters"
-
 space_split = colon_split[0].split()
-print(space_split)
-book = space_split[0]
-chapter = space_split[1]
+print(f"space_split: {space_split}")
+if (len(space_split) == 2):
+    book = space_split[0]
+    chapter = space_split[1]
+elif (len(space_split) == 3):
+    book = space_split[0] + " " + space_split[1]
+    chapter = space_split[2]
 
 print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
-
 if (unit == "verses"):
     print(f"Verse: {verse}")
 
@@ -113,27 +118,26 @@ if (book in book_dict):
         formatted_query = book_dict[book] + '.' + chapter + '.' + verse
         print(formatted_query)
 else:
-    print("Not found!")
+    print("Book not found!")
     exit()
 
 url = f"https://api.scripture.api.bible/v1/bibles/9879dbb7cfe39e4d-04/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
-headers = {'api-key': api_key}
+headers = {'api-key': A_KEY}
 response = requests.request("GET", url, headers=headers)
-### print(response.text)
+# print(response.text)
 data = response.json()
 
-verse_content = data['data']['content']
-verse_text = ''
-for item in verse_content:
-    if 'items' in item:
-        for sub_item in item['items']:
-            if 'text' in sub_item:
-                verse_text += sub_item['text']
-print(verse_text)
-
-# query = input("Query: ")
-# formatted_query = query.lower()
-# if (formatted_query in books):
-#     print("Book found!")
-# else:
-#     print("Not found!")
+try:
+    verse_content = data["data"]["content"]
+    verse_text = ""
+    for item in verse_content:
+        if "items" in item:
+            for sub_item in item["items"]:
+                if "text" in sub_item:
+                    verse_text += sub_item["text"]
+    print(verse_text)
+    if (len(verse_text) > 1):
+        telnyx.Message.create(                                                      from_=number,                                                           to=destination,                                                         text=verse_text,
+        )
+except KeyError:
+    print("Fetch failed!")
