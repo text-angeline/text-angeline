@@ -85,13 +85,13 @@ def send(user_input, user_number):
     query = user_input.lower()
     try:
         colon_split = query.split(':')
-        print(f"colon_split: {colon_split}")
+        print("colon_split:", colon_split)
         verse = colon_split[1]
         unit = "verses"
     except:
         unit = "chapters"
     space_split = colon_split[0].split()
-    print(f"space_split: {space_split}")
+    print("space_split:", space_split)
     # Individual
     if (len(space_split) == 2):
         book = space_split[0]
@@ -104,15 +104,15 @@ def send(user_input, user_number):
     # Serverside output
     print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
     if (unit == "verses"):
-        print(f"Verse: {verse}")
+        print("Verse:", verse)
 
     # Unit detection
     if (book in book_dict):
         if (unit == "chapters"):
-            # Ex. MAT.1
+            # Ex: "MAT.1"
             formatted_query = book_dict[book] + '.' + chapter
         if (unit == "verses"):
-            # EX. MAT.1.3
+            # Ex: "MAT.1.3"
             formatted_query = book_dict[book] + '.' + chapter + '.' + verse
          print(formatted_query)
     else:
