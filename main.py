@@ -7,9 +7,10 @@ def send(user_input, user_number):
     with open('config.json', 'r') as f:
         config = json.load(f)
 
+    bibleId = config["bibleId"]
+    telnyx.api_key = config["TELNYX_KEY"]
     API_BIBLE_KEY = config["API_BIBLE_KEY"]
-    telnyx.api_key = config["TELNYX_API_KEY"]
-    TELNYX_SENDER_NUMBER = config["TELNYX_SENDER_NUMBER"]
+    TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
     book_dict = {
         "genesis": "GEN",
@@ -119,7 +120,7 @@ def send(user_input, user_number):
         return
 
     ### API.Bible request
-    url = f"https://api.scripture.api.bible/v1/bibles/9879dbb7cfe39e4d-04/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
+    url = f"https://api.scripture.api.bible/v1/bibles/{bibleId}/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {'api-key': API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
     # print(response.text)
@@ -138,7 +139,7 @@ def send(user_input, user_number):
         if (len(verse_text) > 1):
             # Send SMS
             telnyx.Message.create(
-                from_=TELNYX_SENDER_NUMBER,
+                from_=TELNYX_NUMBER,
                 to=target_number,
                 text=verse_text,
             )
