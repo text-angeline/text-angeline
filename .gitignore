@@ -1,4 +1,6 @@
+ngrok
 config.json
 __pycache__/**
+.bibles.txt.swp
 api-references/**
 termux-requirements.txt
