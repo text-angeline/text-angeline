@@ -14,8 +14,9 @@
 #  - Etc.
 ### Future aspirations:
 # - Add spell correction feature
-#  - Book, epistle titles
+#  - Book, epistle, etc. titles
 # - Include reference data
+# - Create web interface
 
 import json
 import telnyx
