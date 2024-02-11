@@ -81,7 +81,7 @@ def send(user_input, user_number):
         "revelations": "REV"
     }
 
-    ### Input formatting (Matthew 1:13 > MAT.1.13)
+    ### Input formatting ("Matthew 1:13" -> "MAT.1.13")
     query = user_input.lower()
     try:
         colon_split = query.split(':')
