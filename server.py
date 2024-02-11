@@ -22,7 +22,7 @@ def webhooks():
             return '', 200 # Return 200 OK to Telnyx
     except Exception as e:
         print("Error processing webhook:", e)
-        return '', 400 # Return 400 Bad Request for any errors
+        return '', 400 # Return 400 Bad Request (catchall)
 
 if __name__ == "__main__":
     app.run(port=8000)
