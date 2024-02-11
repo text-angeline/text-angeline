@@ -1,15 +1,35 @@
+### To-do:
+# - Add verse numbers before lines
+# - Increase robustness of detection algorithmi
+#  - RegEx validation?
+# - Add translation detection (default: ESV)
+#  - Ex: Matthew 1:2 KJV
+#  - Add respective dictionary and parsing ability
+# - Add verse detection with hyphens
+#  - Ex: Matthew 1:3-7
+# - Fix verse spacing issue
+# - Add robust error exception handling
+#  - Send instructional message upon reciept of invalid input
+#  - API-side failure message (please try again)
+#  - Etc.
+### Future aspirations:
+# - Add spell correction feature
+#  - Book, epistle titles
+# - Include reference data
+
 import json
 import telnyx
 import requests
 
+### Configuration settings
 with open("config.json", 'r') as f:
     config = json.load(f)
-
 bible_id = config["bible_id"]
 telnyx.api_key = config["TELNYX_KEY"]
 API_BIBLE_KEY = config["API_BIBLE_KEY"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
+### API.Bible book dictionary
 book_dict = {
     "genesis": "GEN",
     "exodus": "EXO",
@@ -80,19 +100,20 @@ book_dict = {
 }
 
 ### Development function
-def test():
+def init_dev():
     test_input = input("test_input: ")
     test_number = config["test_number"]
     init(test_input, test_number)
 
+### Initial function
 def init(user_input, user_number):
     target_number = user_number
-    bible_formatting(user_input, user_number)
+    input_formatting(user_input, user_number)
 
-def bible_formatting(user_input, user_number):
+### Input formatting
+def input_formatting(user_input, user_number):
     query = user_input.lower()
     try:
-        # To-do: Add verse range detection
         colon_split = query.split(':')
         print("colon_split:", colon_split)
         verse = colon_split[1]
@@ -110,7 +131,6 @@ def bible_formatting(user_input, user_number):
         book = space_split[0] + ' ' + space_split[1]
         chapter = space_split[2]
     
-    # Serverside output
     print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
     if (unit == "verses"):
         print("Verse:", verse)
@@ -127,9 +147,10 @@ def bible_formatting(user_input, user_number):
     else:
         print("Could not locate book (is it spelled correctly?).")
         return
-    bible_request(unit, formatted_query, user_number)
+    text_request(unit, formatted_query, user_number)
 
-def bible_request(unit, formatted_query, user_number):
+### API.Bible content request
+def text_request(unit, formatted_query, user_number):
     url = f"https://api.scripture.api.bible/v1/bibles/{bible_id}/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
@@ -140,21 +161,24 @@ def bible_request(unit, formatted_query, user_number):
     try:
         data_content = api_bible_data["data"]["content"]
         print(data_content)
-        verse_text = ""
+        text_content = ""
         for item in data_content:
             if "items" in item:
                 for sub_item in item["items"]:
                     if "text" in sub_item:
-                        verse_text += sub_item["text"]
-        print(verse_text)
-        if (len(verse_text) > 1):
-            # Send SMS
-            telnyx.Message.create(
-                from_=TELNYX_NUMBER,
-                to=user_number,
-                text=verse_text,
-            )
+                        text_content += sub_item["text"]
+        print(text_content)
+        send_message(user_number, text_content)
     except KeyError as e:
         print("Error: Text extraction/delivery failed -", e)
 
-test()
+# Send SMS message
+def send_message(user_number, text_content):
+    telnyx.Message.create(
+        from_=TELNYX_NUMBER,
+        to=user_number,
+        text=text_content,
+    )
+
+### Allow development run (comment when done)
+# init_dev()

@@ -18,7 +18,7 @@ def webhooks():
             print("user_input:", user_input)
             print("user_number:", user_number)
             
-            main.send(user_input, user_number)
+            main.init(user_input, user_number)
             return '', 200 # Return 200 OK to Telnyx
     except Exception as e:
         print("Error processing webhook:", e)
