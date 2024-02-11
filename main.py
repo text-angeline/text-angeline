@@ -121,15 +121,15 @@ def send(user_input, user_number):
     ### API.Bible request
     url = f"https://api.scripture.api.bible/v1/bibles/9879dbb7cfe39e4d-04/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {'api-key': API_BIBLE_KEY}
-    apiBibleResponse = requests.request("GET", url, headers=headers)
+    api_bible_response = requests.request("GET", url, headers=headers)
     # print(response.text)
-    apiBibleData = apiBibleResponse.json()
+    api_bible_data = api_bible_response.json()
 
     ### Text extraction/delivery
     try:
-        response_content = apiBibleData["data"]["content"]
+        data_content = api_bible_data["data"]["content"]
         verse_text = ""
-        for item in response_content:
+        for item in data_content:
             if "items" in item:
                 for sub_item in item["items"]:
                     if "text" in sub_item:
@@ -139,7 +139,7 @@ def send(user_input, user_number):
             # Send SMS
             telnyx.Message.create(
                 from_=TELNYX_SENDER_NUMBER,
-                to=destination,
+                to=target_number,
                 text=verse_text,
             )
     except KeyError as e:
