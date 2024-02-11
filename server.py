@@ -7,15 +7,16 @@ app = Flask(__name__)
 @app.route('/webhooks', methods=['POST'])
 def webhooks():
     try:
-        t_response = request.json
-        event_type = t_response.get('data', {}).get('event_type') 
+        telnyx_response = request.json
+        event_type = telnyx_response.get('data', {}).get('event_type') 
         if event_type == "message.received":
-            sms = t_response['data']['payload']['text']
-            sender = t_response['data']['payload']['from']['phone_number']
-            
-            print(t_response, end="\n")
-            print("Received SMS:", sms)
-            print("From:", sender)
+            user_input = telnyx_response['data']['payload']['text']
+            user_number = telnyx_response['data']['payload']['from']['phone_number']
+
+            print("NEW REQUEST")
+            print(telnyx_response, end="\n")
+            print("user_input:", user_input)
+            print("user_number:", user_number)
             
             main.send(user_input, user_number)
             return '', 200 # Return 200 OK to Telnyx
