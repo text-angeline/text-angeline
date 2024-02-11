@@ -1,0 +1,5 @@
+six
+flask
+telnyx
+requests
+SODIUM_INSTALL=system pip install ngrok

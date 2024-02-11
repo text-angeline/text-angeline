@@ -1,1 +1,3 @@
-six flask telnyx requests
+flask
+telnyx
+requests
