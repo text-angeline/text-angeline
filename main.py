@@ -114,7 +114,7 @@ def send(user_input, user_number):
         if (unit == "verses"):
             # Ex: "MAT.1.3"
             formatted_query = book_dict[book] + '.' + chapter + '.' + verse
-         print(formatted_query)
+        print(formatted_query)
     else:
         print("Could not locate book (is it spelled correctly?).")
         return
