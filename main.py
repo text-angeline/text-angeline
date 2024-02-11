@@ -4,7 +4,7 @@ import requests
 
 def send(user_input, user_number):
     target_number = user_number
-    with open('config.json', 'r') as f:
+    with open("config.json", 'r') as f:
         config = json.load(f)
 
     bibleId = config["bibleId"]
@@ -98,7 +98,7 @@ def send(user_input, user_number):
         chapter = space_split[1]
     # Series
     elif (len(space_split) == 3):
-        book = space_split[0] + " " + space_split[1]
+        book = space_split[0] + ' ' + space_split[1]
         chapter = space_split[2]
     
     # Serverside output
@@ -121,7 +121,7 @@ def send(user_input, user_number):
 
     ### API.Bible request
     url = f"https://api.scripture.api.bible/v1/bibles/{bibleId}/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
-    headers = {'api-key': API_BIBLE_KEY}
+    headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
     # print(response.text)
     api_bible_data = api_bible_response.json()
@@ -144,4 +144,4 @@ def send(user_input, user_number):
                 text=verse_text,
             )
     except KeyError as e:
-        print("Error: Text extraction/delivery failed: ", e)
+        print("Error: Text extraction/delivery failed:", e)
