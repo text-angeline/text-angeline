@@ -84,6 +84,7 @@ def send(user_input, user_number):
     ### Input formatting ("Matthew 1:13" -> "MAT.1.13")
     query = user_input.lower()
     try:
+        # To-do: Add verse range detection
         colon_split = query.split(':')
         print("colon_split:", colon_split)
         verse = colon_split[1]
@@ -144,4 +145,4 @@ def send(user_input, user_number):
                 text=verse_text,
             )
     except KeyError as e:
-        print("Error: Text extraction/delivery failed:", e)
+        print("Error: Text extraction/delivery failed -", e)
