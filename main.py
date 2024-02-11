@@ -7,7 +7,7 @@ def send(user_input, user_number):
     with open("config.json", 'r') as f:
         config = json.load(f)
 
-    bibleId = config["bibleId"]
+    bible_id = config["bible_id"]
     telnyx.api_key = config["TELNYX_KEY"]
     API_BIBLE_KEY = config["API_BIBLE_KEY"]
     TELNYX_NUMBER = config["TELNYX_NUMBER"]
@@ -120,7 +120,7 @@ def send(user_input, user_number):
         return
 
     ### API.Bible request
-    url = f"https://api.scripture.api.bible/v1/bibles/{bibleId}/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
+    url = f"https://api.scripture.api.bible/v1/bibles/{bible_id}/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
     # print(response.text)
