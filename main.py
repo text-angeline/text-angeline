@@ -2,86 +2,94 @@ import json
 import telnyx
 import requests
 
-def send(user_input, user_number):
+with open("config.json", 'r') as f:
+    config = json.load(f)
+
+bible_id = config["bible_id"]
+telnyx.api_key = config["TELNYX_KEY"]
+API_BIBLE_KEY = config["API_BIBLE_KEY"]
+TELNYX_NUMBER = config["TELNYX_NUMBER"]
+
+book_dict = {
+    "genesis": "GEN",
+    "exodus": "EXO",
+    "leviticus": "LEV",
+    "numbers": "NUM",
+    "deutoronomy": "DEU",
+    "joshua": "JOS",
+    "judges": "JDG",
+    "ruth": "RUT",
+    "1 samuel": "1SA",
+    "2 samuel": "2SA",
+    "1 kings": "1KG",
+    "2 kings" :"2KG",
+    "1 chronicles": "1CH",
+    "2 chronicles": "2CH",
+    "ezra": "EZR",
+    "nehemiah": "NEH",
+    "esther": "EST",
+    "job": "JOB",
+    "psalm": "PSA",
+    "proverbs": "PRO",
+    "ecclesiastes": "ECC",
+    "song of songs": "SNG",
+    "isaiah": "ISA",
+    "jeremiah": "JER",
+    "lamentations": "LAM",
+    "ezekiel": "EZK",
+    "daniel": "DAN",
+    "hosea": "HOS",
+    "joel": "JOL",
+    "amos": "AMO",
+    "obadiah": "OBA",
+    "jonah": "JON",
+    "micah": "MIC",
+    "nahum": "NAM",
+    "habakkuk": "HAB",
+    "zephaniah": "ZEP",
+    "haggai": "HAG",
+    "zechariah": "ZEC",
+    "malachi": "MAL",
+    "matthew": "MAT",
+    "mark": "MRK",
+    "luke": "LUK",
+    "john": "JHN",
+    "acts": "ACT",
+    "roman": "ROM",
+    "1 corinthians": "1CO",
+    "2 corinthians": "2CO",
+    "galatians": "GAL",
+    "ephesians": "EPH",
+    "philippians": "PHP",
+    "colossians": "COL",
+    "1 thessalonians": "1TH",
+    "2 thessalonians": "1TH",
+    "1 timothy": "1TI",
+    "2 timothy": "2TI",
+    "titus": "TIT",
+    "philemon": "PHM",
+    "hebrews": "HEB",
+    "james": "JAS",
+    "1 peter": "1PE",
+    "2 peter": "2PE",
+    "1 john": "1JN",
+    "2 john": "2JN",
+    "3 john": "3JN",
+    "jude": "JUD",
+    "revelations": "REV"
+}
+
+### Development function
+def test():
+    test_input = input("test_input: ")
+    test_number = config["test_number"]
+    init(test_input, test_number)
+
+def init(user_input, user_number):
     target_number = user_number
-    with open("config.json", 'r') as f:
-        config = json.load(f)
+    bible_formatting(user_input, user_number)
 
-    bible_id = config["bible_id"]
-    telnyx.api_key = config["TELNYX_KEY"]
-    API_BIBLE_KEY = config["API_BIBLE_KEY"]
-    TELNYX_NUMBER = config["TELNYX_NUMBER"]
-
-    book_dict = {
-        "genesis": "GEN",
-        "exodus": "EXO",
-        "leviticus": "LEV",
-        "numbers": "NUM",
-        "deutoronomy": "DEU",
-        "joshua": "JOS",
-        "judges": "JDG",
-        "ruth": "RUT",
-        "1 samuel": "1SA",
-        "2 samuel": "2SA",
-        "1 kings": "1KG",
-        "2 kings" :"2KG",
-        "1 chronicles": "1CH",
-        "2 chronicles": "2CH",
-        "ezra": "EZR",
-        "nehemiah": "NEH",
-        "esther": "EST",
-        "job": "JOB",
-        "psalm": "PSA",
-        "proverbs": "PRO",
-        "ecclesiastes": "ECC",
-        "song of songs": "SNG",
-        "isaiah": "ISA",
-        "jeremiah": "JER",
-        "lamentations": "LAM",
-        "ezekiel": "EZK",
-        "daniel": "DAN",
-        "hosea": "HOS",
-        "joel": "JOL",
-        "amos": "AMO",
-        "obadiah": "OBA",
-        "jonah": "JON",
-        "micah": "MIC",
-        "nahum": "NAM",
-        "habakkuk": "HAB",
-        "zephaniah": "ZEP",
-        "haggai": "HAG",
-        "zechariah": "ZEC",
-        "malachi": "MAL",
-        "matthew": "MAT",
-        "mark": "MRK",
-        "luke": "LUK",
-        "john": "JHN",
-        "acts": "ACT",
-        "roman": "ROM",
-        "1 corinthians": "1CO",
-        "2 corinthians": "2CO",
-        "galatians": "GAL",
-        "ephesians": "EPH",
-        "philippians": "PHP",
-        "colossians": "COL",
-        "1 thessalonians": "1TH",
-        "2 thessalonians": "1TH",
-        "1 timothy": "1TI",
-        "2 timothy": "2TI",
-        "titus": "TIT",
-        "philemon": "PHM",
-        "hebrews": "HEB",
-        "james": "JAS",
-        "1 peter": "1PE",
-        "2 peter": "2PE",
-        "1 john": "1JN",
-        "2 john": "2JN",
-        "3 john": "3JN",
-        "jude": "JUD",
-        "revelations": "REV"
-    }
-
-    ### Input formatting ("Matthew 1:13" -> "MAT.1.13")
+def bible_formatting(user_input, user_number):
     query = user_input.lower()
     try:
         # To-do: Add verse range detection
@@ -119,8 +127,9 @@ def send(user_input, user_number):
     else:
         print("Could not locate book (is it spelled correctly?).")
         return
+    bible_request(unit, formatted_query, user_number)
 
-    ### API.Bible request
+def bible_request(unit, formatted_query, user_number):
     url = f"https://api.scripture.api.bible/v1/bibles/{bible_id}/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
@@ -130,6 +139,7 @@ def send(user_input, user_number):
     ### Text extraction/delivery
     try:
         data_content = api_bible_data["data"]["content"]
+        print(data_content)
         verse_text = ""
         for item in data_content:
             if "items" in item:
@@ -141,8 +151,10 @@ def send(user_input, user_number):
             # Send SMS
             telnyx.Message.create(
                 from_=TELNYX_NUMBER,
-                to=target_number,
+                to=user_number,
                 text=verse_text,
             )
     except KeyError as e:
         print("Error: Text extraction/delivery failed -", e)
+
+test()
