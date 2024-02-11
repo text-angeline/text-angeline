@@ -2,14 +2,14 @@ import json
 import telnyx
 import requests
 
-def send(sms, sender):
-    destination = sender
+def send(user_input, user_number):
+    target_number = user_number
     with open('config.json', 'r') as f:
         config = json.load(f)
 
-    TELNYX_SENDER_NUMBER = config["TELNYX_SENDER_NUMBER"]
     API_BIBLE_KEY = config["API_BIBLE_KEY"]
     telnyx.api_key = config["TELNYX_API_KEY"]
+    TELNYX_SENDER_NUMBER = config["TELNYX_SENDER_NUMBER"]
 
     book_dict = {
         "genesis": "GEN",
@@ -80,8 +80,8 @@ def send(sms, sender):
         "revelations": "REV"
     }
 
-    query = sms.lower()
-    # query = input("Query: ").lower()
+    ### Input formatting (Matthew 1:13 > MAT.1.13)
+    query = user_input.lower()
     try:
         colon_split = query.split(':')
         print(f"colon_split: {colon_split}")
@@ -91,34 +91,41 @@ def send(sms, sender):
         unit = "chapters"
     space_split = colon_split[0].split()
     print(f"space_split: {space_split}")
+    # Individual
     if (len(space_split) == 2):
         book = space_split[0]
         chapter = space_split[1]
+    # Series
     elif (len(space_split) == 3):
         book = space_split[0] + " " + space_split[1]
         chapter = space_split[2]
-
+    
+    # Serverside output
     print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
     if (unit == "verses"):
         print(f"Verse: {verse}")
 
+    # Unit detection
     if (book in book_dict):
         if (unit == "chapters"):
+            # Ex. MAT.1
             formatted_query = book_dict[book] + '.' + chapter
-            print(formatted_query)
         if (unit == "verses"):
+            # EX. MAT.1.3
             formatted_query = book_dict[book] + '.' + chapter + '.' + verse
-            print(formatted_query)
+         print(formatted_query)
     else:
-        print("Book not found!")
-        exit()
+        print("Could not locate book (is it spelled correctly?).")
+        return
 
+    ### API.Bible request
     url = f"https://api.scripture.api.bible/v1/bibles/9879dbb7cfe39e4d-04/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {'api-key': API_BIBLE_KEY}
     apiBibleResponse = requests.request("GET", url, headers=headers)
     # print(response.text)
     apiBibleData = apiBibleResponse.json()
 
+    ### Text extraction/delivery
     try:
         response_content = apiBibleData["data"]["content"]
         verse_text = ""
@@ -129,10 +136,11 @@ def send(sms, sender):
                         verse_text += sub_item["text"]
         print(verse_text)
         if (len(verse_text) > 1):
-           telnyx.Message.create(
+            # Send SMS
+            telnyx.Message.create(
                 from_=TELNYX_SENDER_NUMBER,
                 to=destination,
                 text=verse_text,
-           )
+            )
     except KeyError as e:
-        print("Fetch failed: ", e)
+        print("Error: Text extraction/delivery failed: ", e)
