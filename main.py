@@ -1,5 +1,4 @@
 ### To-do:
-# - Add verse numbers before lines
 # - Add translation detection (default: ESV)
 #  - Ex: Matthew 1:2 KJV
 #  - Add respective dictionary
@@ -8,7 +7,6 @@
 # - Add robust error exception handling
 #  - Send instructional message upon reciept of invalid input
 #  - API-side failure message (please try again)
-#  - Etc.
 ### Future aspirations:
 # - Add spell correction feature
 #  - Book, epistle, etc. titles
@@ -157,7 +155,7 @@ def text_request(unit, formatted_query, user_number):
     url = f"https://api.scripture.api.bible/v1/bibles/{bible_id}/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
-    # print(response.text)
+    # print(api_bible_response.text)
     api_bible_data = api_bible_response.json()
 
     ### Text extraction/delivery
@@ -168,12 +166,18 @@ def text_request(unit, formatted_query, user_number):
         for item in data_content:
             if "items" in item:
                 for sub_item in item["items"]:
-                    if "text" in sub_item:
-                        text_content += sub_item["text"] + ' '
-        print(f"Text: {text_content}")
+                    if "attrs" in sub_item and "number" in sub_item["attrs"]:
+                        text_content += ' ' + sub_item["attrs"]["number"]
+                    elif "text" in sub_item:
+                        if (sub_item["text"].startswith(' ')):
+                            text_content += sub_item["text"]
+                        else:
+                            text_content += ' ' + sub_item["text"]
+        print(f"Text Content: {text_content.strip()}")
+        return
         send_message(text_content.strip(), user_number)
     except KeyError as e:
-        print("Error: Text extraction/delivery failed -", e)
+        print("Error: Text extraction/delivery failed: ", e)
 
 # Send SMS message
 def send_message(text_content, user_number):
