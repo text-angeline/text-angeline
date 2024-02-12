@@ -163,9 +163,9 @@ def text_request(unit, formatted_query, user_number):
             if "items" in item:
                 for sub_item in item["items"]:
                     if "text" in sub_item:
-                        text_content += sub_item["text"]
+                        text_content += sub_item["text"] + ' '
         print(f"Text: {text_content}")
-        send_message(text_content, user_number)
+        send_message(text_content.strip(), user_number)
     except KeyError as e:
         print("Error: Text extraction/delivery failed -", e)
 
@@ -178,4 +178,4 @@ def send_message(text_content, user_number):
     )
 
 ### Allow development run (comment when done)
-init_dev()
+# init_dev()
