@@ -1,13 +1,10 @@
 ### To-do:
 # - Add verse numbers before lines
-# - Increase robustness of detection algorithmi
-#  - RegEx validation?
 # - Add translation detection (default: ESV)
 #  - Ex: Matthew 1:2 KJV
-#  - Add respective dictionary and parsing ability
+#  - Add respective dictionary
 # - Add verse detection with hyphens
 #  - Ex: Matthew 1:3-7
-# - Fix verse spacing issue
 # - Add robust error exception handling
 #  - Send instructional message upon reciept of invalid input
 #  - API-side failure message (please try again)
@@ -115,13 +112,22 @@ def init(user_input, user_number):
 ### Input formatting
 def input_formatting(user_input, user_number):
     pattern = r"^(((?P<iteration>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,})(?: (?P<chapter>\d{1,3}))(?::(?P<verse_1>\d{1,3}))?(?:-(?P<verse_2>\d{1,3}))?(?: (?P<translation>[a-zA-Z]{,4}))?)$"
-    match = re.match(pattern, user_input.lower())   
-    iteration = match.group('iteration')
-    book_title = match.group("book_title")
-    chapter = match.group("chapter")
-    verse_1 = match.group("verse_1")
-    verse_2 = match.group("verse_2")
+    match = re.match(pattern, user_input.lower())
+    if (match):
+        try:
+            iteration = match.group('iteration')
+            book_title = match.group("book_title")
+            chapter = match.group("chapter")
+            verse_1 = match.group("verse_1")
+            verse_2 = match.group("verse_2")
+        except AttributeError:
+            print("Error: Couldn't parse input.")
+            return
+    else:
+        print("Error: Invalid format.")
+        return
 
+    # Check for series
     if (iteration is None):
         book = str(book_title)
     else:
