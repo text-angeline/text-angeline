@@ -151,8 +151,8 @@ def input_formatting(user_input, user_number):
     text_request(unit, query, user_number)
 
 ### API.Bible content request
-def text_request(unit, formatted_query, user_number):
-    url = f"https://api.scripture.api.bible/v1/bibles/{bible_id}/{unit}/{formatted_query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
+def text_request(unit, query, user_number):
+    url = f"https://api.scripture.api.bible/v1/bibles/{bible_id}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
     # print(api_bible_response.text)
