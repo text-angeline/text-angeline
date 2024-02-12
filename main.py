@@ -15,6 +15,7 @@
 
 import re
 import json
+import time
 import telnyx
 import requests
 
@@ -174,8 +175,20 @@ def text_request(unit, query, user_number):
                         else:
                             text_content += ' ' + sub_item["text"]
         print(f"Text Content: {text_content.strip()}")
-        return
-        send_message(text_content.strip(), user_number)
+        text_content = text_content.strip()
+        if (len(text_content) <= 160):
+            send_message(text_content, user_number)
+        else:
+            chunk_size = 155
+            chunks = [text_content[i:i+chunk_size] for i in range(0, len(text_content), chunk_size)]
+            total_chunks = len(chunks)
+            formatted_chunks = []
+            for i, chunk in enumerate(chunks):
+                chunk_number = i + 1
+                formatted_chunk = f"{chunk} ({chunk_number}/{total_chunks})"
+                # print(formatted_chunk)
+                send_message(formatted_chunk, user_number)
+                time.sleep(5)
     except KeyError as e:
         print("Error: Text extraction/delivery failed: ", e)
 
