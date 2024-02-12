@@ -1,8 +1,10 @@
 from flask import Flask, request
+import re
 import json
 import main
 
 app = Flask(__name__)
+pattern = r"^((?P<iteration>[1-3] )?(?P<book>[a-zA-Z]{3,})(?: (?P<chapter>\d{1,3}))(?::(?P<verse_1>\d{1,3}))?(?:-(?P<verse_2>\d{1,3}))?(?: (?P<translation>[a-zA-Z]{,4}))?)$"
 
 @app.route('/webhooks', methods=['POST'])
 def webhooks():
@@ -17,8 +19,12 @@ def webhooks():
             print(telnyx_response, end="\n")
             print("user_input:", user_input)
             print("user_number:", user_number)
-            
-            main.init(user_input, user_number)
+
+            if (re.match(pattern, user_input)):
+                main.init(user_input, user_number)
+            else:
+                error_message = "Error: Incorrect format!"
+                main.send_message(error_message, user_number)
             return '', 200 # Return 200 OK to Telnyx
     except Exception as e:
         print("Error processing webhook:", e)

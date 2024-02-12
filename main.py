@@ -18,6 +18,7 @@
 # - Include reference data
 # - Create web interface
 
+import re
 import json
 import telnyx
 import requests
@@ -84,7 +85,7 @@ book_dict = {
     "philippians": "PHP",
     "colossians": "COL",
     "1 thessalonians": "1TH",
-    "2 thessalonians": "1TH",
+    "2 thessalonians": "2TH",
     "1 timothy": "1TI",
     "2 timothy": "2TI",
     "titus": "TIT",
@@ -113,42 +114,37 @@ def init(user_input, user_number):
 
 ### Input formatting
 def input_formatting(user_input, user_number):
-    query = user_input.lower()
-    try:
-        colon_split = query.split(':')
-        print("colon_split:", colon_split)
-        verse = colon_split[1]
-        unit = "verses"
-    except:
-        unit = "chapters"
-    space_split = colon_split[0].split()
-    print("space_split:", space_split)
-    # Individual
-    if (len(space_split) == 2):
-        book = space_split[0]
-        chapter = space_split[1]
-    # Series
-    elif (len(space_split) == 3):
-        book = space_split[0] + ' ' + space_split[1]
-        chapter = space_split[2]
-    
-    print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
-    if (unit == "verses"):
-        print("Verse:", verse)
+    pattern = r"^(((?P<iteration>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,})(?: (?P<chapter>\d{1,3}))(?::(?P<verse_1>\d{1,3}))?(?:-(?P<verse_2>\d{1,3}))?(?: (?P<translation>[a-zA-Z]{,4}))?)$"
+    match = re.match(pattern, user_input.lower())   
+    iteration = match.group('iteration')
+    book_title = match.group("book_title")
+    chapter = match.group("chapter")
+    verse_1 = match.group("verse_1")
+    verse_2 = match.group("verse_2")
 
-    # Unit detection
-    if (book in book_dict):
-        if (unit == "chapters"):
-            # Ex: "MAT.1"
-            formatted_query = book_dict[book] + '.' + chapter
-        if (unit == "verses"):
-            # Ex: "MAT.1.3"
-            formatted_query = book_dict[book] + '.' + chapter + '.' + verse
-        print(formatted_query)
+    if (iteration is None):
+        book = str(book_title)
     else:
-        print("Could not locate book (is it spelled correctly?).")
+        book = str(f"{iteration} {book_title}")
+
+    if (book in book_dict):
+        if (verse_1 is None):
+            unit = "chapters"
+            # Ex: "MAT.1"
+            query = book_dict[book] + '.' + chapter
+        else:
+            unit = "verses"
+            # Ex: "MAT.1.1
+            query = book_dict[book] + '.' + chapter + '.' + verse_1
+        
+        # System output
+        print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
+        if (unit == "verses"):
+            print(f"Verse 1: {verse_1}\nVerse 2: {verse_2}")
+    else:
+        print("Error: Could not locate book (is it spelled correctly?).")
         return
-    text_request(unit, formatted_query, user_number)
+    text_request(unit, query, user_number)
 
 ### API.Bible content request
 def text_request(unit, formatted_query, user_number):
@@ -161,20 +157,20 @@ def text_request(unit, formatted_query, user_number):
     ### Text extraction/delivery
     try:
         data_content = api_bible_data["data"]["content"]
-        print(data_content)
+        # print(data_content)
         text_content = ""
         for item in data_content:
             if "items" in item:
                 for sub_item in item["items"]:
                     if "text" in sub_item:
                         text_content += sub_item["text"]
-        print(text_content)
-        send_message(user_number, text_content)
+        print(f"Text: {text_content}")
+        send_message(text_content, user_number)
     except KeyError as e:
         print("Error: Text extraction/delivery failed -", e)
 
 # Send SMS message
-def send_message(user_number, text_content):
+def send_message(text_content, user_number):
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -182,4 +178,4 @@ def send_message(user_number, text_content):
     )
 
 ### Allow development run (comment when done)
-# init_dev()
+init_dev()

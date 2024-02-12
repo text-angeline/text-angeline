@@ -1,4 +1,5 @@
 ngrok
+test.py
 config.json
 __pycache__/**
 .bibles.txt.swp
