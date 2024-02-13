@@ -13,6 +13,11 @@
 # - Include reference data
 # - Create web interface
 
+### Example requests:
+# Long chapter (exceeds 1600 characters): Psalm 119
+# Short chapter (contains under 160 characters): Psalm 117
+# Long-ish chapter (contains under 1600 characters): Psalm 23
+
 import re
 import json
 import time
@@ -22,10 +27,17 @@ import requests
 ### Configuration settings
 with open("config.json", 'r') as f:
     config = json.load(f)
-bible_id = config["bible_id"]
 telnyx.api_key = config["TELNYX_KEY"]
 API_BIBLE_KEY = config["API_BIBLE_KEY"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
+
+### API.bible translation dictionary
+trans_dict = {
+    "asv": "06125adad2d5898a-01",
+    "fbv": "65eec8e0b60e656b-01",
+    "kjv": "de4e12af7f28f599-02",
+    "web": "9879dbb7cfe39e4d-04",
+}
 
 ### API.Bible book dictionary
 book_dict = {
@@ -119,12 +131,19 @@ def input_formatting(user_input, user_number):
             chapter = match.group("chapter")
             verse_1 = match.group("verse_1")
             verse_2 = match.group("verse_2")
+            translation = match.group("translation")
         except AttributeError:
             print("Error: Couldn't parse input.")
             return
     else:
         print("Error: Invalid format.")
         return
+
+    # Default translation (if not specified)
+    if (translation is None):
+        bible = trans_dict["fbv"]
+    elif (translation in trans_dict):
+        bible = trans_dict[translation]
 
     # Check for series
     if (iteration is None):
@@ -143,17 +162,17 @@ def input_formatting(user_input, user_number):
             query = book_dict[book] + '.' + chapter + '.' + verse_1
         
         # System output
-        print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
+        print(f"Bible: {bible}\nUnit: {unit}\nBook: {book}\nChapter: {chapter}")
         if (unit == "verses"):
             print(f"Verse 1: {verse_1}\nVerse 2: {verse_2}")
     else:
         print("Error: Could not locate book (is it spelled correctly?).")
         return
-    text_request(unit, query, user_number)
+    text_request(bible, unit, query, user_number)
 
 ### API.Bible content request
-def text_request(unit, query, user_number):
-    url = f"https://api.scripture.api.bible/v1/bibles/{bible_id}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
+def text_request(bible, unit, query, user_number):
+    url = f"https://api.scripture.api.bible/v1/bibles/{bible}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
     # print(api_bible_response.text)
@@ -176,28 +195,28 @@ def text_request(unit, query, user_number):
                             text_content += ' ' + sub_item["text"]
         print(f"Text Content: {text_content.strip()}")
         text_content = text_content.strip()
-        if (len(text_content) <= 160):
-            send_message(text_content, user_number)
-        else:
-            chunk_size = 155
-            chunks = [text_content[i:i+chunk_size] for i in range(0, len(text_content), chunk_size)]
-            total_chunks = len(chunks)
-            formatted_chunks = []
-            for i, chunk in enumerate(chunks):
-                chunk_number = i + 1
-                formatted_chunk = f"{chunk} ({chunk_number}/{total_chunks})"
-                # print(formatted_chunk)
-                send_message(formatted_chunk, user_number)
-                time.sleep(5)
+        text_content_size = len(text_content)
+        # return
+        if (text_content_size <= 160):
+            message_protocol = "SMS"
+            send_message(message_protocol, text_content, user_number)
+        elif (text_content_size <= 1600):
+            message_protocol = "MMS"
+            send_message(message_protocol, text_content, user_number)
+        elif (text_content_size > 1600):
+            # Implement chunking function
+            print("Error: Text content too large.")
+            return
     except KeyError as e:
         print("Error: Text extraction/delivery failed: ", e)
 
 # Send SMS message
-def send_message(text_content, user_number):
+def send_message(message_protocol, text_content, user_number):
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
         text=text_content,
+        type_=message_protocol,
     )
 
 ### Allow development run (comment when done)
