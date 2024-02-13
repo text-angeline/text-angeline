@@ -110,7 +110,7 @@ book_dict = {
 ### Development function
 def init_dev():
     test_input = input("test_input: ")
-    test_number = config["test_number"]
+    test_number = config['test_number']
     init(test_input, test_number)
 
 ### Initial function
@@ -124,7 +124,7 @@ def input_formatting(user_input, user_number):
     match = re.match(pattern, user_input.lower())
     if (match):
         try:
-            iteration = match.group('iteration')
+            iteration = match.group("iteration")
             book_title = match.group("book_title")
             chapter = match.group("chapter")
             verse_beg = match.group("verse_beg")
@@ -179,20 +179,20 @@ def text_request(bible, unit, query, user_number):
 
     ### Text extraction/delivery
     try:
-        data_content = api_bible_data["data"]["content"]
+        data_content = api_bible_data['data']['content']
         # print(data_content)
         text_content = ""
         for item in data_content:
-            if "items" in item:
-                for sub_item in item["items"]:
-                    if "attrs" in sub_item and "number" in sub_item["attrs"]:
-                        text_content += ' ' + sub_item["attrs"]["number"]
+            if 'items' in item:
+                for sub_item in item['items']:
+                    if 'attrs' in sub_item and 'number' in sub_item['attrs']:
+                        text_content += f" sub_item['attrs']['number']"
                     elif "text" in sub_item:
-                        if (sub_item["text"].startswith(' ')):
+                        if (sub_item['text'].startswith(' ')):
                             text_content += sub_item["text"]
                         else:
                             text_content += f" sub_item['text']"
-        text_content = text_content.strip() 
+        text_content = text_content.strip()
         print(f"Text Content: {text_content}")
 
         text_content_size = len(text_content)
