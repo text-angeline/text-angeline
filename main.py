@@ -120,15 +120,15 @@ def init(user_input, user_number):
 
 ### Input formatting
 def input_formatting(user_input, user_number):
-    pattern = r"^(((?P<iteration>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,})(?: (?P<chapter>\d{1,3}))(?::(?P<verse_1>\d{1,3}))?(?:-(?P<verse_2>\d{1,3}))?(?: (?P<translation>[a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<iteration>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,})(?: (?P<chapter>\d{1,3}))(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?: (?P<translation>[a-zA-Z]{,4}))?)$"
     match = re.match(pattern, user_input.lower())
     if (match):
         try:
             iteration = match.group('iteration')
             book_title = match.group("book_title")
             chapter = match.group("chapter")
-            verse_1 = match.group("verse_1")
-            verse_2 = match.group("verse_2")
+            verse_beg = match.group("verse_beg")
+            verse_end = match.group("verse_end")
             translation = match.group("translation")
         except AttributeError:
             print("Error: Couldn't parse input.")
@@ -154,16 +154,16 @@ def input_formatting(user_input, user_number):
         if (verse_1 is None):
             unit = "chapters"
             # Ex: "MAT.1"
-            query = book_dict[book] + '.' + chapter
+            query = f"{book_dict[book]}.{chapter}"
         else:
             unit = "verses"
             # Ex: "MAT.1.1
-            query = book_dict[book] + '.' + chapter + '.' + verse_1
+            query = f"{book_dict[book]}.{chapter}.{verse_beg}"
         
         # System output
         print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
         if (unit == "verses"):
-            print(f"Verse 1: {verse_1}\nVerse 2: {verse_2}")
+            print(f"Beginning Verse: {verse_beg}\nEnding Verse: {verse_end}")
     else:
         print("Error: Could not locate book (is it spelled correctly?).")
         return
