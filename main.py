@@ -151,7 +151,7 @@ def input_formatting(user_input, user_number):
         book = str(f"{iteration} {book_title}")
 
     if (book in book_dict):
-        if (verse_1 is None):
+        if (verse_beg is None):
             unit = "chapters"
             # Ex: "MAT.1"
             query = f"{book_dict[book]}.{chapter}"
@@ -191,9 +191,10 @@ def text_request(bible, unit, query, user_number):
                         if (sub_item["text"].startswith(' ')):
                             text_content += sub_item["text"]
                         else:
-                            text_content += ' ' + sub_item["text"]
-        print(f"Text Content: {text_content.strip()}")
-        text_content = text_content.strip()
+                            text_content += f" sub_item['text']"
+        text_content = text_content.strip() 
+        print(f"Text Content: {text_content}")
+
         text_content_size = len(text_content)
         # return
         if (text_content_size <= 160):
