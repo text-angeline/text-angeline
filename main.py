@@ -143,7 +143,7 @@ def input_formatting(user_input, user_number):
         print(f"Translation: {DEFAULT_TRANS}")
     elif (translation in trans_dict):
         bible = trans_dict[translation]
-        print("bible" + bible)
+        print(f"Translation: {translation}")
 
     # Check for series
     if (iteration is None):
@@ -186,20 +186,26 @@ def text_request(bible, unit, query, user_number):
         for item in data_content:
             if 'items' in item:
                 for sub_item in item['items']:
-                    if 'attrs' in sub_item and 'number' in sub_item['attrs']:
-                        text_content += f" {sub_item['attrs']['number']}"
-                    elif "text" in sub_item:
+                    # Only prepends verse numbers when necessary
+                    if (unit == "chapters"):
+                        if 'attrs' in sub_item and 'number' in sub_item['attrs']:
+                            text_content += f" {sub_item['attrs']['number']}"
+                    if "text" in sub_item:
+                        # Spacing patch (refactor later)
                         if (sub_item['text'].startswith(' ')):
                             text_content += sub_item["text"]
                         else:
                             text_content += f" {sub_item['text']}"
         text_content = text_content.strip()
-        print(f"Text Content: {text_content}")
 
+        # Determine message type based on payload size
         text_content_size = len(text_content)
         # Prevent send_message for development
         # return
-        if (text_content_size <= 160):
+        if (text_content_size <= 0):
+            print("Error: API returned missing text content.")
+            return
+        elif (text_content_size <= 160):
             message_protocol = "SMS"
             send_message(message_protocol, text_content, user_number)
         elif (text_content_size <= 1600):
@@ -207,8 +213,9 @@ def text_request(bible, unit, query, user_number):
             send_message(message_protocol, text_content, user_number)
         elif (text_content_size > 1600):
             # Implement chunking function
-            print("Error: Text content too large.")
+            print("Error: Text content missing/too large.")
             return
+        print(f"Text Content: {text_content}")
     except KeyError as e:
         print("Error: Text extraction/delivery failed: ", e)
 
