@@ -1,7 +1,4 @@
 ### To-do:
-# - Add translation detection (default: ESV)
-#  - Ex: Matthew 1:2 KJV
-#  - Add respective dictionary
 # - Add verse detection with hyphens
 #  - Ex: Matthew 1:3-7
 # - Add robust error exception handling
@@ -12,11 +9,10 @@
 #  - Book, epistle, etc. titles
 # - Include reference data
 # - Create web interface
-
 ### Example requests:
-# Long chapter (exceeds 1600 characters): Psalm 119
-# Short chapter (contains under 160 characters): Psalm 117
-# Long-ish chapter (contains under 1600 characters): Psalm 23
+# Under 160 characters: Psalm 117
+# Under 1600 characters: Psalm 23
+# Exceeds 1600 characters: Psalm 119
 
 import re
 import json
@@ -27,8 +23,10 @@ import requests
 ### Configuration settings
 with open("config.json", 'r') as f:
     config = json.load(f)
+
 telnyx.api_key = config["TELNYX_KEY"]
 API_BIBLE_KEY = config["API_BIBLE_KEY"]
+DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
 ### API.bible translation dictionary
@@ -141,7 +139,8 @@ def input_formatting(user_input, user_number):
 
     # Default translation (if not specified)
     if (translation is None):
-        bible = trans_dict["fbv"]
+        bible = DEFAULT_TRANS
+        print(f"Translation: {DEFAULT_TRANS}")
     elif (translation in trans_dict):
         bible = trans_dict[translation]
 
@@ -162,7 +161,7 @@ def input_formatting(user_input, user_number):
             query = book_dict[book] + '.' + chapter + '.' + verse_1
         
         # System output
-        print(f"Bible: {bible}\nUnit: {unit}\nBook: {book}\nChapter: {chapter}")
+        print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
         if (unit == "verses"):
             print(f"Verse 1: {verse_1}\nVerse 2: {verse_2}")
     else:
