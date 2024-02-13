@@ -1,5 +1,5 @@
 ### To-do:
-# - Add verse detection with hyphens
+# - Determine if API supports verse ranges with hyphens
 #  - Ex: Matthew 1:3-7
 # - Add robust error exception handling
 #  - Send instructional message upon reciept of invalid input
@@ -8,7 +8,7 @@
 # - Add spell correction feature
 #  - Book, epistle, etc. titles
 # - Include reference data
-# - Create web interface
+# - Create dedicated website
 ### Example requests:
 # Under 160 characters: Psalm 117
 # Under 1600 characters: Psalm 23
@@ -139,10 +139,11 @@ def input_formatting(user_input, user_number):
 
     # Default translation (if not specified)
     if (translation is None):
-        bible = DEFAULT_TRANS
+        bible = trans_dict[DEFAULT_TRANS]
         print(f"Translation: {DEFAULT_TRANS}")
     elif (translation in trans_dict):
         bible = trans_dict[translation]
+        print("bible" + bible)
 
     # Check for series
     if (iteration is None):
@@ -186,16 +187,17 @@ def text_request(bible, unit, query, user_number):
             if 'items' in item:
                 for sub_item in item['items']:
                     if 'attrs' in sub_item and 'number' in sub_item['attrs']:
-                        text_content += f" sub_item['attrs']['number']"
+                        text_content += f" {sub_item['attrs']['number']}"
                     elif "text" in sub_item:
                         if (sub_item['text'].startswith(' ')):
                             text_content += sub_item["text"]
                         else:
-                            text_content += f" sub_item['text']"
+                            text_content += f" {sub_item['text']}"
         text_content = text_content.strip()
         print(f"Text Content: {text_content}")
 
         text_content_size = len(text_content)
+        # Prevent send_message for development
         # return
         if (text_content_size <= 160):
             message_protocol = "SMS"
