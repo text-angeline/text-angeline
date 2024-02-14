@@ -1,3 +1,5 @@
+### Let the Lord remind me, day in and day out, that this program is for Him alone.
+
 ### To-do:
 # - Determine if API supports verse ranges with hyphens
 #  - Ex: Matthew 1:3-7
@@ -9,6 +11,7 @@
 #  - Book, epistle, etc. titles
 # - Include reference data
 # - Create dedicated website
+
 ### Example requests:
 # Under 160 characters: Psalm 117
 # Under 1600 characters: Psalm 23
@@ -120,16 +123,16 @@ def init(user_input, user_number):
 
 ### Input formatting
 def input_formatting(user_input, user_number):
-    pattern = r"^(((?P<iteration>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,})(?: (?P<chapter>\d{1,3}))(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?: (?P<translation>[a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,})(?: (?P<chapter>\d{1,3}))(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
     match = re.match(pattern, user_input.lower())
     if (match):
         try:
-            iteration = match.group("iteration")
+            book_num = match.group("book_num")
             book_title = match.group("book_title")
             chapter = match.group("chapter")
             verse_beg = match.group("verse_beg")
             verse_end = match.group("verse_end")
-            translation = match.group("translation")
+            bible_trans = match.group("bible_trans")
         except AttributeError:
             print("Error: Couldn't parse input.")
             return
@@ -138,18 +141,19 @@ def input_formatting(user_input, user_number):
         return
 
     # Default translation (if not specified)
-    if (translation is None):
+    if (bible_trans is None):
         bible = trans_dict[DEFAULT_TRANS]
         print(f"Translation: {DEFAULT_TRANS}")
-    elif (translation in trans_dict):
-        bible = trans_dict[translation]
-        print(f"Translation: {translation}")
+    elif (bible_trans in trans_dict):
+        bible = trans_dict[bible_trans]
+        print(f"Translation: {bible_trans}")
 
     # Check for series
-    if (iteration is None):
+    if (book_num is None):
         book = str(book_title)
     else:
-        book = str(f"{iteration} {book_title}")
+        # Ex: "1 kings"
+        book = str(f"{book_num} {book_title}")
 
     if (book in book_dict):
         if (verse_beg is None):
@@ -189,33 +193,30 @@ def text_request(bible, unit, query, user_number):
                     # Only prepends verse numbers when necessary
                     if (unit == "chapters"):
                         if 'attrs' in sub_item and 'number' in sub_item['attrs']:
-                            text_content += f" {sub_item['attrs']['number']}"
+                            verse_number = sub_item['attrs']['number']
+                            text_content += f" {verse_number}"
                     if "text" in sub_item:
-                        # Spacing patch (refactor later)
-                        if (sub_item['text'].startswith(' ')):
-                            text_content += sub_item["text"]
-                        else:
-                            text_content += f" {sub_item['text']}"
-        text_content = text_content.strip()
-
+                        verse_text = sub_item['text'].strip()
+                        text_content += f" {verse_text}"
+        
         # Determine message type based on payload size
+        text_content = text_content.strip()
         text_content_size = len(text_content)
-        # Prevent send_message for development
-        # return
         if (text_content_size <= 0):
             print("Error: API returned missing text content.")
             return
         elif (text_content_size <= 160):
             message_protocol = "SMS"
-            send_message(message_protocol, text_content, user_number)
         elif (text_content_size <= 1600):
             message_protocol = "MMS"
-            send_message(message_protocol, text_content, user_number)
         elif (text_content_size > 1600):
             # Implement chunking function
             print("Error: Text content missing/too large.")
             return
-        print(f"Text Content: {text_content}")
+        print(f"Text Content: {text_content}") 
+        # Prevent send_message (development)
+        # return
+        send_message(message_protocol, text_content, user_number)
     except KeyError as e:
         print("Error: Text extraction/delivery failed: ", e)
 
