@@ -64,6 +64,7 @@ book_dict = {
     "proverbs": "PRO",
     "ecclesiastes": "ECC",
     "song of songs": "SNG",
+    "song of solomon": "SNG",
     "isaiah": "ISA",
     "jeremiah": "JER",
     "lamentations": "LAM",
@@ -123,7 +124,7 @@ def init(user_input, user_number):
 
 ### Input formatting
 def input_formatting(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,})(?: (?P<chapter>\d{1,3}))(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
     match = re.match(pattern, user_input.lower())
     if (match):
         try:
@@ -230,4 +231,4 @@ def send_message(message_protocol, text_content, user_number):
     )
 
 ### Allow development run (comment when done)
-# init_dev()
+init_dev()

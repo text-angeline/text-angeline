@@ -1,6 +1,7 @@
 ngrok
 test.py
 config.json
+.gcloudignore
 __pycache__/**
 .bibles.txt.swp
 api-references/**

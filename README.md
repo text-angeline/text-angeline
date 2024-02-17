@@ -6,3 +6,5 @@ Local development setup:\
 
 Install dependencies:\
 `pip install -r requirements.txt`
+
+zip -r angeline.zip angeline
