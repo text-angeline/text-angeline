@@ -154,7 +154,7 @@ def init(user_input, user_number):
     
     # Unit
     if (chapter is None):
-        unit = "none"
+        unit = "books"
     elif (verse_beg is None):
         unit = "chapters"
         # Ex: "MAT.1"
