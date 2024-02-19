@@ -1,22 +1,5 @@
 ### Let the Lord remind me, day in and day out, that this program is for Him alone.
 
-### To-do:
-# - Determine if API supports verse ranges with hyphens
-#  - Ex: Matthew 1:3-7
-# - Add robust error exception handling
-#  - Send instructional message upon reciept of invalid input
-#  - API-side failure message (please try again)
-### Future aspirations:
-# - Add spell correction feature
-#  - Book, epistle, etc. titles
-# - Include reference data
-# - Create dedicated website
-
-### Example requests:
-# Under 160 characters: Psalm 117
-# Under 1600 characters: Psalm 23
-# Exceeds 1600 characters: Psalm 119
-
 import re
 import json
 import time
@@ -111,21 +94,33 @@ book_dict = {
     "revelations": "REV"
 }
 
-### Development function
+### Send text message
+def send_message(message_protocol, text_content, user_number):
+    telnyx.Message.create(
+        from_=TELNYX_NUMBER,
+        to=user_number,
+        text=text_content,
+        type_=message_protocol,
+    )
+
+### Throw error message
+def throw_error(text_content, user_number):
+    error_content = f"Error: {text_content}. Please try again."
+    print(error_content)
+    send_message("SMS", error_content, user_number)
+    exit()
+
+### Init (Development)
 def init_dev():
-    test_input = input("test_input: ")
-    test_number = config['test_number']
-    init(test_input, test_number)
+    dev_input = input("dev_input: ")
+    dev_number = config['dev_number']
+    init(dev_input, dev_number)
 
-### Initial function
+### Init (Production) 
 def init(user_input, user_number):
-    target_number = user_number
-    input_formatting(user_input, user_number)
-
-### Input formatting
-def input_formatting(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
-    match = re.match(pattern, user_input.lower())
+    pattern = r"^(((?P<book_num>[1-3])(?: ))?(?P<book_title>[a-zA-Z]{3,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
+    cleaned_user_input = re.sub(r"\s+", ' ', user_input.lower())
+    match = re.match(pattern, cleaned_user_input)
     if (match):
         try:
             book_num = match.group("book_num")
@@ -135,55 +130,63 @@ def input_formatting(user_input, user_number):
             verse_end = match.group("verse_end")
             bible_trans = match.group("bible_trans")
         except AttributeError:
-            print("Error: Couldn't parse input.")
-            return
+            throw_error("Could not parse request", user_number)
     else:
-        print("Error: Invalid format.")
-        return
+        throw_error("Invalid format")
 
-    # Default translation (if not specified)
+    # Translation (if none specified)
     if (bible_trans is None):
-        bible = trans_dict[DEFAULT_TRANS]
-        print(f"Translation: {DEFAULT_TRANS}")
+        bible_trans = DEFAULT_TRANS
+        bible = trans_dict[bible_trans]
     elif (bible_trans in trans_dict):
         bible = trans_dict[bible_trans]
-        print(f"Translation: {bible_trans}")
 
-    # Check for series
+    # Book
     if (book_num is None):
         book = str(book_title)
     else:
         # Ex: "1 kings"
         book = str(f"{book_num} {book_title}")
-
-    if (book in book_dict):
-        if (verse_beg is None):
-            unit = "chapters"
-            # Ex: "MAT.1"
-            query = f"{book_dict[book]}.{chapter}"
-        else:
-            unit = "verses"
-            # Ex: "MAT.1.1
-            query = f"{book_dict[book]}.{chapter}.{verse_beg}"
-        
-        # System output
-        print(f"Unit: {unit}\nBook: {book}\nChapter: {chapter}")
-        if (unit == "verses"):
-            print(f"Beginning Verse: {verse_beg}\nEnding Verse: {verse_end}")
+    if (book not in book_dict):
+        throw_error("Could not locate book", user_number)
+    
+    # Unit
+    if (verse_beg is None):
+        unit = "chapters"
+        # Ex: "MAT.1"
+        query = f"{book_dict[book]}.{chapter}"
     else:
-        print("Error: Could not locate book (is it spelled correctly?).")
-        return
-    text_request(bible, unit, query, user_number)
+        unit = "verses"
+        # Ex: "MAT.1.1
+        query = f"{book_dict[book]}.{chapter}.{verse_beg}"
+    
+    # Output (System)
+    print(f"""
+        Translation:\t\t{bible_trans.upper()}
+        Book:\t\t\t{book_title.capitalize()}
+        Unit:\t\t\t{unit.capitalize()}
+        Chapter:\t\t{chapter}
+        Verse (Beginning):\t{verse_beg}
+        Verse (Ending):\t\t{verse_end}
+    """)
 
-### API.Bible content request
-def text_request(bible, unit, query, user_number):
+    # Fetch text
+    if (chapter is None):
+        book_url = f"https://www.biblegateway.com/passage/?search={book}&version={bible_trans}".replace(' ', "%20")
+        error_content = f"Payload too large; Consider visiting {book_url}"
+        throw_error(error_content, user_number)
+    else:
+        fetch_text(bible, unit, query, user_number)
+
+### Fetch text
+def fetch_text(bible, unit, query, user_number):
     url = f"https://api.scripture.api.bible/v1/bibles/{bible}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
     # print(api_bible_response.text)
     api_bible_data = api_bible_response.json()
 
-    ### Text extraction/delivery
+    # Text extraction/delivery
     try:
         data_content = api_bible_data['data']['content']
         # print(data_content)
@@ -204,31 +207,20 @@ def text_request(bible, unit, query, user_number):
         text_content = text_content.strip()
         text_content_size = len(text_content)
         if (text_content_size <= 0):
-            print("Error: API returned missing text content.")
-            return
+            throw_error("Couldn't fetch text; Consider a different translation", user_number)
         elif (text_content_size <= 160):
             message_protocol = "SMS"
         elif (text_content_size <= 1600):
             message_protocol = "MMS"
         elif (text_content_size > 1600):
-            # Implement chunking function
-            print("Error: Text content missing/too large.")
-            return
-        print(f"Text Content: {text_content}") 
-        # Prevent send_message (development)
-        # return
+            # To-do: Implement chunking function
+            throw_error("Payload too large; Consider a smaller request", user_number)
+        print(f"text_content: {text_content}")
+        # Allow development stop (uncomment):
+        exit()
         send_message(message_protocol, text_content, user_number)
-    except KeyError as e:
-        print("Error: Text extraction/delivery failed: ", e)
+    except KeyError:
+        throw_error("Something went wrong", user_number)
 
-# Send SMS message
-def send_message(message_protocol, text_content, user_number):
-    telnyx.Message.create(
-        from_=TELNYX_NUMBER,
-        to=user_number,
-        text=text_content,
-        type_=message_protocol,
-    )
-
-### Allow development run (comment when done)
+### Allow development run (uncomment):
 init_dev()
