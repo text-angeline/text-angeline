@@ -153,7 +153,9 @@ def init(user_input, user_number):
         throw_error("Could not locate book", user_number)
     
     # Unit
-    if (verse_beg is None):
+    if (chapter is None):
+        unit = "none"
+    elif (verse_beg is None):
         unit = "chapters"
         # Ex: "MAT.1"
         query = f"{book_dict[book]}.{chapter}"
@@ -225,4 +227,4 @@ def fetch_text(bible, unit, query, user_number):
         throw_error("Something went wrong", user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
