@@ -107,6 +107,8 @@ def send_message(message_protocol, text_content, user_number):
 def throw_error(text_content, user_number):
     error_content = f"Error: {text_content}. Please try again."
     print(error_content)
+    # Allow development halt (uncomment):
+    # exit()
     send_message("SMS", error_content, user_number)
     exit()
 
@@ -216,11 +218,11 @@ def fetch_text(bible, unit, query, user_number):
             # To-do: Implement chunking function
             throw_error("Payload too large; Consider a smaller request", user_number)
         print(f"text_content: {text_content}")
-        # Allow development stop (uncomment):
-        exit()
+        # Allow development halt (uncomment):
+        # exit()
         send_message(message_protocol, text_content, user_number)
     except KeyError:
         throw_error("Something went wrong", user_number)
 
-### Allow development run (uncomment):
-init_dev()
+# Allow development run (uncomment):
+# init_dev()
