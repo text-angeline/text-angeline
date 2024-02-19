@@ -227,4 +227,4 @@ def fetch_text(bible, unit, query, user_number):
         throw_error("Something went wrong", user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
