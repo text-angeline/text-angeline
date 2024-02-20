@@ -131,7 +131,7 @@ def init(user_input, user_number):
             verse_end = match.group("verse_end")
             bible_trans = match.group("bible_trans")
         except AttributeError:
-            throw_error("Could not parse request", user_number)
+            throw_error("Couldn't parse request", user_number)
     else:
         throw_error("Invalid format")
 
@@ -151,7 +151,7 @@ def init(user_input, user_number):
         # Ex: "1 kings"
         book = str(f"{book_num} {book_title}")
     if (book not in book_dict):
-        throw_error("Could not locate book", user_number)
+        throw_error("Couldn't locate book", user_number)
     
     # Unit
     if (chapter is None):
