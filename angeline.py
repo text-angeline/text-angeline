@@ -69,7 +69,7 @@ book_dict = {
     "luke": "LUK",
     "john": "JHN",
     "acts": "ACT",
-    "roman": "ROM",
+    "romans": "ROM",
     "1 corinthians": "1CO",
     "2 corinthians": "2CO",
     "galatians": "GAL",
