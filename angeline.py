@@ -225,7 +225,7 @@ def fetch_text(bible, unit, query, user_number):
         # return
         send_message(message_protocol, text_content, user_number)
     except KeyError:
-        throw_error("Something went wrong", user_number)
+        throw_error("Text doesn't exist", user_number)
 
 # Allow development run (uncomment):
 # init_dev()
