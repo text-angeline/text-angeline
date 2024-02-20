@@ -2,7 +2,6 @@
 
 import re
 import json
-import time
 import telnyx
 import requests
 
