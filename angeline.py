@@ -1,4 +1,4 @@
-### Let the Lord remind me, day in and day out, that this program is for Him alone.
+### Let the Ghost remind me, day in and day out, that this program is for Him alone.
 
 import re
 import json
