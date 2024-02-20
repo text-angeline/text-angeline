@@ -104,13 +104,13 @@ def send_message(message_protocol, text_content, user_number):
     )
 
 ### Throw error message
-def throw_error(text_content, user_number):
-    error_content = f"Error: {text_content}. Please try again."
-    print(error_content)
+def throw_error(error_content, user_number):
+    text_content = f"Error: {error_content}. Please try again."
+    print(f"text_content: {text_content}")
     # Allow development halt (uncomment):
-    # exit()
-    send_message("SMS", error_content, user_number)
-    exit()
+    # return
+    send_message("SMS", text_content, user_number)
+    raise Exception("Aborting")
 
 ### Init (Development)
 def init_dev():
@@ -142,6 +142,8 @@ def init(user_input, user_number):
         bible = trans_dict[bible_trans]
     elif (bible_trans in trans_dict):
         bible = trans_dict[bible_trans]
+    else:
+        throw_error("Invalid translation", user_number)
 
     # Book
     if (book_num is None):
@@ -221,7 +223,7 @@ def fetch_text(bible, unit, query, user_number):
             throw_error("Payload too large; Consider a smaller request", user_number)
         print(f"text_content: {text_content}")
         # Allow development halt (uncomment):
-        # exit()
+        # return
         send_message(message_protocol, text_content, user_number)
     except KeyError:
         throw_error("Something went wrong", user_number)
