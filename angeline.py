@@ -133,7 +133,7 @@ def init(user_input, user_number):
         except AttributeError:
             throw_error("Couldn't parse request", user_number)
     else:
-        throw_error("Invalid format")
+        throw_error("Invalid format", user_number)
 
     # Translation (if none specified)
     if (bible_trans is None):
