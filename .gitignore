@@ -4,4 +4,5 @@ config.json
 .gcloudignore
 __pycache__/**
 .bibles.txt.swp
+.angeline.py.swp
 api-references/**
