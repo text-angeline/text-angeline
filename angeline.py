@@ -188,7 +188,7 @@ def fetch_text(bible, unit, query, user_number):
     url = f"https://api.scripture.api.bible/v1/bibles/{bible}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {"api-key": API_BIBLE_KEY}
     api_bible_response = requests.request("GET", url, headers=headers)
-    # print(api_bible_response.text)
+    print(api_bible_response.text)
     api_bible_data = api_bible_response.json()
 
     # Text extraction/delivery
@@ -225,7 +225,7 @@ def fetch_text(bible, unit, query, user_number):
         # return
         send_message(message_protocol, text_content, user_number)
     except KeyError:
-        throw_error("Text doesn't exist", user_number)
+        throw_error("Couldn't find the text", user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
