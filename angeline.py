@@ -166,14 +166,14 @@ def init(user_input, user_number):
         query = f"{book_dict[book]}.{chapter}.{verse_beg}"
     
     # Output (System)
-    print(f"""
-        Translation:\t\t{bible_trans.upper()}
-        Book:\t\t\t{book_title.capitalize()}
-        Unit:\t\t\t{unit.capitalize()}
-        Chapter:\t\t{chapter}
-        Verse (Beginning):\t{verse_beg}
-        Verse (Ending):\t\t{verse_end}
-    """)
+    print(
+        f"""Translation:\t\t{bible_trans.upper()}
+Book:\t\t\t{book_title.capitalize()}
+Unit:\t\t\t{unit.capitalize()}
+Chapter:\t\t{chapter}
+Verse (Beginning):\t{verse_beg}
+Verse (Ending):\t\t{verse_end}"""
+    )
 
     # Fetch text
     if (chapter is None):
@@ -220,12 +220,12 @@ def fetch_text(bible, unit, query, user_number):
         elif (text_content_size > 1600):
             # To-do: Implement chunking function
             throw_error("Payload too large; Consider a smaller request", user_number)
-        print(f"text_content: {text_content}")
+        print(f"Text: {text_content}")
         # Allow development halt (uncomment):
-        # return
+        return
         send_message(message_protocol, text_content, user_number)
     except KeyError:
         throw_error("Couldn't find the text", user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
