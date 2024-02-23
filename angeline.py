@@ -222,10 +222,10 @@ def fetch_text(bible, unit, query, user_number):
             throw_error("Payload too large; Consider a smaller request", user_number)
         print(f"Text: {text_content}")
         # Allow development halt (uncomment):
-        return
+        # return
         send_message(message_protocol, text_content, user_number)
     except KeyError:
         throw_error("Couldn't find the text", user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
