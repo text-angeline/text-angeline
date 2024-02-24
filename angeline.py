@@ -203,7 +203,7 @@ def fetch_text(bible, unit, query, user_number, retries = 0):
             print(f"({retries}) Failed. Trying again...")
             return fetch_text(bible, unit, query, user_number, retries)
         else:
-            throw_error("Couldn't fetch text", user_number)
+            throw_error("Couldn't fetch text; Consider if it exists", user_number)
     # print(data_content)
     text_content = ""
     for item in data_content:
