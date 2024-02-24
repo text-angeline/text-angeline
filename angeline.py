@@ -103,8 +103,7 @@ def send_message(message_protocol, text_content, user_number):
             type_=message_protocol,
         )
     except:
-        error_content = "Couldn't connect to Telnyx"
-        throw_error(error_content, user_number)
+        throw_error("Couldn't connect to Telnyx", user_number)
 
 ### Throw error message
 def throw_error(error_content, user_number):
@@ -190,6 +189,7 @@ Verse (Ending):\t\t{verse_end}"""
 
 ### Fetch text
 def fetch_text(bible, unit, query, user_number):
+    attempts = 0
     try:
         url = f"https://api.scripture.api.bible/v1/bibles/{bible}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
         headers = {'api-key': API_BIBLE_KEY}
@@ -199,7 +199,11 @@ def fetch_text(bible, unit, query, user_number):
         # Check for empty response
         data_content = api_bible_data['data']['content']
     except KeyError:
-        fetch_text(bible, unit, query, user_number)
+        if (attempts < 3):
+            fetch_text(bible, unit, query, user_number)
+            attempts = attempts + 1
+        else:
+            throw_error("Couldn't fetch text", user_number)
     # print(data_content)
     text_content = ""
     for item in data_content:
