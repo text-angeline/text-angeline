@@ -235,4 +235,4 @@ def fetch_text(bible, unit, query, user_number, retries = 0):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
