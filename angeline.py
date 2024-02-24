@@ -108,7 +108,7 @@ def send_message(message_protocol, text_content, user_number):
 ### Throw error message
 def throw_error(error_content, user_number):
     text_content = f"Error: {error_content}. Please try again."
-    print(f"text_content: {text_content}")
+    print(f"Text: {text_content}")
     # Allow development halt (uncomment):
     # return
     send_message("SMS", text_content, user_number)
@@ -200,7 +200,7 @@ def fetch_text(bible, unit, query, user_number, retries = 0):
         if (retries < 2):
             retries += 1
             print(f"({retries}) Failed. Trying again...")
-            return fetch_text(bible, unit, query, user_number, retries)
+            fetch_text(bible, unit, query, user_number, retries)
         else:
             throw_error("Couldn't fetch text; Consider if it exists", user_number)
     # print(data_content)
@@ -221,7 +221,7 @@ def fetch_text(bible, unit, query, user_number, retries = 0):
     text_content = text_content.strip()
     text_content_size = len(text_content)
     if (text_content_size <= 0):
-        throw_error("Couldn't fetch text; Consider a different translation", user_number)
+        throw_error("Text returned empty; Consider a different translation", user_number)
     elif (text_content_size <= 160):
         message_protocol = "SMS"
     elif (text_content_size <= 1600):
@@ -235,4 +235,4 @@ def fetch_text(bible, unit, query, user_number, retries = 0):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
