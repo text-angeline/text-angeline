@@ -188,20 +188,20 @@ Verse (Ending):\t\t{verse_end}"""
         fetch_text(bible, unit, query, user_number)
 
 ### Fetch text
-def fetch_text(bible, unit, query, user_number):
-    attempts = 0
+def fetch_text(bible, unit, query, user_number, retries = 0):
     try:
         url = f"https://api.scripture.api.bible/v1/bibles/{bible}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
         headers = {'api-key': API_BIBLE_KEY}
         api_bible_response = requests.request('GET', url, headers=headers)
         # print(api_bible_response.text)
         api_bible_data = api_bible_response.json()
-        # Check for empty response
         data_content = api_bible_data['data']['content']
     except KeyError:
-        if (attempts < 3):
-            fetch_text(bible, unit, query, user_number)
-            attempts = attempts + 1
+        # Retry if response returns empty
+        if (retries < 2):
+            retries += 1
+            print(f"({retries}) Failed. Trying again...")
+            return fetch_text(bible, unit, query, user_number, retries)
         else:
             throw_error("Couldn't fetch text", user_number)
     # print(data_content)
@@ -236,4 +236,4 @@ def fetch_text(bible, unit, query, user_number):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
