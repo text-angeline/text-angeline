@@ -1,7 +1,7 @@
 import json
 import angeline
 
-def sms_receiver(request, context):
+def receive_sms(request, context):
     print(f"Request: {request}")
     # print(f"Context: {context}")
     try:
