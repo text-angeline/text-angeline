@@ -113,7 +113,6 @@ def throw_error(error_content, user_number):
     # return
     send_message("SMS", text_content, user_number)
     raise Exception("Aborting")
-    return
 
 ### Init (Development)
 def init_dev():
@@ -236,4 +235,4 @@ def fetch_text(bible, unit, query, user_number, retries = 0):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
