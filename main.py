@@ -1,7 +1,7 @@
 import json
 import angeline
 
-def telnyx_sms_receiver(request, context):
+def sms_receiver(request, context):
     print(f"Request: {request}")
     # print(f"Context: {context}")
     try:
