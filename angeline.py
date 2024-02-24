@@ -110,6 +110,7 @@ def throw_error(error_content, user_number):
     # return
     send_message("SMS", text_content, user_number)
     raise Exception("Aborting")
+    return
 
 ### Init (Development)
 def init_dev():
@@ -186,46 +187,44 @@ Verse (Ending):\t\t{verse_end}"""
 ### Fetch text
 def fetch_text(bible, unit, query, user_number):
     url = f"https://api.scripture.api.bible/v1/bibles/{bible}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
-    headers = {"api-key": API_BIBLE_KEY}
-    api_bible_response = requests.request("GET", url, headers=headers)
-    # print(api_bible_response.text)
+    headers = {'api-key': API_BIBLE_KEY}
+    api_bible_response = requests.request('GET', url, headers=headers)
     api_bible_data = api_bible_response.json()
-
-    # Text extraction/delivery
+    # Check for empty response
     try:
         data_content = api_bible_data['data']['content']
-        # print(data_content)
-        text_content = ""
-        for item in data_content:
-            if 'items' in item:
-                for sub_item in item['items']:
-                    # Only prepends verse numbers when necessary
-                    if (unit == "chapters"):
-                        if 'attrs' in sub_item and 'number' in sub_item['attrs']:
-                            verse_number = sub_item['attrs']['number']
-                            text_content += f" {verse_number}"
-                    if "text" in sub_item:
-                        verse_text = sub_item['text'].strip()
-                        text_content += f" {verse_text}"
-        
-        # Determine message type based on payload size
-        text_content = text_content.strip()
-        text_content_size = len(text_content)
-        if (text_content_size <= 0):
-            throw_error("Couldn't fetch text; Consider a different translation", user_number)
-        elif (text_content_size <= 160):
-            message_protocol = "SMS"
-        elif (text_content_size <= 1600):
-            message_protocol = "MMS"
-        elif (text_content_size > 1600):
-            # To-do: Implement chunking function
-            throw_error("Payload too large; Consider a smaller request", user_number)
-        print(f"Text: {text_content}")
-        # Allow development halt (uncomment):
-        # return
-        send_message(message_protocol, text_content, user_number)
     except KeyError:
-        throw_error("Couldn't find the text", user_number)
+        fetch_text(bible, unit, query, user_number)
+    # print(data_content)
+    text_content = ""
+    for item in data_content:
+        if 'items' in item:
+            for sub_item in item['items']:
+                # Only prepends verse numbers when necessary
+                if (unit == "chapters"):
+                    if 'attrs' in sub_item and 'number' in sub_item['attrs']:
+                        verse_number = sub_item['attrs']['number']
+                        text_content += f" {verse_number}"
+                if "text" in sub_item:
+                    verse_text = sub_item['text'].strip()
+                    text_content += f" {verse_text}"
+
+    # Determine message type based on payload size
+    text_content = text_content.strip()
+    text_content_size = len(text_content)
+    if (text_content_size <= 0):
+        throw_error("Couldn't fetch text; Consider a different translation", user_number)
+    elif (text_content_size <= 160):
+        message_protocol = "SMS"
+    elif (text_content_size <= 1600):
+        message_protocol = "MMS"
+    elif (text_content_size > 1600):
+        # To-do: Implement chunking function
+        throw_error("Payload too large; Consider a smaller request", user_number)
+    print(f"Text: {text_content}")
+    # Allow development halt (uncomment):
+    # return
+    send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
 # init_dev()
