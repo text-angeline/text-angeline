@@ -14,6 +14,6 @@ def receive_sms(request, context):
             print("user_number:", user_number)
             angeline.init(user_input, user_number)
             return '', 200
-    except Exception as e:
+    except KeyError as e:
         print("Error: Couldn't process webhook:", e)
         return '', 400
