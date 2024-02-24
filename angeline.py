@@ -95,12 +95,16 @@ book_dict = {
 
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
-    telnyx.Message.create(
-        from_=TELNYX_NUMBER,
-        to=user_number,
-        text=text_content,
-        type_=message_protocol,
-    ) 
+    try:
+        telnyx.Message.create(
+            from_=TELNYX_NUMBER,
+            to=user_number,
+            text=text_content,
+            type_=message_protocol,
+        )
+    except:
+        error_content = "Couldn't connect to Telnyx"
+        throw_error(error_content, user_number)
 
 ### Throw error message
 def throw_error(error_content, user_number):
@@ -189,6 +193,7 @@ def fetch_text(bible, unit, query, user_number):
     url = f"https://api.scripture.api.bible/v1/bibles/{bible}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
     headers = {'api-key': API_BIBLE_KEY}
     api_bible_response = requests.request('GET', url, headers=headers)
+    # print(api_bible_response.text)
     api_bible_data = api_bible_response.json()
     # Check for empty response
     try:
