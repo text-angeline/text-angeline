@@ -1,7 +1,7 @@
 {
-	"rename_file_to-config.json": "then_delete_this_line",
-	"DEFAULT_TRANS": "fbv",
-	"test_number": "",
+	"rename_file_to-'config.json'": "then_delete_this_line",
+	"DEFAULT_TRANS": "asv",
+	"dev_number": "",
 	"TELNYX_NUMBER": "",
 	"API_BIBLE_KEY": "",
 	"TELNYX_KEY": ""
