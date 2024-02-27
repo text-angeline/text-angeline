@@ -95,7 +95,7 @@ book_dict = {
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
 	# Allow development halt (uncomment):
-	return
+	# return
 	telnyx.Message.create(
 		from_=TELNYX_NUMBER,
 		to=user_number,
@@ -119,7 +119,7 @@ def init_dev():
 ### Init (Production)
 def init(user_input, user_number):
 	pattern = r"^(((?P<book_num>[1-9])(?: ))?(?P<book_title>[a-zA-Z]{3,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
-	cleaned_user_input = re.sub(r"\s+", ' ', user_input.lower())
+	cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
 	match = re.match(pattern, cleaned_user_input)
 	if (match):
 		try:
@@ -215,4 +215,4 @@ def fetch_text(bible, unit, query, user_number):
 	send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
