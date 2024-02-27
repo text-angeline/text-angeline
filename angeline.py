@@ -210,8 +210,8 @@ def fetch_text(bible, unit, query, user_number):
 		message_protocol = "MMS"
 	elif (text_content_size > 1600):
 		# To-do: Implement chunking function
-		throw_error("Payload too large; Consider a smaller request", user_number)
-	print('"Text: "{text_content}"')
+		throw_error("Request too large; Consider a smaller request", user_number)
+	print(f'Text: "{text_content}"')
 	send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
