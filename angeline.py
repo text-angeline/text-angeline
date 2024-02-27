@@ -4,97 +4,98 @@ import re
 import json
 import telnyx
 import requests
+import xml.etree.ElementTree as ET
 
 ### Configuration settings
 with open("config.json", 'r') as f:
     config = json.load(f)
 
 telnyx.api_key = config["TELNYX_KEY"]
-API_BIBLE_KEY = config["API_BIBLE_KEY"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
-### API.bible translation dictionary
+### Translation dictionary
 trans_dict = {
-    "asv": "06125adad2d5898a-01",
-    "fbv": "65eec8e0b60e656b-01",
-    "kjv": "de4e12af7f28f599-02",
-    "web": "9879dbb7cfe39e4d-04",
+    "asv": "asv.xml",
+    "kjv": "kjv.xml",
+    "web": "web.xml",
 }
 
-### API.Bible book dictionary
+### Book dictionary
 book_dict = {
-    "genesis": "GEN",
-    "exodus": "EXO",
-    "leviticus": "LEV",
-    "numbers": "NUM",
-    "deutoronomy": "DEU",
-    "joshua": "JOS",
-    "judges": "JDG",
-    "ruth": "RUT",
-    "1 samuel": "1SA",
-    "2 samuel": "2SA",
-    "1 kings": "1KG",
-    "2 kings" :"2KG",
-    "1 chronicles": "1CH",
-    "2 chronicles": "2CH",
-    "ezra": "EZR",
-    "nehemiah": "NEH",
-    "esther": "EST",
-    "job": "JOB",
-    "psalm": "PSA",
-    "proverbs": "PRO",
-    "ecclesiastes": "ECC",
-    "song of songs": "SNG",
-    "song of solomon": "SNG",
-    "isaiah": "ISA",
-    "jeremiah": "JER",
-    "lamentations": "LAM",
-    "ezekiel": "EZK",
-    "daniel": "DAN",
-    "hosea": "HOS",
-    "joel": "JOL",
-    "amos": "AMO",
-    "obadiah": "OBA",
-    "jonah": "JON",
-    "micah": "MIC",
-    "nahum": "NAM",
-    "habakkuk": "HAB",
-    "zephaniah": "ZEP",
-    "haggai": "HAG",
-    "zechariah": "ZEC",
-    "malachi": "MAL",
-    "matthew": "MAT",
-    "mark": "MRK",
-    "luke": "LUK",
-    "john": "JHN",
-    "acts": "ACT",
-    "romans": "ROM",
-    "1 corinthians": "1CO",
-    "2 corinthians": "2CO",
-    "galatians": "GAL",
-    "ephesians": "EPH",
-    "philippians": "PHP",
-    "colossians": "COL",
-    "1 thessalonians": "1TH",
-    "2 thessalonians": "2TH",
-    "1 timothy": "1TI",
-    "2 timothy": "2TI",
-    "titus": "TIT",
-    "philemon": "PHM",
-    "hebrews": "HEB",
-    "james": "JAS",
-    "1 peter": "1PE",
-    "2 peter": "2PE",
-    "1 john": "1JN",
-    "2 john": "2JN",
-    "3 john": "3JN",
-    "jude": "JUD",
-    "revelations": "REV"
+    "genesis": "Gen",
+    "exodus": "Exod",
+    "leviticus": "Lev",
+    "numbers": "Num",
+    "deutoronomy": "Deut",
+    "joshua": "Josh",
+    "judges": "Judg",
+    "ruth": "Ruth",
+    "1 samuel": "1Sam",
+    "2 samuel": "2Sam",
+    "1 kings": "1Kgs",
+    "2 kings" :"2Kgs",
+    "1 chronicles": "1Chr",
+    "2 chronicles": "2Chr",
+    "ezra": "Ezra",
+    "nehemiah": "Neh",
+    "esther": "Esth",
+    "job": "Job",
+    "psalm": "Ps",
+    "proverbs": "Prov",
+    "ecclesiastes": "Eccl",
+    "song of songs": "Song",
+    "song of solomon": "Song",
+    "isaiah": "Isa",
+    "jeremiah": "Jer",
+    "lamentations": "Lam",
+    "ezekiel": "Ezek",
+    "daniel": "Dan",
+    "hosea": "Hos",
+    "joel": "Joel",
+    "amos": "Amos",
+    "obadiah": "Obad",
+    "jonah": "Jonah",
+    "micah": "Mic",
+    "nahum": "Nah",
+    "habakkuk": "Hab",
+    "zephaniah": "Zeph",
+    "haggai": "Hah",
+    "zechariah": "Zech",
+    "malachi": "Mal",
+    "matthew": "Matt",
+    "mark": "Mark",
+    "luke": "Luke",
+    "john": "John",
+    "acts": "Acts",
+    "romans": "Rom",
+    "1 corinthians": "1Cor",
+    "2 corinthians": "2Cor",
+    "galatians": "Gal",
+    "ephesians": "Eph",
+    "philippians": "Phil",
+    "colossians": "Col",
+    "1 thessalonians": "1Thess",
+    "2 thessalonians": "2Thess",
+    "1 timothy": "1Tim",
+    "2 timothy": "2Tim",
+    "titus": "Titus",
+    "philemon": "Phlm",
+    "hebrews": "Heb",
+    "james": "Jas",
+    "1 peter": "1Pet",
+    "2 peter": "2Pet",
+    "1 john": "1John",
+    "2 john": "2John",
+    "3 john": "3John",
+    "jude": "Jude",
+    "revelations": "Rev"
 }
 
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
+    # Allow development halt (uncomment):
+    # return
     try:
         telnyx.Message.create(
             from_=TELNYX_NUMBER,
@@ -109,8 +110,6 @@ def send_message(message_protocol, text_content, user_number):
 def throw_error(error_content, user_number):
     text_content = f"Error: {error_content}. Please try again."
     print(f"Text: {text_content}")
-    # Allow development halt (uncomment):
-    # return
     send_message("SMS", text_content, user_number)
     raise Exception("Aborting")
 
@@ -161,11 +160,11 @@ def init(user_input, user_number):
         unit = "books"
     elif (verse_beg is None):
         unit = "chapters"
-        # Ex: "MAT.1"
+        # Ex: "Gen.1"
         query = f"{book_dict[book]}.{chapter}"
     else:
         unit = "verses"
-        # Ex: "MAT.1.1
+        # Ex: "Gen.1.1
         query = f"{book_dict[book]}.{chapter}.{verse_beg}"
     
     # Output (System)
@@ -188,37 +187,18 @@ Verse (Ending):\t\t{verse_end}"""
 
 ### Fetch text
 def fetch_text(bible, unit, query, user_number, retries = 0):
-    try:
-        url = f"https://api.scripture.api.bible/v1/bibles/{bible}/{unit}/{query}?content-type=json&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
-        headers = {'api-key': API_BIBLE_KEY}
-        api_bible_response = requests.request('GET', url, headers=headers)
-        # print(api_bible_response.text)
-        api_bible_data = api_bible_response.json()
-        data_content = api_bible_data['data']['content']
-    except KeyError:
-        # Retry if response returns empty
-        if (retries < 2):
-            retries += 1
-            print(f"({retries}) Failed. Trying again...")
-            fetch_text(bible, unit, query, user_number, retries)
-        else:
-            throw_error("Couldn't fetch text; Consider if it exists", user_number)
-    # print(data_content)
-    text_content = ""
-    for item in data_content:
-        if 'items' in item:
-            for sub_item in item['items']:
-                # Only prepends verse numbers when necessary
-                if (unit == "chapters"):
-                    if 'attrs' in sub_item and 'number' in sub_item['attrs']:
-                        verse_number = sub_item['attrs']['number']
-                        text_content += f" {verse_number}"
-                if "text" in sub_item:
-                    verse_text = sub_item['text'].strip()
-                    text_content += f" {verse_text}"
+    tree = ET.parse(bible)
+    root = tree.getroot()
+    
+    ns = {'osis': 'http://www.bibletechnologies.net/2003/OSIS/namespace'} 
+    text_element = root.find(f".//osis:verse[@osisID='{query}']", namespaces=ns)
+
+    if text_element is not None:
+        text_content = text_element.text
+    else:
+        throw_error("Text not found", user_number)
 
     # Determine message type based on payload size
-    text_content = text_content.strip()
     text_content_size = len(text_content)
     if (text_content_size <= 0):
         throw_error("Text returned empty; Consider a different translation", user_number)
@@ -230,8 +210,6 @@ def fetch_text(bible, unit, query, user_number, retries = 0):
         # To-do: Implement chunking function
         throw_error("Payload too large; Consider a smaller request", user_number)
     print(f"Text: {text_content}")
-    # Allow development halt (uncomment):
-    # return
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
