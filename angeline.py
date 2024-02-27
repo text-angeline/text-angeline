@@ -15,10 +15,11 @@ DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
 ### Translation dictionary
+temp_request_url = "https://raw.githubusercontent.com/gratis-bible/bible/master"
 trans_dict = {
-	"asv": "https://raw.githubusercontent.com/gratis-bible/bible/master/en/asv.xml",
-	"kjv": "https://raw.githubusercontent.com/gratis-bible/bible/master/en/kjv.xml",
-	"web": "https://raw.githubusercontent.com/gratis-bible/bible/master/en/web.xml",
+	"asv": f"{temp_request_url}/en/asv.xml",
+	"kjv": f"{temp_request_url}/en/kjv.xml",
+	"web": f"{temp_request_url}/en/web.xml"
 }
 
 ### Book dictionary
