@@ -96,15 +96,12 @@ book_dict = {
 def send_message(message_protocol, text_content, user_number):
     # Allow development halt (uncomment):
     # return
-    try:
-        telnyx.Message.create(
-            from_=TELNYX_NUMBER,
-            to=user_number,
-            text=text_content,
-            type_=message_protocol,
-        )
-    except:
-        throw_error("Couldn't connect to Telnyx", user_number)
+    telnyx.Message.create(
+        from_=TELNYX_NUMBER,
+        to=user_number,
+        text=text_content,
+        type_=message_protocol,
+    )
 
 ### Throw error message
 def throw_error(error_content, user_number):
@@ -187,8 +184,11 @@ Verse (Ending):\t\t{verse_end}"""
 
 ### Fetch text
 def fetch_text(bible, unit, query, user_number, retries = 0):
-    tree = ET.parse(bible)
-    root = tree.getroot()
+    url = "https://raw.githubusercontent.com/bzerangue/osis-bibles/master/en/asv.xml"
+    response = requests.get(url)
+    # tree = ET.parse(bible)
+    root = ET.fromstring(response.content)
+    # root = tree.getroot()
     
     ns = {'osis': 'http://www.bibletechnologies.net/2003/OSIS/namespace'} 
     text_element = root.find(f".//osis:verse[@osisID='{query}']", namespaces=ns)
