@@ -155,13 +155,13 @@ def init(user_input, user_number):
 
 	# Unit
 	if (chapter is None):
-		unit = "books"
+		unit = "book"
 	elif (verse_beg is None):
-		unit = "chapters"
+		unit = "chapter"
 		# Ex: "Gen.1"
 		query = f"{book_dict[book]}.{chapter}"
 	else:
-		unit = "verses"
+		unit = "verse"
 		# Ex: "Gen.1.1
 		query = f"{book_dict[book]}.{chapter}.{verse_beg}"
 
@@ -194,11 +194,20 @@ def fetch_text(bible, unit, query, user_number):
 		throw_error("Couldn't fetch text")
 
 	ns = {'osis': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
-	text_element = root.find(f".//osis:verse[@osisID='{query}']", namespaces=ns)
-
-	if text_element is not None:
-		text_content = text_element.text
+	if (unit == "chapter"):
+	    text_string = ""
+	    chapter = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
+	    for verse in chapter.findall(".//osis:verse", namespaces=ns):
+	        verse_number = verse.attrib.get("osisID").replace(f"{query}.", "")
+	        verse_text = verse.text
+	        text_string += f"{verse_number} {verse_text}\n"
+	    # Patches Psalm issue where next title is included
+	    text_content = text_string.rsplit("Psalm", 2)[0].strip()
 	else:
+	    text_element = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
+	    text_content = text_element.text
+
+	if (text_content == ""):
 		throw_error("Text not found", user_number)
 
 	# Determine message type based on payload size
@@ -212,7 +221,7 @@ def fetch_text(bible, unit, query, user_number):
 	elif (text_content_size > 1600):
 		# To-do: Implement chunking function
 		throw_error("Request too large; Consider a smaller request", user_number)
-	print(f'Text: "{text_content}"')
+	print(f'Text:\n"{text_content}"')
 	send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
