@@ -195,20 +195,18 @@ def fetch_text(bible, unit, query, user_number):
 
 	ns = {'osis': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
 	if (unit == "chapter"):
-	    text_string = ""
+	    text_content = ""
 	    chapter = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
 	    for verse in chapter.findall(".//osis:verse", namespaces=ns):
 	        verse_number = verse.attrib.get("osisID").replace(f"{query}.", "")
 	        verse_text = verse.text
-	        text_string += f"{verse_number} {verse_text}\n"
-	    # Patches Psalm issue where next title is included
-	    text_content = text_string.rsplit("Psalm", 2)[0].strip()
+	        text_content += f"{verse_number} {verse_text}\n"
 	else:
 	    text_element = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
 	    text_content = text_element.text
 
-	if (text_content == ""):
-		throw_error("Text not found", user_number)
+	# Cleanup extranneous whitespace/Psalm titles
+	text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].strip())
 
 	# Determine message type based on payload size
 	text_content_size = len(text_content)
