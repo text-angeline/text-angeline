@@ -96,7 +96,7 @@ book_dict = {
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
 	# Allow development halt (uncomment):
-	# return
+	return
 	telnyx.Message.create(
 		from_=TELNYX_NUMBER,
 		to=user_number,
@@ -194,16 +194,19 @@ def fetch_text(bible, unit, query, user_number):
 		throw_error("Couldn't fetch text")
 
 	ns = {'osis': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
-	if (unit == "chapter"):
-	    text_content = ""
-	    chapter = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
-	    for verse in chapter.findall(".//osis:verse", namespaces=ns):
-	        verse_number = verse.attrib.get("osisID").replace(f"{query}.", "")
-	        verse_text = verse.text
-	        text_content += f"{verse_number} {verse_text}\n"
-	else:
-	    text_element = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
-	    text_content = text_element.text
+	try:
+	    if (unit == "chapter"):
+	        text_content = ""
+	        chapter = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
+	        for verse in chapter.findall(".//osis:verse", namespaces=ns):
+	            verse_number = verse.attrib.get("osisID").replace(f"{query}.", "")
+	            verse_text = verse.text
+	            text_content += f"{verse_number} {verse_text}\n"
+	    else:
+	        text_element = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
+	        text_content = text_element.text
+	except AttributeError:
+	    throw_error("Text doesn't exist", user_number)
 
 	# Cleanup extranneous whitespace/Psalm titles
 	text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].strip())
@@ -223,4 +226,4 @@ def fetch_text(bible, unit, query, user_number):
 	send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
