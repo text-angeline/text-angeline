@@ -97,7 +97,7 @@ book_dict = {
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -123,6 +123,8 @@ def init(user_input, user_number):
     pattern = r"^(((?P<book_num>[1-9])(?: ))?(?P<book_title>[a-zA-Z]{3,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?)?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
+
+    # Notation
     if (match):
         try:
             book_num = match.group("book_num")
@@ -157,6 +159,8 @@ def init(user_input, user_number):
     # Unit
     if (chapter is None):
         unit = "book"
+        book_url = f"https://www.biblegateway.com/passage/?search={book}&version={bible_trans}".replace(' ', "%20")
+        throw_error(f"Payload too large; Consider visiting {book_url}", user_number)
     elif (verse_beg is None):
         unit = "chapter"
         # Ex: "Gen.1"
@@ -177,11 +181,7 @@ Verse (Ending):\t\t{verse_end}"""
     )
 
     # Fetch text
-    if (chapter is None):
-        book_url = f"https://www.biblegateway.com/passage/?search={book}&version={bible_trans}".replace(' ', "%20")
-        throw_error(f"Payload too large; Consider visiting {book_url}", user_number)
-    else:
-        fetch_text(bible, unit, query, user_number)
+    fetch_text(bible, unit, query, user_number)
 
 ### Fetch text
 def fetch_text(bible, unit, query, user_number):
@@ -203,7 +203,7 @@ def fetch_text(bible, unit, query, user_number):
                 verse_number = verse.attrib.get("osisID").replace(f"{query}.", "")
                 verse_text = verse.text
                 text_content += f"{verse_number} {verse_text}\n"
-        else:
+        elif (unit == "verse"):
             text_element = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
             text_content = text_element.text
     except AttributeError:
@@ -227,4 +227,4 @@ def fetch_text(bible, unit, query, user_number):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
