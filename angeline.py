@@ -105,10 +105,10 @@ def send_message(message_protocol, text_content, user_number):
     )
 
 ### Throw error message
-def throw_error(error_content, user_number):
-    text_content = f"Error: {error_content}. Please try again."
-    print(f"Text: {text_content}")
-    send_message("SMS", text_content, user_number)
+def throw_error(error_message, user_number):
+    error_content = f"Error: {error_message}. Please try again."
+    print(f"Text: {error_content}")
+    send_message("SMS", error_content, user_number)
     raise Exception("Aborting")
 
 ### Init (Development)
@@ -129,8 +129,6 @@ def init(user_input, user_number):
             chapter = match.group("chapter")
             verse_beg = match.group("verse_beg")
             verse_end = match.group("verse_end")
-            if (int(verse_beg) > int(verse_end)):
-                throw_error("Invalid range", user_number)
             bible_trans = match.group("bible_trans")
         except AttributeError:
             throw_error("Couldn't parse request", user_number)
@@ -165,6 +163,8 @@ def init(user_input, user_number):
         # Ex: "Gen.1"
         query = f"{book_dict[book]}.{chapter}"
     elif (verse_end is not None):
+        if (int(verse_beg) > int(verse_end)):
+            throw_error("Invalid range", user_number)
         if ((int(verse_end) - int(verse_beg)) <= 12):
             unit = "passage"
             query = f"{book_dict[book]}.{chapter}.{verse_beg}"
@@ -223,15 +223,17 @@ def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
         throw_error("Text doesn't exist", user_number)
 
     # Cleanup extranneous whitespace/Psalm titles
-    text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].strip())
+    text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].replace("`", "'").strip())
 
     # Determine message type based on payload size
     text_content_size = len(text_content)
+    print(text_content_size)
     if (text_content_size <= 0):
         throw_error("Text returned empty; Consider a different translation", user_number)
     elif (text_content_size <= 160):
         message_protocol = "SMS"
     elif (text_content_size <= 1600):
+        print("MMS!")
         message_protocol = "MMS"
     elif (text_content_size > 1600):
         # To-do: Implement chunking function
