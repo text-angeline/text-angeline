@@ -96,7 +96,7 @@ book_dict = {
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -129,6 +129,8 @@ def init(user_input, user_number):
             chapter = match.group("chapter")
             verse_beg = match.group("verse_beg")
             verse_end = match.group("verse_end")
+            if (int(verse_beg) > int(verse_end)):
+                throw_error("Invalid range", user_number)
             bible_trans = match.group("bible_trans")
         except AttributeError:
             throw_error("Couldn't parse request", user_number)
@@ -162,9 +164,15 @@ def init(user_input, user_number):
         unit = "chapter"
         # Ex: "Gen.1"
         query = f"{book_dict[book]}.{chapter}"
+    elif (verse_end is not None):
+        if ((int(verse_end) - int(verse_beg)) <= 12):
+            unit = "passage"
+            query = f"{book_dict[book]}.{chapter}.{verse_beg}"
+        else:
+            throw_error("Range request too large", user_number)
     else:
         unit = "verse"
-        # Ex: "Gen.1.1
+        # Ex: "Gen.1.1"
         query = f"{book_dict[book]}.{chapter}.{verse_beg}"
 
     # Output (System)
@@ -178,10 +186,10 @@ Verse (Ending):\t\t{verse_end}"""
     )
 
     # Fetch text
-    fetch_text(bible, unit, query, user_number)
+    fetch_text(bible, unit, query, verse_beg, verse_end, user_number)
 
 ### Fetch text
-def fetch_text(bible, unit, query, user_number):
+def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
     try:
         # tree = ET.parse(bible)
         # root = tree.getroot()
@@ -200,6 +208,18 @@ def fetch_text(bible, unit, query, user_number):
                 verse_number = verse.attrib.get("osisID").replace(f"{query}.", "")
                 verse_text = verse.text
                 text_content += f"{verse_number} {verse_text}\n"
+        elif (unit == "passage"):
+            text_content = ""
+            i = int(verse_beg)
+            for i in range(int(verse_beg), int(verse_end) + 1):
+                query_base = query.rsplit(".", 1)[0]
+                verse_iter = i
+                current_query = f"{query_base}.{verse_iter}"
+                text_element = root.find(f".//osis:verse[@osisID='{current_query}']", namespaces=ns)
+                verse_number = text_element.attrib.get("osisID").replace(f"{query_base}.", "")
+                verse_text = text_element.text
+                text_content += f"{verse_number} {verse_text}\n"
+                i += 1
         elif (unit == "verse"):
             text_element = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
             text_content = text_element.text
@@ -224,4 +244,4 @@ def fetch_text(bible, unit, query, user_number):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# int_dev()
+init_dev()
