@@ -210,16 +210,12 @@ def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
                 text_content += f"{verse_number} {verse_text}\n"
         elif (unit == "passage"):
             text_content = ""
-            i = int(verse_beg)
-            for i in range(int(verse_beg), int(verse_end) + 1):
+            for verse_num in range(int(verse_beg), int(verse_end) + 1):
                 query_base = query.rsplit(".", 1)[0]
-                verse_iter = i
-                current_query = f"{query_base}.{verse_iter}"
-                text_element = root.find(f".//osis:verse[@osisID='{current_query}']", namespaces=ns)
-                verse_number = text_element.attrib.get("osisID").replace(f"{query_base}.", "")
+                query_current = f"{query_base}.{verse_num}"
+                text_element = root.find(f".//osis:verse[@osisID='{query_current}']", namespaces=ns)
                 verse_text = text_element.text
-                text_content += f"{verse_number} {verse_text}\n"
-                i += 1
+                text_content += f"{verse_num} {verse_text}\n"
         elif (unit == "verse"):
             text_element = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
             text_content = text_element.text
