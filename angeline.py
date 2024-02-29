@@ -122,8 +122,6 @@ def init(user_input, user_number):
     pattern = r"^(((?P<book_num>[1-9])(?: ))?(?P<book_title>[a-zA-Z]{3,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?)?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
-
-    # Notation
     if (match):
         try:
             book_num = match.group("book_num")
@@ -209,7 +207,7 @@ def fetch_text(bible, unit, query, user_number):
         throw_error("Text doesn't exist", user_number)
 
     # Cleanup extranneous whitespace/Psalm titles
-    # text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].strip())
+    text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].strip())
 
     # Determine message type based on payload size
     text_content_size = len(text_content)
