@@ -167,7 +167,7 @@ def init(user_input, user_number):
             throw_error("Invalid range", user_number)
         if ((int(verse_end) - int(verse_beg)) <= 12):
             unit = "passage"
-            query = f"{book_dict[book]}.{chapter}.{verse_beg}"
+            query = f"{book_dict[book]}.{chapter}."
         else:
             throw_error("Range request too large", user_number)
     else:
@@ -211,8 +211,7 @@ def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
         elif (unit == "passage"):
             text_content = ""
             for verse_num in range(int(verse_beg), int(verse_end) + 1):
-                query_base = query.rsplit(".", 1)[0]
-                query_current = f"{query_base}.{verse_num}"
+                query_current = f"{query}{verse_num}"
                 text_element = root.find(f".//osis:verse[@osisID='{query_current}']", namespaces=ns)
                 verse_text = text_element.text
                 text_content += f"{verse_num} {verse_text}\n"
@@ -227,13 +226,11 @@ def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
 
     # Determine message type based on payload size
     text_content_size = len(text_content)
-    print(text_content_size)
     if (text_content_size <= 0):
         throw_error("Text returned empty; Consider a different translation", user_number)
     elif (text_content_size <= 160):
         message_protocol = "SMS"
     elif (text_content_size <= 1600):
-        print("MMS!")
         message_protocol = "MMS"
     elif (text_content_size > 1600):
         # To-do: Implement chunking function
