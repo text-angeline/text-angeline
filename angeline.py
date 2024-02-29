@@ -106,14 +106,14 @@ def send_message(message_protocol, text_content, user_number):
 
 ### Throw error message
 def throw_error(error_message, user_number):
-    error_content = f"Error: {error_message}. Please try again."
-    print(f"Text: {error_content}")
+    error_content = f"Error: {error_message}. Please try again.#"
+    print(f"Text:\n{error_content}")
     send_message("SMS", error_content, user_number)
     raise Exception("Aborting")
 
 ### Init (Development)
 def init_dev():
-    dev_input = input("dev_input: ")
+    dev_input = input("⫺ ")
     dev_number = config['dev_number']
     init(dev_input, dev_number)
 
@@ -235,7 +235,7 @@ def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
     elif (text_content_size > 1600):
         # To-do: Implement chunking function
         throw_error("Request too large; Consider a smaller request", user_number)
-    print(f'Text:\n"{text_content}"')
+    print(f"Text:\n{text_content}#")
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
