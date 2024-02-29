@@ -19,8 +19,7 @@ temp_request_url = "https://raw.githubusercontent.com/gratis-bible/bible/master"
 trans_dict = {
     "asv": f"{temp_request_url}/en/asv.xml",
     "kjv": f"{temp_request_url}/en/kjv.xml",
-    "web": f"{temp_request_url}/en/web.xml",
-    "rsv": f"{temp_request_url}/en/rsv.xml"
+    "web": f"{temp_request_url}/en/web.xml"
 }
 
 ### Book dictionary
@@ -97,7 +96,7 @@ book_dict = {
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
     # Allow development halt (uncomment):
-    return
+    # return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -210,7 +209,7 @@ def fetch_text(bible, unit, query, user_number):
         throw_error("Text doesn't exist", user_number)
 
     # Cleanup extranneous whitespace/Psalm titles
-    text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].strip())
+    # text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].strip())
 
     # Determine message type based on payload size
     text_content_size = len(text_content)
@@ -227,4 +226,4 @@ def fetch_text(bible, unit, query, user_number):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# int_dev()
