@@ -18,89 +18,89 @@ TELNYX_NUMBER = config["TELNYX_NUMBER"]
 ### Translation dictionary
 temp_request_url = "https://raw.githubusercontent.com/text-angeline/text-angeline/main"
 trans_dict = {
-    "kjv": f"{temp_request_url}/trans/en/kjv.xml",
-    "nlt": f"{temp_request_url}/trans/en/nlt.xml",
     "esv": f"{temp_request_url}/trans/en/esv.xml",
+    "kjv": f"{temp_request_url}/trans/en/kjv.xml",
     "nkjv": f"{temp_request_url}/trans/en/nkjv.xml",
-    "rsv": f"{temp_request_url}/trans/en/rsv.xml",
-    "nrsv": f"{temp_request_url}/trans/en/nrsv.xml"
+    "nlt": f"{temp_request_url}/trans/en/nlt.xml",
+    "nrsv": f"{temp_request_url}/trans/en/nrsv.xml",
+    "rsv": f"{temp_request_url}/trans/en/rsv.xml"
 }
 
 ### Book dictionary
 book_dict = {
-    "genesis": "Gen",
-    "exodus": "Exod",
-    "leviticus": "Lev",
-    "numbers": "Num",
-    "deutoronomy": "Deut",
-    "joshua": "Josh",
-    "judges": "Judg",
+    "genesis": "Genesis",
+    "exodus": "Exodus",
+    "leviticus": "Leviticus",
+    "numbers": "Numbers",
+    "deutoronomy": "Deutoronomy",
+    "joshua": "Joshua",
+    "judges": "Judges",
     "ruth": "Ruth",
-    "1 samuel": "1Sam",
-    "2 samuel": "2Sam",
-    "1 kings": "1Kgs",
-    "2 kings" :"2Kgs",
-    "1 chronicles": "1Chr",
-    "2 chronicles": "2Chr",
+    "1 samuel": "1 Samuel",
+    "2 samuel": "2 Samuel",
+    "1 kings": "1 Kings",
+    "2 kings" :"2 Kings",
+    "1 chronicles": "1 Chronicles",
+    "2 chronicles": "2 Chronicles",
     "ezra": "Ezra",
-    "nehemiah": "Neh",
-    "esther": "Esth",
+    "nehemiah": "Nehemiah",
+    "esther": "Esther",
     "job": "Job",
-    "psalm": "Ps",
-    "proverbs": "Prov",
-    "ecclesiastes": "Eccl",
-    "song of songs": "Song",
-    "song of solomon": "Song",
-    "isaiah": "Isa",
-    "jeremiah": "Jer",
-    "lamentations": "Lam",
-    "ezekiel": "Ezek",
-    "daniel": "Dan",
-    "hosea": "Hos",
+    "psalm": "Psalm",
+    "proverbs": "Proverbs",
+    "ecclesiastes": "Ecclesiastes",
+    "song of songs": "Song of Songs",
+    "song of solomon": "Song of Songs",
+    "isaiah": "Isaiah",
+    "jeremiah": "Jeremiah",
+    "lamentations": "Lamentations",
+    "ezekiel": "Ezekiel",
+    "daniel": "Daniel",
+    "hosea": "Hosea",
     "joel": "Joel",
     "amos": "Amos",
-    "obadiah": "Obad",
+    "obadiah": "Obadiah",
     "jonah": "Jonah",
-    "micah": "Mic",
-    "nahum": "Nah",
-    "habakkuk": "Hab",
-    "zephaniah": "Zeph",
-    "haggai": "Hah",
-    "zechariah": "Zech",
-    "malachi": "Mal",
-    "matthew": "Matt",
+    "micah": "Micah",
+    "nahum": "Nahum",
+    "habakkuk": "Habakkuk",
+    "zephaniah": "Zephaniah",
+    "haggai": "Haggai",
+    "zechariah": "Zechariah",
+    "malachi": "Malachi",
+    "matthew": "Matthew",
     "mark": "Mark",
     "luke": "Luke",
     "john": "John",
     "acts": "Acts",
-    "romans": "Rom",
-    "1 corinthians": "1Cor",
-    "2 corinthians": "2Cor",
-    "galatians": "Gal",
-    "ephesians": "Eph",
-    "philippians": "Phil",
-    "colossians": "Col",
-    "1 thessalonians": "1Thess",
-    "2 thessalonians": "2Thess",
-    "1 timothy": "1Tim",
-    "2 timothy": "2Tim",
+    "romans": "Romans",
+    "1 corinthians": "1 Corinthians",
+    "2 corinthians": "2 Corinthians",
+    "galatians": "Galatians",
+    "ephesians": "Ephesians",
+    "philippians": "Philippians",
+    "colossians": "Colossians",
+    "1 thessalonians": "1 Thessalonians",
+    "2 thessalonians": "2 Thessalonians",
+    "1 timothy": "1 Timothy",
+    "2 timothy": "2 Timothy",
     "titus": "Titus",
-    "philemon": "Phlm",
-    "hebrews": "Heb",
-    "james": "Jas",
-    "1 peter": "1Pet",
-    "2 peter": "2Pet",
-    "1 john": "1John",
-    "2 john": "2John",
-    "3 john": "3John",
+    "philemon": "Philemon",
+    "hebrews": "Hebrews",
+    "james": "James",
+    "1 peter": "1 Peter",
+    "2 peter": "2 Peter",
+    "1 john": "1 John",
+    "2 john": "2 John",
+    "3 john": "3 John",
     "jude": "Jude",
-    "revelation": "Rev"
+    "revelation": "Revelation"
 }
 
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
     # Allow development halt (uncomment):
-    return
+    # return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -143,7 +143,6 @@ def init(user_input, user_number):
     if (bible_trans is None):
         bible_trans = DEFAULT_TRANS
         bible = trans_dict[bible_trans]
-        print(bible)
     elif (bible_trans in trans_dict):
         bible = trans_dict[bible_trans]
     else:
@@ -151,36 +150,19 @@ def init(user_input, user_number):
 
     # Book
     if (book_num is None):
-        book = str(book_title)
+        print(book_title)
+        book = book_dict[book_title]
+        print(book)
     else:
         # Ex: "1 kings"
-        book = str(f"{book_num} {book_title}")
-    if (book not in book_dict):
+        book = book_dict[f"{book_num} {book_title}"]
+    if (book.lower() not in book_dict):
         throw_error("Couldn't locate book", user_number)
-    book = string.capwords(book)
-
-    # Unit
-    if (chapter is None):
-        unit = "book"
-        book_url = f"https://www.biblegateway.com/passage/?search={book}&version={bible_trans}".replace(' ', "%20")
-        throw_error(f"Payload too large; Consider visiting {book_url}", user_number)
-    elif (verse_beg is None):
-        unit = "chapter"
-    elif (verse_end is not None):
-        if (int(verse_beg) > int(verse_end)):
-            throw_error("Invalid range", user_number)
-        elif ((int(verse_end) - int(verse_beg)) <= 12):
-            unit = "passage"
-        else:
-            throw_error("Range request too large", user_number)
-    else:
-        unit = "verse"
 
     # Output (System)
     print(
         f"""Translation:\t\t{bible_trans.upper()}
 Book:\t\t\t{book}
-Unit:\t\t\t{unit.capitalize()}
 Chapter:\t\t{chapter}
 Verse (Beginning):\t{verse_beg}
 Verse (Ending):\t\t{verse_end}"""
@@ -188,10 +170,10 @@ Verse (Ending):\t\t{verse_end}"""
 
     # Fetch text
     # Try passing a dictionary of values?
-    fetch_text(bible, unit, book, chapter, verse_beg, verse_end, user_number)
+    fetch_text(bible, book, chapter, verse_beg, verse_end, user_number)
 
 ### Fetch text
-def fetch_text(bible, unit, book, chapter, verse_beg, verse_end, user_number):
+def fetch_text(bible, book, chapter, verse_beg, verse_end, user_number):
     try:
         # tree = ET.parse(bible)
         # root = tree.getroot()
@@ -202,20 +184,32 @@ def fetch_text(bible, unit, book, chapter, verse_beg, verse_end, user_number):
         throw_error("Couldn't fetch text", user_number)
 
     try:
-        if (unit == "chapter"):
+        # Book
+        if (chapter is None):
+            book_url = f"https://www.biblegateway.com/passage/?search={book}&version={bible_trans}".replace(' ', "%20")
+            throw_error(f"Payload too large; Consider visiting {book_url}", user_number)
+        # Chapter
+        elif (verse_beg is None):
             text_content = ""
             chapter = root.find(f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']")
             for verse in chapter.findall(".//VERS"):
                 verse_number = verse.attrib.get("vnumber")
                 verse_text = verse.text
                 text_content += f"{verse_number} {verse_text}\n"
-        elif (unit == "passage"):
-            text_content = ""
-            for verse_num in range(int(verse_beg), int(verse_end) + 1):
-                text_element = root.find(f".//VERS[@vnumber='{verse_num}']")
-                verse_text = text_element.text
-                text_content += f"{verse_num} {verse_text}\n"
-        elif (unit == "verse"):
+        # Passage
+        elif (verse_end is not None):
+            if (int(verse_beg) > int(verse_end)):
+                throw_error("Invalid range", user_number)
+            elif ((int(verse_end) - int(verse_beg)) <= 12):
+                text_content = ""
+                for verse_num in range(int(verse_beg), int(verse_end) + 1):
+                    text_element = root.find(f".//VERS[@vnumber='{verse_num}']")
+                    verse_text = text_element.text
+                    text_content += f"{verse_num} {verse_text}\n"
+            else:
+                throw_error("Range request too large", user_number)
+        # Verse
+        elif (verse_beg is not None):
             path = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']/VERS[@vnumber='{verse_beg}']"
             text_element = root.find(path)
             text_content = text_element.text
@@ -240,4 +234,4 @@ def fetch_text(bible, unit, book, chapter, verse_beg, verse_end, user_number):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
