@@ -3,6 +3,7 @@
 import re
 import json
 import telnyx
+import string
 import requests
 import xml.etree.ElementTree as ET
 
@@ -15,12 +16,14 @@ DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
 ### Translation dictionary
-temp_request_url = "https://raw.githubusercontent.com/gratis-bible/bible/master"
+temp_request_url = "https://raw.githubusercontent.com/text-angeline/text-angeline/main"
 trans_dict = {
-    # "asv": f"{temp_request_url}/en/asv.xml",
-    # "kjv": f"{temp_request_url}/en/kjv.xml",
-    # "web": f"{temp_request_url}/en/web.xml"
-    "nlt": f"{temp_request_url}/en/nlt.xml"
+    "kjv": f"{temp_request_url}/trans/en/kjv.xml",
+    "nlt": f"{temp_request_url}/trans/en/nlt.xml",
+    "esv": f"{temp_request_url}/trans/en/esv.xml",
+    "nkjv": f"{temp_request_url}/trans/en/nkjv.xml",
+    "rsv": f"{temp_request_url}/trans/en/rsv.xml",
+    "nrsv": f"{temp_request_url}/trans/en/nrsv.xml"
 }
 
 ### Book dictionary
@@ -91,13 +94,13 @@ book_dict = {
     "2 john": "2John",
     "3 john": "3John",
     "jude": "Jude",
-    "revelations": "Rev"
+    "revelation": "Rev"
 }
 
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -140,6 +143,7 @@ def init(user_input, user_number):
     if (bible_trans is None):
         bible_trans = DEFAULT_TRANS
         bible = trans_dict[bible_trans]
+        print(bible)
     elif (bible_trans in trans_dict):
         bible = trans_dict[bible_trans]
     else:
@@ -153,6 +157,7 @@ def init(user_input, user_number):
         book = str(f"{book_num} {book_title}")
     if (book not in book_dict):
         throw_error("Couldn't locate book", user_number)
+    book = string.capwords(book)
 
     # Unit
     if (chapter is None):
@@ -161,25 +166,20 @@ def init(user_input, user_number):
         throw_error(f"Payload too large; Consider visiting {book_url}", user_number)
     elif (verse_beg is None):
         unit = "chapter"
-        # Ex: "Gen.1"
-        query = f"{book_dict[book]}.{chapter}"
     elif (verse_end is not None):
         if (int(verse_beg) > int(verse_end)):
             throw_error("Invalid range", user_number)
         elif ((int(verse_end) - int(verse_beg)) <= 12):
             unit = "passage"
-            query = f"{book_dict[book]}.{chapter}."
         else:
             throw_error("Range request too large", user_number)
     else:
         unit = "verse"
-        # Ex: "Gen.1.1"
-        query = f"{book_dict[book]}.{chapter}.{verse_beg}"
 
     # Output (System)
     print(
         f"""Translation:\t\t{bible_trans.upper()}
-Book:\t\t\t{book_title.capitalize()}
+Book:\t\t\t{book}
 Unit:\t\t\t{unit.capitalize()}
 Chapter:\t\t{chapter}
 Verse (Beginning):\t{verse_beg}
@@ -187,37 +187,37 @@ Verse (Ending):\t\t{verse_end}"""
     )
 
     # Fetch text
-    fetch_text(bible, unit, query, verse_beg, verse_end, user_number)
+    # Try passing a dictionary of values?
+    fetch_text(bible, unit, book, chapter, verse_beg, verse_end, user_number)
 
 ### Fetch text
-def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
+def fetch_text(bible, unit, book, chapter, verse_beg, verse_end, user_number):
     try:
         # tree = ET.parse(bible)
         # root = tree.getroot()
         # Temporary online version:
-        # response = requests.get(bible)
-        # root = ET.fromstring(response.content)
+        response = requests.get(bible)
+        root = ET.fromstring(response.content)
     except Exception:
-        throw_error("Couldn't fetch text")
+        throw_error("Couldn't fetch text", user_number)
 
-    # ns = {'osis': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
     try:
         if (unit == "chapter"):
             text_content = ""
-            chapter = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
-            for verse in chapter.findall(".//osis:verse", namespaces=ns):
-                verse_number = verse.attrib.get("osisID").replace(f"{query}.", "")
+            chapter = root.find(f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']")
+            for verse in chapter.findall(".//VERS"):
+                verse_number = verse.attrib.get("vnumber")
                 verse_text = verse.text
                 text_content += f"{verse_number} {verse_text}\n"
         elif (unit == "passage"):
             text_content = ""
             for verse_num in range(int(verse_beg), int(verse_end) + 1):
-                query_current = f"{query}{verse_num}"
-                text_element = root.find(f".//osis:verse[@osisID='{query_current}']", namespaces=ns)
+                text_element = root.find(f".//VERS[@vnumber='{verse_num}']")
                 verse_text = text_element.text
                 text_content += f"{verse_num} {verse_text}\n"
         elif (unit == "verse"):
-            text_element = root.find(f".//osis:{unit}[@osisID='{query}']", namespaces=ns)
+            path = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']/VERS[@vnumber='{verse_beg}']"
+            text_element = root.find(path)
             text_content = text_element.text
     except AttributeError:
         throw_error("Text doesn't exist", user_number)
@@ -240,4 +240,4 @@ def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
