@@ -17,9 +17,10 @@ TELNYX_NUMBER = config["TELNYX_NUMBER"]
 ### Translation dictionary
 temp_request_url = "https://raw.githubusercontent.com/gratis-bible/bible/master"
 trans_dict = {
-    "asv": f"{temp_request_url}/en/asv.xml",
-    "kjv": f"{temp_request_url}/en/kjv.xml",
-    "web": f"{temp_request_url}/en/web.xml"
+    # "asv": f"{temp_request_url}/en/asv.xml",
+    # "kjv": f"{temp_request_url}/en/kjv.xml",
+    # "web": f"{temp_request_url}/en/web.xml"
+    "nlt": f"{temp_request_url}/en/nlt.xml"
 }
 
 ### Book dictionary
@@ -165,7 +166,7 @@ def init(user_input, user_number):
     elif (verse_end is not None):
         if (int(verse_beg) > int(verse_end)):
             throw_error("Invalid range", user_number)
-        if ((int(verse_end) - int(verse_beg)) <= 12):
+        elif ((int(verse_end) - int(verse_beg)) <= 12):
             unit = "passage"
             query = f"{book_dict[book]}.{chapter}."
         else:
@@ -194,12 +195,12 @@ def fetch_text(bible, unit, query, verse_beg, verse_end, user_number):
         # tree = ET.parse(bible)
         # root = tree.getroot()
         # Temporary online version:
-        response = requests.get(bible)
-        root = ET.fromstring(response.content)
+        # response = requests.get(bible)
+        # root = ET.fromstring(response.content)
     except Exception:
         throw_error("Couldn't fetch text")
 
-    ns = {'osis': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
+    # ns = {'osis': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
     try:
         if (unit == "chapter"):
             text_content = ""
