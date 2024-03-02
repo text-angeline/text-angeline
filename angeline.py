@@ -47,11 +47,17 @@ book_dict = {
     "judges": "Judges",
     "rut": "Ruth",
     "ruth": "Ruth",
+    "1 sa": "1 Samuel",
     "1 samuel": "1 Samuel",
+    "2 sa": "2 Samuel",
     "2 samuel": "2 Samuel",
+    "1 ki": "1 Kings",
     "1 kings": "1 Kings",
+    "2 ki": "2 Kings",
     "2 kings" :"2 Kings",
+    "1 ch": "1 Chronicles",
     "1 chronicles": "1 Chronicles",
+    "2 ch": "2 Chronicles",
     "2 chronicles": "2 Chronicles",
     "ezr": "Ezra",
     "ezra": "Ezra",
@@ -115,7 +121,9 @@ book_dict = {
     "acts": "Acts",
     "rom": "Romans",
     "romans": "Romans",
+    "1 co": "1 Cortinthians",
     "1 corinthians": "1 Corinthians",
+    "2 co": "2 Corinthians",
     "2 corinthians": "2 Corinthians",
     "gal": "Galatians",
     "galatians": "Galatians",
@@ -125,9 +133,13 @@ book_dict = {
     "philippians": "Philippians",
     "col": "Colossians",
     "colossians": "Colossians",
+    "1 th": "1 Thessalonians",
     "1 thessalonians": "1 Thessalonians",
+    "2 th": "2 Thessalonians",
     "2 thessalonians": "2 Thessalonians",
+    "1 ti": "1 Timothy",
     "1 timothy": "1 Timothy",
+    "2 ti": "2 Timothy",
     "2 timothy": "2 Timothy",
     "tit": "Titus",
     "titus": "Titus",
@@ -137,10 +149,15 @@ book_dict = {
     "hebrews": "Hebrews",
     "jam": "James",
     "james": "James",
+    "1 pe": "1 Peter",
     "1 peter": "1 Peter",
+    "2 pe": "2 Peter",
     "2 peter": "2 Peter",
+    "1 jn": "1 John",
     "1 john": "1 John",
+    "2 jn": "2 John",
     "2 john": "2 John",
+    "3 jn": "3 jhn",
     "3 john": "3 John",
     "jud": "Jude",
     "jude": "Jude",
@@ -174,7 +191,7 @@ def init_dev():
 
 ### Init (Production)
 def init(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-9])(?: ))?(?P<book_title>[a-zA-Z]{3,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?)?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-9])(?: ))?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?)?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
     if (match):
@@ -200,12 +217,14 @@ def init(user_input, user_number):
         throw_error("Invalid translation", user_number)
 
     # Book
-    if (book_num is None):
-        book = book_dict[book_title]
-    else:
-        # Ex: "1 kings"
-        book = book_dict[f"{book_num} {book_title}"]
-    if (book.lower() not in book_dict):
+    try:
+        if (book_num is None):
+            # Ex: "John"
+            book = book_dict[book_title]
+        else:
+            # Ex: "1 John"
+            book = book_dict[f"{book_num} {book_title}"]
+    except KeyError:
         throw_error("Couldn't locate book", user_number)
 
     # Output (System)
@@ -219,10 +238,10 @@ Verse (Ending):\t\t{verse_end}"""
 
     # Fetch text
     # Try passing a dictionary of values?
-    fetch_text(bible, book, chapter, verse_beg, verse_end, user_number)
+    fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_number)
 
 ### Fetch text
-def fetch_text(bible, book, chapter, verse_beg, verse_end, user_number):
+def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_number):
     try:
         ## Local XML:
         # tree = ET.parse(bible)
@@ -237,7 +256,10 @@ def fetch_text(bible, book, chapter, verse_beg, verse_end, user_number):
     try:
         # Book
         if (chapter is None):
-            book_url = f"https://www.biblegateway.com/passage/?search={book}&version={bible_trans}".replace(' ', "%20")
+            # Unsupported Bible Gateway translation(s)
+            if (bible_trans == "nasu"):
+                bible_trans = "nasb"
+            book_url = f"https://www.biblegateway.com/passage/?search={book}%201&version={bible_trans.upper()}".replace(' ', "%20")
             throw_error(f"Payload too large; Consider visiting {book_url}", user_number)
         # Chapter
         elif (verse_beg is None):
