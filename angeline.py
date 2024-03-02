@@ -176,9 +176,10 @@ Verse (Ending):\t\t{verse_end}"""
 ### Fetch text
 def fetch_text(bible, book, chapter, verse_beg, verse_end, user_number):
     try:
+        ## Local XML:
         # tree = ET.parse(bible)
         # root = tree.getroot()
-        # Temporary online version:
+        ## Remote XML:
         response = requests.get(bible)
         root = ET.fromstring(response.content)
     except Exception:
