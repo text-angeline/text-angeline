@@ -235,4 +235,4 @@ def fetch_text(bible, book, chapter, verse_beg, verse_end, user_number):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
