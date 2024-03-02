@@ -20,10 +20,13 @@ temp_request_url = "https://raw.githubusercontent.com/text-angeline/text-angelin
 trans_dict = {
     "esv": f"{temp_request_url}/trans/en/esv.xml",
     "kjv": f"{temp_request_url}/trans/en/kjv.xml",
+    "nasb": f"{temp_request_url}/trans/en/nasb-strong.xml",
+    "nasu": f"{temp_request_url}/trans/en/nasu.xml",
     "nkjv": f"{temp_request_url}/trans/en/nkjv.xml",
     "nlt": f"{temp_request_url}/trans/en/nlt.xml",
     "nrsv": f"{temp_request_url}/trans/en/nrsv.xml",
-    "rsv": f"{temp_request_url}/trans/en/rsv.xml"
+    "rsv": f"{temp_request_url}/trans/en/rsv.xml",
+    "web": f"{temp_request_url}/trans/en/web.xml"
 }
 
 ### Book dictionary
@@ -105,13 +108,13 @@ def send_message(message_protocol, text_content, user_number):
         from_=TELNYX_NUMBER,
         to=user_number,
         text=text_content,
-        type_=message_protocol,
+        type_=message_protocol
     )
 
 ### Throw error message
 def throw_error(error_message, user_number):
-    error_content = f"Error: {error_message}. Please try again.#"
-    print(f"Text:\n{error_content}")
+    error_content = f"Error: {error_message}. Please try again."
+    print(f"Text:\n{error_content}#")
     send_message("SMS", error_content, user_number)
     raise Exception("Aborting")
 
@@ -150,9 +153,7 @@ def init(user_input, user_number):
 
     # Book
     if (book_num is None):
-        print(book_title)
         book = book_dict[book_title]
-        print(book)
     else:
         # Ex: "1 kings"
         book = book_dict[f"{book_num} {book_title}"]
@@ -234,4 +235,4 @@ def fetch_text(bible, book, chapter, verse_beg, verse_end, user_number):
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
