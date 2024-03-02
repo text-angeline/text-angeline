@@ -8,8 +8,8 @@ import requests
 import xml.etree.ElementTree as ET
 
 ### Configuration settings
-with open("config.json", 'r') as f:
-    config = json.load(f)
+with open("config.json", 'r') as file:
+    config = json.load(file)
 
 telnyx.api_key = config["TELNYX_KEY"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
