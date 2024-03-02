@@ -184,7 +184,7 @@ def fetch_text(bible, book, chapter, verse_beg, verse_end, user_number):
     except Exception:
         throw_error("Couldn't fetch text", user_number)
 
-    query_base = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']"
+    query_base = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']/VERS"
     try:
         # Book
         if (chapter is None):
@@ -205,14 +205,14 @@ def fetch_text(bible, book, chapter, verse_beg, verse_end, user_number):
             elif ((int(verse_end) - int(verse_beg)) <= 12):
                 text_content = ""
                 for verse_num in range(int(verse_beg), int(verse_end) + 1):
-                    text_element = root.find(f"{query_base}/VERS[@vnumber='{verse_num}']")
+                    text_element = root.find(f"{query_base}[@vnumber='{verse_num}']")
                     verse_text = text_element.text
                     text_content += f"{verse_num} {verse_text}\n"
             else:
                 throw_error("Range request too large", user_number)
         # Verse
         elif (verse_beg is not None):
-            path = f"{query_base}/VERS[@vnumber='{verse_beg}']"
+            path = f"{query_base}[@vnumber='{verse_beg}']"
             text_element = root.find(path)
             text_content = text_element.text
     except AttributeError:
