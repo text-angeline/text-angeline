@@ -1,4 +1,4 @@
-### Let the Ghost remind me, day in and day out, that this program is for Him alone.
+### "What hath God wrought"
 
 import re
 import json
