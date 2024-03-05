@@ -19,7 +19,7 @@ TELNYX_NUMBER = config["TELNYX_NUMBER"]
 temp_request_url = "https://raw.githubusercontent.com/text-angeline/text-angeline/main"
 trans_dict = {
     "esv": f"{temp_request_url}/trans/en/esv.xml",
-    "kjv": f"{temp_request_url}/trans/en/kjv.xml",
+    "kj21": f"{temp_request_url}/trans/en/kj21.xml",
     "nasb": f"{temp_request_url}/trans/en/nasb-strong.xml",
     "nasu": f"{temp_request_url}/trans/en/nasu.xml",
     "niv": f"{temp_request_url}/trans/en/niv.xml",
@@ -192,7 +192,7 @@ def init_dev():
 
 ### Init (Production)
 def init(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?)?(?: (?P<bible_trans>[a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?)?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
     if (match):
@@ -308,4 +308,4 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
