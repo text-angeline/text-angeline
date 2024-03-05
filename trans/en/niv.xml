@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<bible>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<XMLBIBLE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  biblename="ENGLISHNIV">
 <BIBLEBOOK bname="Genesis">
 <CHAPTER cnumber="1">
 <VERS vnumber="1">In the beginning God created the heavens and the earth.</v>
@@ -33612,4 +33612,3 @@
 <VERS vnumber="21">The grace of the Lord Jesus be with God's people. Amen.</v>
 </CHAPTER>
 </BIBLEBOOK>
-</bible>
