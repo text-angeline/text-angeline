@@ -22,6 +22,7 @@ trans_dict = {
     "kjv": f"{temp_request_url}/trans/en/kjv.xml",
     "nasb": f"{temp_request_url}/trans/en/nasb-strong.xml",
     "nasu": f"{temp_request_url}/trans/en/nasu.xml",
+    "niv": f"{temp_request_url}/trans/en/niv.xml",
     "nkjv": f"{temp_request_url}/trans/en/nkjv.xml",
     "nlt": f"{temp_request_url}/trans/en/nlt.xml",
     "nrsv": f"{temp_request_url}/trans/en/nrsv.xml",
