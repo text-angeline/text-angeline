@@ -169,7 +169,7 @@ book_dict = {
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
     # Allow development halt (uncomment):
-    return
+    # return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -308,4 +308,4 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
