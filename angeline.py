@@ -40,8 +40,8 @@ book_dict = {
     "leviticus": "Leviticus",
     "num": "Numbers",
     "numbers": "Numbers",
-    "deu": "Deutoronomy",
-    "deutoronomy": "Deutoronomy",
+    "deu": "Deuteronomy",
+    "deuteronomy": "Deuteronomy",
     "jos": "Joshua",
     "joshua": "Joshua",
     "jdg": "Judges",
@@ -271,7 +271,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
                 verse_number = verse.attrib.get("vnumber")
                 verse_text = verse.text
                 text_content += f"{verse_number} {verse_text}\n"
-        # Passage
+        # Verse (Range)
         elif (verse_end is not None):
             if (int(verse_beg) > int(verse_end)):
                 throw_error("Invalid range", user_number)
@@ -283,7 +283,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
                     text_content += f"{verse_num} {verse_text}\n"
             else:
                 throw_error("Range request too large", user_number)
-        # Verse
+        # Verse (Individual)
         elif (verse_beg is not None):
             path = f"{query_base}/VERS[@vnumber='{verse_beg}']"
             text_element = root.find(path)
