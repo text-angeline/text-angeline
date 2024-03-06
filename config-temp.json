@@ -1,6 +1,6 @@
 {
 	"rename_file_to-'config.json'": "then_delete_this_line",
-	"DEFAULT_TRANS": "asv",
+	"DEFAULT_TRANS": "niv",
 	"dev_number": "",
 	"TELNYX_NUMBER": "",
 	"TELNYX_KEY": ""
