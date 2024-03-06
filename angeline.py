@@ -69,6 +69,7 @@ book_dict = {
     "job": "Job",
     "psa": "Psalm",
     "psalm": "Psalm",
+    "psalms": "Psalm",
     "pro": "Proverbs",
     "proverbs": "Proverbs",
     "ecc": "Ecclesiastes",
