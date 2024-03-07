@@ -15,19 +15,27 @@ telnyx.api_key = config["TELNYX_KEY"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
+### Language dictionary
+lang_def = "en"
+lang_dict = {
+    "en": "en",
+    "eng": "en",
+    "english": "en"
+}
+
 ### Translation dictionary
-temp_request_url = "https://raw.githubusercontent.com/text-angeline/text-angeline/main"
+trans_base_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/{lang_def}/"
 trans_dict = {
-    "esv": f"{temp_request_url}/trans/en/esv.xml",
-    "kj21": f"{temp_request_url}/trans/en/kj21.xml",
-    "nasb": f"{temp_request_url}/trans/en/nasb-strong.xml",
-    "nasu": f"{temp_request_url}/trans/en/nasu.xml",
-    "niv": f"{temp_request_url}/trans/en/niv.xml",
-    "nkjv": f"{temp_request_url}/trans/en/nkjv.xml",
-    "nlt": f"{temp_request_url}/trans/en/nlt.xml",
-    "nrsv": f"{temp_request_url}/trans/en/nrsv.xml",
-    "rsv": f"{temp_request_url}/trans/en/rsv.xml",
-    "web": f"{temp_request_url}/trans/en/web.xml"
+    "esv": f"{trans_base_url}esv.xml",
+    "kj21": f"{trans_base_url}kj21.xml",
+    "nasb": f"{trans_base_url}nasb-strong.xml",
+    "nasu": f"{trans_base_url}nasu.xml",
+    "niv": f"{trans_base_url}niv.xml",
+    "nkjv": f"{trans_base_url}nkjv.xml",
+    "nlt": f"{trans_base_url}nlt.xml",
+    "nrsv": f"{trans_base_url}nrsv.xml",
+    "rsv": f"{trans_base_url}rsv.xml",
+    "web": f"{trans_base_url}web.xml"
 }
 
 ### Book dictionary
@@ -217,6 +225,7 @@ def init(user_input, user_number):
         bible = trans_dict[bible_trans]
     else:
         throw_error("Invalid translation", user_number)
+    print(bible)
 
     # Book
     try:
@@ -293,6 +302,8 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
 
     # Cleanup extranneous whitespace/Psalm titles
     text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].replace("`", "'").strip())
+    # Append "opt-out" prompt for compliance
+    text_content += "\n\nReply STOP to blacklist this number."
 
     # Determine message type based on payload size
     text_content_size = len(text_content)
