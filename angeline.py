@@ -181,7 +181,7 @@ book_dict = {
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -279,7 +279,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
             if (bible_trans == "nasu"):
                 bible_trans = "nasb"
             book_url = f"https://www.biblegateway.com/passage/?search={book}%201&version={bible_trans.upper()}".replace(' ', "%20")
-            raise_exception(True, f"Payload too large; Consider visiting {book_url}", user_number)
+            raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
         # Chapter
         elif (verse_beg is None):
             payload = ""
@@ -328,4 +328,4 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
