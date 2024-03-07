@@ -42,8 +42,6 @@ trans_dict = {
 book_dict = {
     # Controls
     "help": "HELP",
-    "start": "START",
-    "stop": "STOP",
     # Books
     "gen": "Genesis",
     "genesis": "Genesis",
@@ -238,13 +236,7 @@ def init(user_input, user_number):
     try:
         if (book_num is None):
             if (book_dict[book_title] == "HELP"):
-                raise_exception(False, "AngeLine\nThe text-messenger of God.\n\nLearn more: github.com/text-angeline", user_number)
-            elif (book_dict[book_title] == "START"):
-                # To-do: Validate number is blacklisted
-                raise_exception(False, "You can now receive messages.", user_number)
-            elif (book_dict[book_title] == "STOP"):
-                raise_exception(False, "You can no longer receive messages.\n\nReply START to unblock.", user_number)
-                # To-do: Write user_number to a blacklist database
+                raise_exception(False, "AngeLine\n\nThe text-messenger of God.\n\nLearn more: github.com/text-angeline", user_number)
             else:
                 # Ex: "John"
                 book = book_dict[book_title]
