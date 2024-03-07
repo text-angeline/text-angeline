@@ -24,18 +24,18 @@ lang_dict = {
 }
 
 ### Translation dictionary
-trans_base_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/{lang_def}/"
+trans_url_base = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/{lang_def}/"
 trans_dict = {
-    "esv": f"{trans_base_url}esv.xml",
-    "kj21": f"{trans_base_url}kj21.xml",
-    "nasb": f"{trans_base_url}nasb-strong.xml",
-    "nasu": f"{trans_base_url}nasu.xml",
-    "niv": f"{trans_base_url}niv.xml",
-    "nkjv": f"{trans_base_url}nkjv.xml",
-    "nlt": f"{trans_base_url}nlt.xml",
-    "nrsv": f"{trans_base_url}nrsv.xml",
-    "rsv": f"{trans_base_url}rsv.xml",
-    "web": f"{trans_base_url}web.xml"
+    "esv": f"{trans_url_base}esv.xml",
+    "kj21": f"{trans_url_base}kj21.xml",
+    "nasb": f"{trans_url_base}nasb-strong.xml",
+    "nasu": f"{trans_url_base}nasu.xml",
+    "niv": f"{trans_url_base}niv.xml",
+    "nkjv": f"{trans_url_base}nkjv.xml",
+    "nlt": f"{trans_url_base}nlt.xml",
+    "nrsv": f"{trans_url_base}nrsv.xml",
+    "rsv": f"{trans_url_base}rsv.xml",
+    "web": f"{trans_url_base}web.xml"
 }
 
 ### Book dictionary
@@ -178,7 +178,7 @@ book_dict = {
 ### Send text message
 def send_message(message_protocol, text_content, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -225,7 +225,6 @@ def init(user_input, user_number):
         bible = trans_dict[bible_trans]
     else:
         throw_error("Invalid translation", user_number)
-    print(bible)
 
     # Book
     try:
@@ -320,4 +319,4 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
     send_message(message_protocol, text_content, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
