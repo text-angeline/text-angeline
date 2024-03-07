@@ -40,6 +40,11 @@ trans_dict = {
 
 ### Book dictionary
 book_dict = {
+    # Controls
+    "help": "HELP",
+    "start": "START",
+    "stop": "STOP",
+    # Books
     "gen": "Genesis",
     "genesis": "Genesis",
     "exo": "Exodus",
@@ -176,21 +181,24 @@ book_dict = {
 }
 
 ### Send text message
-def send_message(message_protocol, text_content, user_number):
+def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    return
+    # return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
-        text=text_content,
-        type_=message_protocol
+        text=payload,
+        type_=protocol
     )
 
 ### Throw error message
-def throw_error(error_message, user_number):
-    error_content = f"Error: {error_message}. Please try again."
-    print(f"Text:\n{error_content}#")
-    send_message("SMS", error_content, user_number)
+def raise_exception(is_error, text_content, user_number):
+    if (is_error):
+        payload = f"Error: {text_content}. Please try again."
+    else:
+        payload = text_content
+    print(f"Text:\n{payload}#")
+    send_message("SMS", payload, user_number)
     raise Exception("Aborting")
 
 ### Init (Development)
@@ -213,9 +221,9 @@ def init(user_input, user_number):
             verse_end = match.group("verse_end")
             bible_trans = match.group("bible_trans")
         except AttributeError:
-            throw_error("Couldn't parse request", user_number)
+            raise_exception(True, "Couldn't parse request", user_number)
     else:
-        throw_error("Invalid format", user_number)
+        raise_exception(True, "Invalid format", user_number)
 
     # Translation (if none specified)
     if (bible_trans is None):
@@ -224,18 +232,27 @@ def init(user_input, user_number):
     elif (bible_trans in trans_dict):
         bible = trans_dict[bible_trans]
     else:
-        throw_error("Invalid translation", user_number)
+        raise_exception(True, "Invalid translation", user_number)
 
-    # Book
+    # Controls/Book
     try:
         if (book_num is None):
-            # Ex: "John"
-            book = book_dict[book_title]
+            if (book_dict[book_title] == "HELP"):
+                raise_exception(False, "AngeLine\nThe text-messenger of God.\n\nLearn more: github.com/text-angeline", user_number)
+            elif (book_dict[book_title] == "START"):
+                # To-do: Validate number is blacklisted
+                raise_exception(False, "You can now receive messages.", user_number)
+            elif (book_dict[book_title] == "STOP"):
+                raise_exception(False, "You can no longer receive messages.\n\nReply START to unblock.", user_number)
+                # To-do: Write user_number to a blacklist database
+            else:
+                # Ex: "John"
+                book = book_dict[book_title]
         else:
             # Ex: "1 John"
             book = book_dict[f"{book_num} {book_title}"]
     except KeyError:
-        throw_error("Couldn't locate book", user_number)
+        raise_exception(True, "Couldn't locate book", user_number)
 
     # Output (System)
     print(
@@ -260,7 +277,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
         response = requests.get(bible)
         root = ET.fromstring(response.content)
     except Exception:
-        throw_error("Couldn't fetch text", user_number)
+        raise_exception(True, "Couldn't fetch text", user_number)
 
     query_base = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']"
     try:
@@ -270,53 +287,53 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
             if (bible_trans == "nasu"):
                 bible_trans = "nasb"
             book_url = f"https://www.biblegateway.com/passage/?search={book}%201&version={bible_trans.upper()}".replace(' ', "%20")
-            throw_error(f"Payload too large; Consider visiting {book_url}", user_number)
+            raise_exception(True, f"Payload too large; Consider visiting {book_url}", user_number)
         # Chapter
         elif (verse_beg is None):
-            text_content = ""
+            payload = ""
             chapter = root.find(query_base)
             for verse in chapter.findall(".//VERS"):
                 verse_number = verse.attrib.get("vnumber")
                 verse_text = verse.text
-                text_content += f"{verse_number} {verse_text}\n"
+                payload += f"{verse_number} {verse_text}\n"
         # Verse (Range)
         elif (verse_end is not None):
             if (int(verse_beg) > int(verse_end)):
-                throw_error("Invalid range", user_number)
+                raise_exception("Invalid range", user_number)
             elif ((int(verse_end) - int(verse_beg)) <= 12):
-                text_content = ""
+                payload = ""
                 for verse_num in range(int(verse_beg), int(verse_end) + 1):
                     text_element = root.find(f"{query_base}/VERS[@vnumber='{verse_num}']")
                     verse_text = text_element.text
-                    text_content += f"{verse_num} {verse_text}\n"
+                    payload += f"{verse_num} {verse_text}\n"
             else:
-                throw_error("Range request too large", user_number)
+                raise_exception(True, "Range request too large", user_number)
         # Verse (Individual)
         elif (verse_beg is not None):
             path = f"{query_base}/VERS[@vnumber='{verse_beg}']"
             text_element = root.find(path)
-            text_content = text_element.text
+            payload = text_element.text
     except AttributeError:
-        throw_error("Text doesn't exist", user_number)
+        raise_exception(True, "Text doesn't exist", user_number)
 
     # Cleanup extranneous whitespace/Psalm titles
-    text_content = re.sub(r'[^\n\S]+', ' ', text_content.rsplit("Psalm", 2)[0].replace("`", "'").strip())
+    payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
     # Append "opt-out" prompt for compliance
-    text_content += "\n\nReply STOP to blacklist this number."
+    payload += "\n\nReply STOP to block."
 
     # Determine message type based on payload size
-    text_content_size = len(text_content)
-    if (text_content_size <= 0):
-        throw_error("Text returned empty; Consider a different translation", user_number)
-    elif (text_content_size <= 160):
-        message_protocol = "SMS"
-    elif (text_content_size <= 1600):
-        message_protocol = "MMS"
-    elif (text_content_size > 1600):
+    payload_size = len(payload)
+    if (payload_size <= 0):
+        raise_exception(True, "Text returned empty; Consider a different translation", user_number)
+    elif (payload_size <= 160):
+        protocol = "SMS"
+    elif (payload_size <= 1600):
+        protocol = "MMS"
+    elif (payload_size > 1600):
         # To-do: Implement chunking function
-        throw_error("Request too large; Consider a smaller request", user_number)
-    print(f"Text:\n{text_content}#")
-    send_message(message_protocol, text_content, user_number)
+        raise_exception(True, "Request too large; Consider a smaller request", user_number)
+    print(f"Text:\n{payload}#")
+    send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
