@@ -182,7 +182,7 @@ book_dict = {
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -209,7 +209,7 @@ def init_dev():
 
 ### Init (Production)
 def init(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?)?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?(?:,(?P<verse_new>\d{1,3}))?)?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
     if (match):
@@ -219,6 +219,7 @@ def init(user_input, user_number):
             chapter = match.group("chapter")
             verse_beg = match.group("verse_beg")
             verse_end = match.group("verse_end")
+            verse_new = match.group("verse_new")
             bible_trans = match.group("bible_trans")
         except AttributeError:
             raise_exception(True, "Couldn't parse request", user_number)
@@ -256,15 +257,16 @@ def init(user_input, user_number):
 Book:\t\t\t{book}
 Chapter:\t\t{chapter}
 Verse (Beginning):\t{verse_beg}
-Verse (Ending):\t\t{verse_end}"""
+Verse (Ending):\t\t{verse_end}
+Verse (New):\t\t{verse_new}"""
     )
 
     # Fetch text
     # Try passing a dictionary of values?
-    fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_number)
+    fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_new, user_number)
 
 ### Fetch text
-def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_number):
+def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_new, user_number):
     try:
         ## Local XML:
         # tree = ET.parse(bible)
@@ -290,8 +292,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
             chapter = root.find(query_base)
             for verse in chapter.findall(".//VERS"):
                 verse_number = verse.attrib.get("vnumber")
-                verse_text = verse.text
-                payload += f"{verse_number} {verse_text}\n"
+                payload += f"{verse_number} {verse.text}\n"
         # Verse (Range)
         elif (verse_end is not None):
             if (int(verse_beg) > int(verse_end)):
@@ -300,8 +301,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
                 payload = ""
                 for verse_num in range(int(verse_beg), int(verse_end) + 1):
                     text_element = root.find(f"{query_base}/VERS[@vnumber='{verse_num}']")
-                    verse_text = text_element.text
-                    payload += f"{verse_num} {verse_text}\n"
+                    payload += f"{verse_num} {text_element.text}\n"
             else:
                 raise_exception(True, "Range request too large", user_number)
         # Verse (Individual)
@@ -309,6 +309,13 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
             path = f"{query_base}/VERS[@vnumber='{verse_beg}']"
             text_element = root.find(path)
             payload = text_element.text
+        # Verse (New)
+        # To-do: Verify verse_new != verse_beg || verse_end
+        # - Add intermediary "..."
+        if (verse_new):
+            path = f"{query_base}/VERS[@vnumber='{verse_new}']"
+            text_element = root.find(path)
+            payload += f"{verse_new} {text_element.text}"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
@@ -332,4 +339,4 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
