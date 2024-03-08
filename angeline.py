@@ -182,7 +182,7 @@ book_dict = {
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    return
+    # return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -209,7 +209,7 @@ def init_dev():
 
 ### Init (Production)
 def init(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?(?:,(?P<verse_new>\d{1,3}))?)?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?(?:,(?P<verse_new_beg>\d{1,3}))?)(?:-(?P<verse_new_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
     if (match):
@@ -219,7 +219,8 @@ def init(user_input, user_number):
             chapter = match.group("chapter")
             verse_beg = match.group("verse_beg")
             verse_end = match.group("verse_end")
-            verse_new = match.group("verse_new")
+            verse_new_beg = match.group("verse_new_beg")
+            verse_new_end = match.group("verse_new_end")
             bible_trans = match.group("bible_trans")
         except AttributeError:
             raise_exception(True, "Couldn't parse request", user_number)
@@ -253,20 +254,21 @@ def init(user_input, user_number):
 
     # Output (System)
     print(
-        f"""Translation:\t\t{bible_trans.upper()}
-Book:\t\t\t{book}
-Chapter:\t\t{chapter}
-Verse (Beginning):\t{verse_beg}
-Verse (Ending):\t\t{verse_end}
-Verse (New):\t\t{verse_new}"""
+        f"""Translation:\t\t {bible_trans.upper()}
+Book:\t\t\t {book}
+Chapter:\t\t {chapter}
+Verse (Beginning):\t {verse_beg}
+Verse (Ending):\t\t {verse_end}
+Verse (Beginning [New]): {verse_new_beg}
+Verse (End [New]):\t {verse_new_end}"""
     )
 
     # Fetch text
     # Try passing a dictionary of values?
-    fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_new, user_number)
+    fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_new_beg, verse_new_end, user_number)
 
 ### Fetch text
-def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_new, user_number):
+def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_new_beg, verse_new_end, user_number):
     try:
         ## Local XML:
         # tree = ET.parse(bible)
@@ -280,6 +282,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_ne
     query_base = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']"
     try:
         # Book
+        payload = ""
         if (chapter is None):
             # Unsupported Bible Gateway translation(s)
             if (bible_trans == "nasu"):
@@ -288,7 +291,6 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_ne
             raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
         # Chapter
         elif (verse_beg is None):
-            payload = ""
             chapter = root.find(query_base)
             for verse in chapter.findall(".//VERS"):
                 verse_number = verse.attrib.get("vnumber")
@@ -308,14 +310,23 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_ne
         elif (verse_beg is not None):
             path = f"{query_base}/VERS[@vnumber='{verse_beg}']"
             text_element = root.find(path)
-            payload = text_element.text
-        # Verse (New)
-        # To-do: Verify verse_new != verse_beg || verse_end
-        # - Add intermediary "..."
-        if (verse_new):
-            path = f"{query_base}/VERS[@vnumber='{verse_new}']"
+            payload += text_element.text
+        # Verse (Range [New])
+        if (verse_new_end is not None):
+            if (int(verse_new_beg) > int(verse_new_end)):
+                raise_exception("Invalid range", user_number)
+            elif ((int(verse_end) - int(verse_beg)) <= 12):
+                payload += "...\n"
+                for verse_num in range(int(verse_new_beg), int(verse_new_end) + 1):
+                    text_element = root.find(f"{query_base}/VERS[@vnumber='{verse_num}']")
+                    payload += f"{verse_num} {text_element.text}\n"
+            else:
+                raise_exception(True, "Range request too large", user_number)
+        # Verse (Individual [New])
+        elif (verse_new_beg):
+            path = f"{query_base}/VERS[@vnumber='{verse_new_beg}']"
             text_element = root.find(path)
-            payload += f"{verse_new} {text_element.text}"
+            payload += f"...\n{verse_new_beg} {text_element.text}"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
@@ -339,4 +350,4 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_ne
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
