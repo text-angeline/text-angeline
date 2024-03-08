@@ -41,6 +41,7 @@ trans_dict = {
 ### Book dictionary
 book_dict = {
     # Controls
+    "start": "START",
     "help": "HELP",
     # Books
     "gen": "Genesis",
@@ -196,12 +197,13 @@ def raise_exception(is_error, text_content, user_number):
     else:
         payload = text_content
     print(f"Text:\n{payload}#")
-    send_message("SMS", payload, user_number)
+    if (text_content):
+        send_message("SMS", payload, user_number)
     raise Exception("Aborting")
 
 ### Init (Development)
 def init_dev():
-    dev_input = input("⫺ ")
+    dev_input = input(":: ")
     dev_number = config['dev_number']
     init(dev_input, dev_number)
 
@@ -235,8 +237,10 @@ def init(user_input, user_number):
     # Controls/Book
     try:
         if (book_num is None):
-            if (book_dict[book_title] == "HELP"):
-                raise_exception(False, "AngeLine\n\nThe text-messenger of God.\n\nLearn more: github.com/text-angeline", user_number)
+            if (book_dict[book_title] == "START"):
+                raise_exception(False, "", user_number)
+            elif (book_dict[book_title] == "HELP"):
+                raise_exception(False, "AngeLine\n\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\n⫺ Reply STOP to block.", user_number)
             else:
                 # Ex: "John"
                 book = book_dict[book_title]
@@ -311,7 +315,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, user_num
     # Cleanup extranneous whitespace/Psalm titles
     payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
     # Append "opt-out" prompt for compliance
-    payload += "\n\nReply STOP to block."
+    payload += "\n\n⫺ Reply STOP to block, or HELP for assistance."
 
     # Determine message type based on payload size
     payload_size = len(payload)
