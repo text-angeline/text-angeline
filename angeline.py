@@ -209,7 +209,7 @@ def init_dev():
 
 ### Init (Production)
 def init(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))(?:-(?P<verse_end>\d{1,3}))?(?:,(?P<verse_new_beg>\d{1,3}))?)(?:-(?P<verse_new_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?:,(?P<verse_new_beg>\d{1,3}))?)(?:-(?P<verse_new_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
     if (match):
@@ -310,7 +310,7 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_ne
         elif (verse_beg is not None):
             path = f"{query_base}/VERS[@vnumber='{verse_beg}']"
             text_element = root.find(path)
-            payload += text_element.text
+            payload += f"{verse_beg} {text_element.text}\n"
         # Verse (Range [New])
         if (verse_new_end is not None):
             if (int(verse_new_beg) > int(verse_new_end)):
