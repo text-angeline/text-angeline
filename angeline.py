@@ -41,8 +41,9 @@ trans_dict = {
 ### Book dictionary
 book_dict = {
     # Controls
-    "start": "START",
     "help": "HELP",
+    "start": "START",
+    "stop": "STOP",
     # Books
     "gen": "Genesis",
     "genesis": "Genesis",
@@ -209,7 +210,7 @@ def init_dev():
 
 ### Init (Production)
 def init(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<fir_verse_beg>\d{1,3}))?(?:-(?P<fir_verse_end>\d{1,3}))?(?:,(?P<sec_verse_beg>\d{1,3}))?)(?:-(?P<sec_verse_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?:[\.:](?P<fir_verse_beg>\d{1,3}))?(?:-(?P<fir_verse_end>\d{1,3}))?(?:,(?: )?(?P<sec_verse_beg>\d{1,3}))?)(?:-(?P<sec_verse_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
     if (match):
@@ -239,10 +240,12 @@ def init(user_input, user_number):
     # Controls/Book
     try:
         if (book_num is None):
-            if (book_dict[book_title] == "START"):
-                raise_exception(False, "", user_number)
-            elif (book_dict[book_title] == "HELP"):
+            if (book_dict[book_title] == "HELP"):
                 raise_exception(False, "AngeLine\n\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\n⫺ Reply STOP to block.", user_number)
+            elif (book_dict[book_title] == "START"):
+                raise_exception(False, "", user_number)
+            elif (book_dict[book_title] == "STOP"):
+                raise_exception(False, "", user_number)
             else:
                 # Ex: "John"
                 book = book_dict[book_title]
