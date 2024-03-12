@@ -210,16 +210,17 @@ def init_dev():
 
 ### Init (Production)
 def init(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?:[\.:](?P<fir_verse_beg>\d{1,3}))?(?:-(?P<fir_verse_end>\d{1,3}))?(?:,(?: )?(?P<sec_verse_beg>\d{1,3}))?)(?:-(?P<sec_verse_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<fir_chapter>\d{1,3}))?(?:(?:[\.:](?P<fir_verse_beg>\d{1,3}))?(?:-(?P<fir_verse_end>\d{1,3}))?(?:,(?: )?((?P<sec_chapter>\d{1,3})(?:[\.:]))?(?P<sec_verse_beg>\d{1,3}))?)(?:-(?P<sec_verse_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
     if (match):
         try:
             book_num = match.group("book_num")
             book_title = match.group("book_title")
-            chapter = match.group("chapter")
+            fir_chapter = match.group("fir_chapter")
             fir_verse_beg = match.group("fir_verse_beg")
             fir_verse_end = match.group("fir_verse_end")
+            sec_chapter = match.group("sec_chapter")
             sec_verse_beg = match.group("sec_verse_beg")
             sec_verse_end = match.group("sec_verse_end")
             bible_trans = match.group("bible_trans")
@@ -259,19 +260,20 @@ def init(user_input, user_number):
     print(
         f"""Translation:\t\t {bible_trans.upper()}
 Book:\t\t\t {book}
-Chapter:\t\t {chapter}
+Chapter (First):\t {fir_chapter}
 Verse (First Beg.):\t {fir_verse_beg}
-Verse (First End):\t\t {fir_verse_end}
-Verse (Second Beg.): {sec_verse_beg}
+Verse (First End):\t {fir_verse_end}
+Chapter (Second):\t {sec_chapter}
+Verse (Second Beg.):\t {sec_verse_beg}
 Verse (Second End):\t {sec_verse_end}"""
     )
 
     # Fetch text
     # Try passing a dictionary of values?
-    fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, sec_verse_beg, sec_verse_end, user_number)
+    fetch_text(bible, bible_trans, book, fir_chapter, fir_verse_beg, fir_verse_end, sec_chapter, sec_verse_beg, sec_verse_end, user_number)
 
 ### Fetch text
-def fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, sec_verse_beg, sec_verse_end, user_number):
+def fetch_text(bible, bible_trans, book, fir_chapter, fir_verse_beg, fir_verse_end, sec_chapter, sec_verse_beg, sec_verse_end, user_number):
     try:
         ## Local XML:
         # tree = ET.parse(bible)
@@ -282,25 +284,25 @@ def fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, 
     except Exception:
         raise_exception(True, "Couldn't fetch text", user_number)
 
-    query_base = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter}']"
+    base_query = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{fir_chapter}']"
     try:
         # Book
         payload = ""
-        if (chapter is None):
+        if (fir_chapter is None):
             # Unsupported Bible Gateway translation(s)
             if (bible_trans == "nasu"):
                 bible_trans = "nasb"
             book_url = f"https://www.biblegateway.com/passage/?search={book}%201&version={bible_trans.upper()}".replace(' ', "%20")
             raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
-        # Chapter
+        # Chapter (First)
         elif (fir_verse_beg is None):
-            chapter = root.find(query_base)
+            chapter = root.find(base_query)
             for verse in chapter.findall(".//VERS"):
                 verse_number = verse.attrib.get("vnumber")
                 payload += f"{verse_number} {verse.text}\n"
         # Verse (First individual)
         elif (fir_verse_end is None):
-            path = f"{query_base}/VERS[@vnumber='{fir_verse_beg}']"
+            path = f"{base_query}/VERS[@vnumber='{fir_verse_beg}']"
             text_element = root.find(path)
             payload += f"{fir_verse_beg} {text_element.text}\n"
         # Verse (First range)
@@ -310,13 +312,16 @@ def fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, 
             elif ((int(fir_verse_end) - int(fir_verse_beg)) <= 12):
                 payload = ""
                 for verse_num in range(int(fir_verse_beg), int(fir_verse_end) + 1):
-                    text_element = root.find(f"{query_base}/VERS[@vnumber='{verse_num}']")
+                    text_element = root.find(f"{base_query}/VERS[@vnumber='{verse_num}']")
                     payload += f"{verse_num} {text_element.text}\n"
             else:
                 raise_exception(True, "Range request too large", user_number)
+        # Chapter (Second)
+        if (sec_chapter):
+            base_query = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{sec_chapter}']"
         # Verse (Second individual)
         if (sec_verse_beg and sec_verse_end is None):
-            path = f"{query_base}/VERS[@vnumber='{sec_verse_beg}']"
+            path = f"{base_query}/VERS[@vnumber='{sec_verse_beg}']"
             text_element = root.find(path)
             payload += f"...\n{sec_verse_beg} {text_element.text}"
         # Verse (Second range)
@@ -326,7 +331,7 @@ def fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, 
             elif ((int(sec_verse_end) - int(sec_verse_beg)) <= 12):
                 payload += "...\n"
                 for verse_num in range(int(sec_verse_beg), int(sec_verse_end) + 1):
-                    text_element = root.find(f"{query_base}/VERS[@vnumber='{verse_num}']")
+                    text_element = root.find(f"{base_query}/VERS[@vnumber='{verse_num}']")
                     payload += f"{verse_num} {text_element.text}\n"
             else:
                 raise_exception(True, "Range request too large", user_number)
