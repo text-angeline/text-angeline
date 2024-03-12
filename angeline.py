@@ -203,13 +203,13 @@ def raise_exception(is_error, text_content, user_number):
 
 ### Init (Development)
 def init_dev():
-    dev_input = input(":: ")
+    dev_input = input("dev_input: ")
     dev_number = config['dev_number']
     init(dev_input, dev_number)
 
 ### Init (Production)
 def init(user_input, user_number):
-    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<verse_beg>\d{1,3}))?(?:-(?P<verse_end>\d{1,3}))?(?:,(?P<verse_new_beg>\d{1,3}))?)(?:-(?P<verse_new_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
+    pattern = r"^(((?P<book_num>[1-9])(?: )?)?(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)(?: (?P<chapter>\d{1,3}))?(?:(?::(?P<fir_verse_beg>\d{1,3}))?(?:-(?P<fir_verse_end>\d{1,3}))?(?:,(?P<sec_verse_beg>\d{1,3}))?)(?:-(?P<sec_verse_end>\d{1,3}))?(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?)$"
     cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
     match = re.match(pattern, cleaned_user_input)
     if (match):
@@ -217,10 +217,10 @@ def init(user_input, user_number):
             book_num = match.group("book_num")
             book_title = match.group("book_title")
             chapter = match.group("chapter")
-            verse_beg = match.group("verse_beg")
-            verse_end = match.group("verse_end")
-            verse_new_beg = match.group("verse_new_beg")
-            verse_new_end = match.group("verse_new_end")
+            fir_verse_beg = match.group("fir_verse_beg")
+            fir_verse_end = match.group("fir_verse_end")
+            sec_verse_beg = match.group("sec_verse_beg")
+            sec_verse_end = match.group("sec_verse_end")
             bible_trans = match.group("bible_trans")
         except AttributeError:
             raise_exception(True, "Couldn't parse request", user_number)
@@ -257,18 +257,18 @@ def init(user_input, user_number):
         f"""Translation:\t\t {bible_trans.upper()}
 Book:\t\t\t {book}
 Chapter:\t\t {chapter}
-Verse (Beginning):\t {verse_beg}
-Verse (Ending):\t\t {verse_end}
-Verse (Beginning [New]): {verse_new_beg}
-Verse (End [New]):\t {verse_new_end}"""
+Verse (Beginning):\t {fir_verse_beg}
+Verse (Ending):\t\t {fir_verse_end}
+Verse (Beginning [New]): {sec_verse_beg}
+Verse (End [New]):\t {sec_verse_end}"""
     )
 
     # Fetch text
     # Try passing a dictionary of values?
-    fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_new_beg, verse_new_end, user_number)
+    fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, sec_verse_beg, sec_verse_end, user_number)
 
 ### Fetch text
-def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_new_beg, verse_new_end, user_number):
+def fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, sec_verse_beg, sec_verse_end, user_number):
     try:
         ## Local XML:
         # tree = ET.parse(bible)
@@ -290,43 +290,43 @@ def fetch_text(bible, bible_trans, book, chapter, verse_beg, verse_end, verse_ne
             book_url = f"https://www.biblegateway.com/passage/?search={book}%201&version={bible_trans.upper()}".replace(' ', "%20")
             raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
         # Chapter
-        elif (verse_beg is None):
+        elif (fir_verse_beg is None):
             chapter = root.find(query_base)
             for verse in chapter.findall(".//VERS"):
                 verse_number = verse.attrib.get("vnumber")
                 payload += f"{verse_number} {verse.text}\n"
         # Verse (Range)
-        elif (verse_end is not None):
-            if (int(verse_beg) > int(verse_end)):
-                raise_exception("Invalid range", user_number)
-            elif ((int(verse_end) - int(verse_beg)) <= 12):
+        elif (fir_verse_end is not None):
+            if (int(fir_verse_beg) > int(fir_verse_end)):
+                raise_exception(True, "Invalid range", user_number)
+            elif ((int(fir_verse_end) - int(fir_verse_beg)) <= 12):
                 payload = ""
-                for verse_num in range(int(verse_beg), int(verse_end) + 1):
+                for verse_num in range(int(fir_verse_beg), int(fir_verse_end) + 1):
                     text_element = root.find(f"{query_base}/VERS[@vnumber='{verse_num}']")
                     payload += f"{verse_num} {text_element.text}\n"
             else:
                 raise_exception(True, "Range request too large", user_number)
         # Verse (Individual)
-        elif (verse_beg is not None):
-            path = f"{query_base}/VERS[@vnumber='{verse_beg}']"
+        elif (fir_verse_beg is not None):
+            path = f"{query_base}/VERS[@vnumber='{fir_verse_beg}']"
             text_element = root.find(path)
-            payload += f"{verse_beg} {text_element.text}\n"
+            payload += f"{fir_verse_beg} {text_element.text}\n"
         # Verse (Range [New])
-        if (verse_new_end is not None):
-            if (int(verse_new_beg) > int(verse_new_end)):
-                raise_exception("Invalid range", user_number)
-            elif ((int(verse_end) - int(verse_beg)) <= 12):
+        if (sec_verse_end is not None):
+            if (int(sec_verse_beg) > int(sec_verse_end)):
+                raise_exception(True, "Invalid range", user_number)
+            elif ((int(sec_verse_end) - int(sec_verse_beg)) <= 12):
                 payload += "...\n"
-                for verse_num in range(int(verse_new_beg), int(verse_new_end) + 1):
+                for verse_num in range(int(sec_verse_beg), int(sec_verse_end) + 1):
                     text_element = root.find(f"{query_base}/VERS[@vnumber='{verse_num}']")
                     payload += f"{verse_num} {text_element.text}\n"
             else:
                 raise_exception(True, "Range request too large", user_number)
         # Verse (Individual [New])
-        elif (verse_new_beg):
-            path = f"{query_base}/VERS[@vnumber='{verse_new_beg}']"
+        elif (sec_verse_beg):
+            path = f"{query_base}/VERS[@vnumber='{sec_verse_beg}']"
             text_element = root.find(path)
-            payload += f"...\n{verse_new_beg} {text_element.text}"
+            payload += f"...\n{sec_verse_beg} {text_element.text}"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
