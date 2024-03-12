@@ -260,10 +260,10 @@ def init(user_input, user_number):
         f"""Translation:\t\t {bible_trans.upper()}
 Book:\t\t\t {book}
 Chapter:\t\t {chapter}
-Verse (Beginning):\t {fir_verse_beg}
-Verse (Ending):\t\t {fir_verse_end}
-Verse (Beginning [New]): {sec_verse_beg}
-Verse (End [New]):\t {sec_verse_end}"""
+Verse (First Beg.):\t {fir_verse_beg}
+Verse (First End):\t\t {fir_verse_end}
+Verse (Second Beg.): {sec_verse_beg}
+Verse (Second End):\t {sec_verse_end}"""
     )
 
     # Fetch text
