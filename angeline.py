@@ -191,7 +191,7 @@ def send_message(protocol, payload, user_number):
         type_=protocol
     )
 
-### Throw error message
+### Raise exception
 def raise_exception(is_error, text_content, user_number):
     if (is_error):
         payload = f"Error: {text_content}. Please try again."
@@ -298,7 +298,12 @@ def fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, 
             for verse in chapter.findall(".//VERS"):
                 verse_number = verse.attrib.get("vnumber")
                 payload += f"{verse_number} {verse.text}\n"
-        # Verse (Range)
+        # Verse (First individual)
+        elif (fir_verse_end is None):
+            path = f"{query_base}/VERS[@vnumber='{fir_verse_beg}']"
+            text_element = root.find(path)
+            payload += f"{fir_verse_beg} {text_element.text}\n"
+        # Verse (First range)
         elif (fir_verse_end is not None):
             if (int(fir_verse_beg) > int(fir_verse_end)):
                 raise_exception(True, "Invalid range", user_number)
@@ -309,13 +314,13 @@ def fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, 
                     payload += f"{verse_num} {text_element.text}\n"
             else:
                 raise_exception(True, "Range request too large", user_number)
-        # Verse (Individual)
-        elif (fir_verse_beg is not None):
-            path = f"{query_base}/VERS[@vnumber='{fir_verse_beg}']"
+        # Verse (Second individual)
+        if (sec_verse_beg and sec_verse_end is None):
+            path = f"{query_base}/VERS[@vnumber='{sec_verse_beg}']"
             text_element = root.find(path)
-            payload += f"{fir_verse_beg} {text_element.text}\n"
-        # Verse (Range [New])
-        if (sec_verse_end is not None):
+            payload += f"...\n{sec_verse_beg} {text_element.text}"
+        # Verse (Second range)
+        elif (sec_verse_end is not None):
             if (int(sec_verse_beg) > int(sec_verse_end)):
                 raise_exception(True, "Invalid range", user_number)
             elif ((int(sec_verse_end) - int(sec_verse_beg)) <= 12):
@@ -325,11 +330,6 @@ def fetch_text(bible, bible_trans, book, chapter, fir_verse_beg, fir_verse_end, 
                     payload += f"{verse_num} {text_element.text}\n"
             else:
                 raise_exception(True, "Range request too large", user_number)
-        # Verse (Individual [New])
-        elif (sec_verse_beg):
-            path = f"{query_base}/VERS[@vnumber='{sec_verse_beg}']"
-            text_element = root.find(path)
-            payload += f"...\n{sec_verse_beg} {text_element.text}"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
