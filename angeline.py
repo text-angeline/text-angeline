@@ -1,5 +1,8 @@
 ### "What hath God wrought"
 
+## To-do:
+# - Implement QR Code generator for presentations
+
 import re
 import json
 import telnyx
@@ -214,7 +217,7 @@ def init(user_input, user_number):
         r"^(" +
             r"((?P<book_num>[1-9])(?: )?)?" +
             r"(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)" +
-            r"(?: (?P<fir_chapter>\d{1,3}))?" +
+            r"(?: (?P<fchp>\d{1,3}))?" +
 
             r"(?:[\.:](?P<fchp_fver_beg>\d{1,3}))?" +
             r"(?:-(?P<fchp_fver_end>\d{1,3}))?" +
@@ -223,7 +226,7 @@ def init(user_input, user_number):
             r"(?:,(?: )?(?P<fchp_tver_beg>\d{1,3}))?" +
             r"(?:-(?P<fchp_tver_end>\d{1,3}))?" +
 
-            r"((?:;)(?: )?(?P<sec_chapter>\d{1,3})(?:[\.:])?)?" +
+            r"((?:;)(?: )?(?P<schp>\d{1,3})(?:[\.:])?)?" +
 
             r"(?:[\.:](?P<schp_fver_beg>\d{1,3}))?" +
             r"(?:-(?P<schp_fver_end>\d{1,3}))?" +
@@ -232,7 +235,7 @@ def init(user_input, user_number):
             r"(?:,(?: )?(?P<schp_tver_beg>\d{1,3}))?" +
             r"(?:-(?P<schp_tver_end>\d{1,3}))?" +
 
-            r"((?:;)(?: )?(?P<thr_chapter>\d{1,3})(?:[\.:])?)?" +
+            r"((?:;)(?: )?(?P<tchp>\d{1,3})(?:[\.:])?)?" +
 
             r"(?:[\.:](?P<tchp_fver_beg>\d{1,3}))?" +
             r"(?:-(?P<tchp_fver_end>\d{1,3}))?" +
@@ -252,7 +255,7 @@ def init(user_input, user_number):
             book_num = match.group("book_num")
             book_title = match.group("book_title")
 
-            fir_chapter = match.group("fir_chapter")
+            fchp = match.group("fchp")
 
             fchp_fver_beg = match.group("fchp_fver_beg")
             fchp_fver_end = match.group("fchp_fver_end")
@@ -261,7 +264,7 @@ def init(user_input, user_number):
             fchp_tver_beg = match.group("fchp_tver_beg")
             fchp_tver_end = match.group("fchp_tver_end")
 
-            sec_chapter = match.group("sec_chapter")
+            schp = match.group("schp")
 
             schp_fver_beg = match.group("schp_fver_beg")
             schp_fver_end = match.group("schp_fver_end")
@@ -270,7 +273,7 @@ def init(user_input, user_number):
             schp_tver_beg = match.group("schp_tver_beg")
             schp_tver_end = match.group("schp_tver_end")
 
-            thr_chapter = match.group("thr_chapter")
+            tchp = match.group("tchp")
 
             tchp_fver_beg = match.group("tchp_fver_beg")
             tchp_fver_end = match.group("tchp_fver_end")
@@ -314,50 +317,41 @@ def init(user_input, user_number):
 
     # Output (System)
     print(
-        f"""Book:\t\t\t {book}
-Chapter (First):\t {fir_chapter}
-- Verse (First Beg.):\t {fchp_fver_beg}
- - Verse (First End):\t {fchp_fver_end}
-- Verse (Second Beg.):\t {fchp_sver_beg}
- - Verse (Second End):\t {fchp_sver_end}
-- Verse (Third Beg.):\t {fchp_tver_beg}
- - Verse (Third End):\t {fchp_tver_end}
-Chapter (Second):\t {sec_chapter}
-- Verse (First Beg.):\t {schp_fver_beg}
- - Verse (First End):\t {schp_fver_end}
-- Verse (Second Beg.):\t {schp_sver_beg}
- - Verse (Second End):\t {schp_sver_end}
-- Verse (Third Beg.):\t {schp_tver_beg}
- - Verse (Third End):\t {schp_tver_end}
-Chapter (Third):\t {thr_chapter}
-- Verse (First Beg.):\t {tchp_fver_beg}
- - Verse (First End):\t {tchp_fver_end}
-- Verse (Second Beg.):\t {tchp_sver_beg}
- - Verse (Second End):\t {tchp_sver_end}
-- Verse (Third Beg.):\t {tchp_tver_beg}
- - Verse (Third End):\t {tchp_tver_end}
-Translation:\t\t {bible_trans.upper()}"""
+        f"""Book:\t\t {book}
+Chapter:\t {fchp}
+| Verse(s):\t {fchp_fver_beg}-{fchp_fver_end},
+\t\t {fchp_sver_beg}-{fchp_sver_end},
+\t\t {fchp_tver_beg}-{fchp_tver_end}
+Chapter:\t {schp}
+| Verse(s):\t {schp_fver_beg}-{schp_fver_end},
+\t\t {schp_sver_beg}-{schp_sver_end},
+\t\t {schp_tver_beg}-{schp_tver_end}
+Chapter:\t {tchp}
+| Verse(s):\t {tchp_fver_beg}-{tchp_fver_end},
+\t\t {tchp_sver_beg}-{tchp_sver_end},
+\t\t {tchp_tver_beg}-{tchp_tver_end}
+Translation:\t {bible_trans.upper()}"""
     )
 
     fetch_dict = {
         "bible": bible,
         "bible_trans": bible_trans,
         "book": book,
-        "fir_chapter": fir_chapter,
+        "fchp": fchp,
         "fchp_fver_beg": fchp_fver_beg,
         "fchp_fver_end": fchp_fver_end,
         "fchp_sver_beg": fchp_sver_beg,
         "fchp_sver_end": fchp_sver_end,
         "fchp_tver_beg": fchp_tver_beg,
         "fchp_tver_end": fchp_tver_end,
-        "sec_chapter": sec_chapter,
+        "schp": schp,
         "schp_fver_beg": schp_fver_beg,
         "schp_fver_end": schp_fver_end,
         "schp_sver_beg": schp_sver_beg,
         "schp_sver_end": schp_sver_end,
         "schp_tver_beg": schp_tver_beg,
         "schp_tver_end": schp_tver_end,
-        "thr_chapter": thr_chapter,
+        "tchp": tchp,
         "tchp_fver_beg": tchp_fver_beg,
         "tchp_fver_end": tchp_fver_end,
         "tchp_sver_beg": tchp_sver_beg,
@@ -382,57 +376,59 @@ def fetch_text(fetch_dict, user_number):
     except Exception:
         raise_exception(True, "Couldn't fetch text", user_number)
 
-    base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['fir_chapter']}']"
+    base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['fchp']}']"
     try:
         # Book
         payload = ""
-        if (fetch_dict["fir_chapter"] is None):
+        request_order = ['f', 's', 't']
+        if (fetch_dict["fchp"] is None):
             # Unsupported Bible Gateway translation(s)
             if (fetch_dict["bible_trans"] == "nasu"):
                 bible_trans = "nasb"
             book_url = f"https://www.biblegateway.com/passage/?search={fetch_dict['book']}%201&version={fetch_dict['bible_trans'].upper()}".replace(' ', "%20")
             raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
-        # Chapter (First)
-        elif (fetch_dict["fchp_fver_beg"] is None):
+
+        # Chapter
+        if (fetch_dict["fchp"] and fetch_dict["fchp_fver_beg"] is None):
             chapter = root.find(base_query)
             for verse in chapter.findall(".//VERS"):
-                verse_number = verse.attrib.get("vnumber")
-                payload += f"{verse_number} {verse.text}\n"
-        # Verse (First individual)
-        elif (fetch_dict["fchp_fver_end"] is None):
-            path = f"{base_query}/VERS[@vnumber='{fetch_dict['fchp_fver_beg']}']"
-            text_element = root.find(path)
-            payload += f"{fetch_dict['fchp_fver_beg']} {text_element.text}\n"
-        # Verse (First range)
-        elif (fetch_dict["fchp_fver_end"] is not None):
-            if (int(fetch_dict["fchp_fver_beg"]) > int(fetch_dict["fchp_fver_end"])):
-                raise_exception(True, "Invalid range", user_number)
-            elif ((int(fetch_dict["fchp_fver_end"]) - int(fetch_dict["fchp_fver_beg"])) <= 12):
-                payload = ""
-                for verse_num in range(int(fetch_dict["fchp_fver_beg"]), int(fetch_dict["fchp_fver_end"]) + 1):
-                    text_element = root.find(f"{base_query}/VERS[@vnumber='{verse_num}']")
-                    payload += f"{verse_num} {text_element.text}\n"
-            else:
-                raise_exception(True, "Range request too large", user_number)
-        # Chapter (Second)
-        if (fetch_dict["sec_chapter"]):
-            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['sec_chapter']}']"
-        # Verse (Second individual)
-        if (fetch_dict["fchp_sver_beg"] and fetch_dict["fchp_sver_end"] is None):
-            path = f"{base_query}/VERS[@vnumber='{fetch_dict['fchp_sver_beg']}']"
-            text_element = root.find(path)
-            payload += f"...\n{fetch_dict['fchp_sver_beg']} {text_element.text}"
-        # Verse (Second range)
-        elif (fetch_dict["fchp_sver_end"] is not None):
-            if (int(fetch_dict["fchp_sver_beg"]) > int(fetch_dict["fchp_sver_end"])):
-                raise_exception(True, "Invalid range", user_number)
-            elif ((int(fetch_dict["fchp_sver_end"]) - int(fetch_dict["fchp_sver_beg"])) <= 12):
-                payload += "...\n"
-                for verse_num in range(int(fetch_dict["fchp_sver_beg"]), int(fetch_dict["fchp_sver_end"]) + 1):
-                    text_element = root.find(f"{base_query}/VERS[@vnumber='{verse_num}']")
-                    payload += f"{verse_num} {text_element.text}\n"
-            else:
-                raise_exception(True, "Range request too large", user_number)
+                vnumber = verse.attrib.get("vnumber")
+                payload += f"{vnumber} {verse.text}\n"
+
+
+        # Verse(s)
+        for corder in request_order:
+            sep_chp = False
+            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{corder}chp']}']"
+            for vorder in request_order:
+                is_new = False
+                if (vorder != 'f'):
+                    is_new = True
+                if (fetch_dict[f"{corder}chp_{vorder}ver_beg"]):
+                    # Individual
+                    if (fetch_dict[f"{corder}chp_{vorder}ver_end"] is None):
+                        vnumber = fetch_dict[f"{corder}chp_{vorder}ver_beg"]
+                        verse = root.find(f"{base_query}/VERS[@vnumber='{vnumber}']") 
+                        if (is_new):
+                            payload += "...\n"
+                        payload += f"{vnumber} {verse.text}\n"
+                    # Range
+                    if (fetch_dict[f"{corder}chp_{vorder}ver_end"] is not None):
+                        vnumber_beg = int(fetch_dict[f"{corder}chp_{vorder}ver_beg"])
+                        vnumber_end = int(fetch_dict[f"{corder}chp_{vorder}ver_end"])
+                        if (vnumber_beg > vnumber_end):
+                            raise_exception(True, "Invalid range", user_number)
+                        elif ((vnumber_end - vnumber_beg) <= 12):
+                            if (is_new):
+                                payload += "...\n"
+                            for vnumber in range(vnumber_beg, (vnumber_end + 1)):
+                                verse = root.find(f"{base_query}/VERS[@vnumber='{vnumber}']")
+                                payload += f"{vnumber} {verse.text}\n"
+                        else:
+                            raise_exception(True, "Range request too large", user_number)
+            # To-do: Prevent this from printing if there's only one chapter request
+            if (fetch_dict[f"{corder}chp"]):
+                payload += "\n---\n\n"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
