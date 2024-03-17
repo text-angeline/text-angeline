@@ -217,32 +217,32 @@ def init(user_input, user_number):
         r"^(" +
             r"((?P<book_num>[1-9])(?: )?)?" +
             r"(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)" +
-            r"(?: (?P<fchp>\d{1,3}))?" +
+            r"(?: (?P<Fchp>\d{1,3}))?" +
 
-            r"(?:[\.:](?P<fchp_fver_beg>\d{1,3}))?" +
-            r"(?:-(?P<fchp_fver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<fchp_sver_beg>\d{1,3}))?" +
-            r"(?:-(?P<fchp_sver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<fchp_tver_beg>\d{1,3}))?" +
-            r"(?:-(?P<fchp_tver_end>\d{1,3}))?" +
+            r"(?:[\.:](?P<Fchp_Fver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Fchp_Fver_end>\d{1,3}))?" +
+            r"(?:,(?: )?(?P<Fchp_Sver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Fchp_Sver_end>\d{1,3}))?" +
+            r"(?:,(?: )?(?P<Fchp_Tver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Fchp_Tver_end>\d{1,3}))?" +
 
-            r"((?:;)(?: )?(?P<schp>\d{1,3})(?:[\.:])?)?" +
+            r"((?:;)(?: )?(?P<Schp>\d{1,3})(?:[\.:])?)?" +
 
-            r"(?:[\.:](?P<schp_fver_beg>\d{1,3}))?" +
-            r"(?:-(?P<schp_fver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<schp_sver_beg>\d{1,3}))?" +
-            r"(?:-(?P<schp_sver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<schp_tver_beg>\d{1,3}))?" +
-            r"(?:-(?P<schp_tver_end>\d{1,3}))?" +
+            r"(?:[\.:](?P<Schp_Fver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Schp_Fver_end>\d{1,3}))?" +
+            r"(?:,(?: )?(?P<Schp_Sver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Schp_Sver_end>\d{1,3}))?" +
+            r"(?:,(?: )?(?P<Schp_Tver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Schp_Tver_end>\d{1,3}))?" +
 
-            r"((?:;)(?: )?(?P<tchp>\d{1,3})(?:[\.:])?)?" +
+            r"((?:;)(?: )?(?P<Tchp>\d{1,3})(?:[\.:])?)?" +
 
-            r"(?:[\.:](?P<tchp_fver_beg>\d{1,3}))?" +
-            r"(?:-(?P<tchp_fver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<tchp_sver_beg>\d{1,3}))?" +
-            r"(?:-(?P<tchp_sver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<tchp_tver_beg>\d{1,3}))?" +
-            r"(?:-(?P<tchp_tver_end>\d{1,3}))?" +
+            r"(?:[\.:](?P<Tchp_Fver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Tchp_Fver_end>\d{1,3}))?" +
+            r"(?:,(?: )?(?P<Tchp_Sver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Tchp_Sver_end>\d{1,3}))?" +
+            r"(?:,(?: )?(?P<Tchp_Tver_beg>\d{1,3}))?" +
+            r"(?:-(?P<Tchp_Tver_end>\d{1,3}))?" +
 
             r"(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?" +
         r")$"
@@ -255,32 +255,32 @@ def init(user_input, user_number):
             book_num = match.group("book_num")
             book_title = match.group("book_title")
 
-            fchp = match.group("fchp")
+            Fchp = match.group("Fchp")
 
-            fchp_fver_beg = match.group("fchp_fver_beg")
-            fchp_fver_end = match.group("fchp_fver_end")
-            fchp_sver_beg = match.group("fchp_sver_beg")
-            fchp_sver_end = match.group("fchp_sver_end")
-            fchp_tver_beg = match.group("fchp_tver_beg")
-            fchp_tver_end = match.group("fchp_tver_end")
+            Fchp_Fver_beg = match.group("Fchp_Fver_beg")
+            Fchp_Fver_end = match.group("Fchp_Fver_end")
+            Fchp_Sver_beg = match.group("Fchp_Sver_beg")
+            Fchp_Sver_end = match.group("Fchp_Sver_end")
+            Fchp_Tver_beg = match.group("Fchp_Tver_beg")
+            Fchp_Tver_end = match.group("Fchp_Tver_end")
 
-            schp = match.group("schp")
+            Schp = match.group("Schp")
 
-            schp_fver_beg = match.group("schp_fver_beg")
-            schp_fver_end = match.group("schp_fver_end")
-            schp_sver_beg = match.group("schp_sver_beg")
-            schp_sver_end = match.group("schp_sver_end")
-            schp_tver_beg = match.group("schp_tver_beg")
-            schp_tver_end = match.group("schp_tver_end")
+            Schp_Fver_beg = match.group("Schp_Fver_beg")
+            Schp_Fver_end = match.group("Schp_Fver_end")
+            Schp_Sver_beg = match.group("Schp_Sver_beg")
+            Schp_Sver_end = match.group("Schp_Sver_end")
+            Schp_Tver_beg = match.group("Schp_Tver_beg")
+            Schp_Tver_end = match.group("Schp_Tver_end")
 
-            tchp = match.group("tchp")
+            Tchp = match.group("Tchp")
 
-            tchp_fver_beg = match.group("tchp_fver_beg")
-            tchp_fver_end = match.group("tchp_fver_end")
-            tchp_sver_beg = match.group("tchp_sver_beg")
-            tchp_sver_end = match.group("tchp_sver_end")
-            tchp_tver_beg = match.group("tchp_tver_beg")
-            tchp_tver_end = match.group("tchp_tver_end")
+            Tchp_Fver_beg = match.group("Tchp_Fver_beg")
+            Tchp_Fver_end = match.group("Tchp_Fver_end")
+            Tchp_Sver_beg = match.group("Tchp_Sver_beg")
+            Tchp_Sver_end = match.group("Tchp_Sver_end")
+            Tchp_Tver_beg = match.group("Tchp_Tver_beg")
+            Tchp_Tver_end = match.group("Tchp_Tver_end")
 
             bible_trans = match.group("bible_trans")
         except AttributeError:
@@ -318,18 +318,18 @@ def init(user_input, user_number):
     # Output (System)
     print(
         f"""Book:\t\t {book}
-Chapter:\t {fchp}
-| Verse(s):\t {fchp_fver_beg}-{fchp_fver_end},
-\t\t {fchp_sver_beg}-{fchp_sver_end},
-\t\t {fchp_tver_beg}-{fchp_tver_end}
-Chapter:\t {schp}
-| Verse(s):\t {schp_fver_beg}-{schp_fver_end},
-\t\t {schp_sver_beg}-{schp_sver_end},
-\t\t {schp_tver_beg}-{schp_tver_end}
-Chapter:\t {tchp}
-| Verse(s):\t {tchp_fver_beg}-{tchp_fver_end},
-\t\t {tchp_sver_beg}-{tchp_sver_end},
-\t\t {tchp_tver_beg}-{tchp_tver_end}
+Chapter:\t {Fchp}
+| Verse(s):\t {Fchp_Fver_beg}-{Fchp_Fver_end},
+\t\t {Fchp_Sver_beg}-{Fchp_Sver_end},
+\t\t {Fchp_Tver_beg}-{Fchp_Tver_end}
+Chapter:\t {Schp}
+| Verse(s):\t {Schp_Fver_beg}-{Schp_Fver_end},
+\t\t {Schp_Sver_beg}-{Schp_Sver_end},
+\t\t {Schp_Tver_beg}-{Schp_Tver_end}
+Chapter:\t {Tchp}
+| Verse(s):\t {Tchp_Fver_beg}-{Tchp_Fver_end},
+\t\t {Tchp_Sver_beg}-{Tchp_Sver_end},
+\t\t {Tchp_Tver_beg}-{Tchp_Tver_end}
 Translation:\t {bible_trans.upper()}"""
     )
 
@@ -337,27 +337,31 @@ Translation:\t {bible_trans.upper()}"""
         "bible": bible,
         "bible_trans": bible_trans,
         "book": book,
-        "fchp": fchp,
-        "fchp_fver_beg": fchp_fver_beg,
-        "fchp_fver_end": fchp_fver_end,
-        "fchp_sver_beg": fchp_sver_beg,
-        "fchp_sver_end": fchp_sver_end,
-        "fchp_tver_beg": fchp_tver_beg,
-        "fchp_tver_end": fchp_tver_end,
-        "schp": schp,
-        "schp_fver_beg": schp_fver_beg,
-        "schp_fver_end": schp_fver_end,
-        "schp_sver_beg": schp_sver_beg,
-        "schp_sver_end": schp_sver_end,
-        "schp_tver_beg": schp_tver_beg,
-        "schp_tver_end": schp_tver_end,
-        "tchp": tchp,
-        "tchp_fver_beg": tchp_fver_beg,
-        "tchp_fver_end": tchp_fver_end,
-        "tchp_sver_beg": tchp_sver_beg,
-        "tchp_sver_end": tchp_sver_end,
-        "tchp_tver_beg": tchp_tver_beg,
-        "tchp_tver_end": tchp_tver_end,
+        
+        "Fchp": Fchp,
+        "Fchp_Fver_beg": Fchp_Fver_beg,
+        "Fchp_Fver_end": Fchp_Fver_end,
+        "Fchp_Sver_beg": Fchp_Sver_beg,
+        "Fchp_Sver_end": Fchp_Sver_end,
+        "Fchp_Tver_beg": Fchp_Tver_beg,
+        "Fchp_Tver_end": Fchp_Tver_end,
+        
+        "Schp": Schp,
+        "Schp_Fver_beg": Schp_Fver_beg,
+        "Schp_Fver_end": Schp_Fver_end,
+        "Schp_Sver_beg": Schp_Sver_beg,
+        "Schp_Sver_end": Schp_Sver_end,
+        "Schp_Tver_beg": Schp_Tver_beg,
+        "Schp_Tver_end": Schp_Tver_end,
+        
+        "Tchp": Tchp,
+        "Tchp_Fver_beg": Tchp_Fver_beg,
+        "Tchp_Fver_end": Tchp_Fver_end,
+        "Tchp_Sver_beg": Tchp_Sver_beg,
+        "Tchp_Sver_end": Tchp_Sver_end,
+        "Tchp_Tver_beg": Tchp_Tver_beg,
+        "Tchp_Tver_end": Tchp_Tver_end,
+        
         "bible_trans": bible_trans
     }
 
@@ -376,12 +380,12 @@ def fetch_text(fetch_dict, user_number):
     except Exception:
         raise_exception(True, "Couldn't fetch text", user_number)
 
-    base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['fchp']}']"
+    base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fchp']}']"
     try:
         # Book
         payload = ""
-        request_order = ['f', 's', 't']
-        if (fetch_dict["fchp"] is None):
+        request_order = ['F', 'S', 'T']
+        if (fetch_dict["Fchp"] is None):
             # Unsupported Bible Gateway translation(s)
             if (fetch_dict["bible_trans"] == "nasu"):
                 bible_trans = "nasb"
@@ -389,20 +393,18 @@ def fetch_text(fetch_dict, user_number):
             raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
 
         # Chapter
-        if (fetch_dict["fchp"] and fetch_dict["fchp_fver_beg"] is None):
+        if (fetch_dict["Fchp"] and fetch_dict["Fchp_Fver_beg"] is None):
             chapter = root.find(base_query)
             for verse in chapter.findall(".//VERS"):
                 vnumber = verse.attrib.get("vnumber")
                 payload += f"{vnumber} {verse.text}\n"
 
-
         # Verse(s)
         for corder in request_order:
-            sep_chp = False
             base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{corder}chp']}']"
             for vorder in request_order:
                 is_new = False
-                if (vorder != 'f'):
+                if (vorder != 'F'):
                     is_new = True
                 if (fetch_dict[f"{corder}chp_{vorder}ver_beg"]):
                     # Individual
@@ -426,9 +428,8 @@ def fetch_text(fetch_dict, user_number):
                                 payload += f"{vnumber} {verse.text}\n"
                         else:
                             raise_exception(True, "Range request too large", user_number)
-            # To-do: Prevent this from printing if there's only one chapter request
-            if (fetch_dict[f"{corder}chp"]):
-                payload += "\n---\n\n"
+            if (fetch_dict[f'{corder}chp'] is not None):
+                payload += "\n⸻\n\n"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
