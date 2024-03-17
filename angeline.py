@@ -431,25 +431,26 @@ def fetch_text(fetch_dict, user_number):
                         else:
                             raise_exception(True, "Range request too large", user_number)
             if (fetch_dict[f'{corder}chp'] is not None):
-                payload += "\n⸻\n\n"
+                payload += "---\n"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
     # Cleanup extranneous whitespace/Psalm titles
     payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
     # Append "opt-out" prompt for compliance
-    payload += "\n\n⫺ Reply STOP to block, or HELP for assistance."
+    payload += "\n\n* Reply STOP to block, or HELP for assistance."
 
     # Determine message type based on payload size
+    SMS_MAX_CAP = 160
+    MMS_MAX_CAP = 1600
     payload_size = len(payload)
-    print("size", payload_size)
     if (payload_size <= 0):
         raise_exception(True, "Text returned empty; Consider a different translation", user_number)
-    elif (payload_size <= 160):
+    elif (payload_size <= SMS_MAX_CAP):
         protocol = "SMS"
-    elif (payload_size > 160 and payload_size <= 1600):
+    elif (payload_size <= MMS_MAX_CAP):
         protocol = "MMS"
-    elif (payload_size > 1600):
+    elif (payload_size > MMS_MAX_CAP):
         # To-do: Implement chunking function
         raise_exception(True, "Request too large; Consider a smaller request", user_number)
     print(f"Text:\n{payload}#")
