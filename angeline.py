@@ -382,7 +382,6 @@ def fetch_text(fetch_dict, user_number):
     except Exception:
         raise_exception(True, "Couldn't fetch text", user_number)
 
-    base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fchp']}']"
     try:
         # Book
         payload = ""
@@ -396,6 +395,7 @@ def fetch_text(fetch_dict, user_number):
 
         # Chapter
         if (fetch_dict["Fchp"] and fetch_dict["Fchp_Fver_beg"] is None):
+            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fchp']}']"
             chapter = root.find(base_query)
             for verse in chapter.findall(".//VERS"):
                 vnumber = verse.attrib.get("vnumber")
@@ -442,11 +442,12 @@ def fetch_text(fetch_dict, user_number):
 
     # Determine message type based on payload size
     payload_size = len(payload)
+    print("size", payload_size)
     if (payload_size <= 0):
         raise_exception(True, "Text returned empty; Consider a different translation", user_number)
     elif (payload_size <= 160):
         protocol = "SMS"
-    elif (payload_size <= 1600):
+    elif (payload_size > 160 and payload_size <= 1600):
         protocol = "MMS"
     elif (payload_size > 1600):
         # To-do: Implement chunking function
