@@ -430,8 +430,12 @@ def fetch_text(fetch_dict, user_number):
                                 payload += f"{vnumber} {verse.text}\n"
                         else:
                             raise_exception(True, "Range request too large", user_number)
+            # Print chapter separator only when needed
             if (fetch_dict[f'{corder}chp'] is not None):
-                payload += "---\n"
+                verses_to_fetch = [fetch_dict[f"{corder}chp_{vorder}ver_beg"] for vorder in request_order if fetch_dict[f"{corder}chp_{vorder}ver_beg"]]
+                if any(verses_to_fetch) and corder != 'T':
+                    payload += "---\n"
+
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
