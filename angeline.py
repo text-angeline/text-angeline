@@ -456,4 +456,4 @@ def fetch_text(fetch_dict, user_number):
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()
