@@ -2,7 +2,7 @@
 
 import re
 import json
-# import telnyx
+import telnyx
 import string
 import requests
 import xml.etree.ElementTree as ET
@@ -11,10 +11,10 @@ import xml.etree.ElementTree as ET
 with open("config.json", 'r') as file:
     config = json.load(file)
 
-# telnyx.api_key = config["TELNYX_KEY"]
+telnyx.api_key = config["TELNYX_KEY"]
+GITHUB_TOKEN = config["GITHUB_TOKEN"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
-GITHUB_TOKEN = config["GITHUB_TOKEN"]
 
 ### Language dictionary
 lang_def = "en"
@@ -455,4 +455,4 @@ def fetch_text(fetch_dict, user_number):
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
-init_dev()
+# init_dev()
