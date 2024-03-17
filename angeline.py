@@ -433,7 +433,7 @@ def fetch_text(fetch_dict, user_number):
             # Print chapter separator only when needed
             if (fetch_dict[f'{corder}chp'] is not None):
                 verses_to_fetch = [fetch_dict[f"{corder}chp_{vorder}ver_beg"] for vorder in request_order if fetch_dict[f"{corder}chp_{vorder}ver_beg"]]
-                if any(verses_to_fetch) and corder != 'T':
+                if any(verses_to_fetch) > 1 and corder != 'T':
                     payload += "---\n"
 
     except AttributeError:
