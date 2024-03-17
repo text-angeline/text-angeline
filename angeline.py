@@ -184,7 +184,7 @@ book_dict = {
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    return
+    # return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
