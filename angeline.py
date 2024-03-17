@@ -1,11 +1,8 @@
 ### "What hath God wrought"
 
-## To-do:
-# - Implement QR Code generator for presentations
-
 import re
 import json
-import telnyx
+# import telnyx
 import string
 import requests
 import xml.etree.ElementTree as ET
@@ -14,9 +11,10 @@ import xml.etree.ElementTree as ET
 with open("config.json", 'r') as file:
     config = json.load(file)
 
-telnyx.api_key = config["TELNYX_KEY"]
+# telnyx.api_key = config["TELNYX_KEY"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
+GITHUB_TOKEN = config["GITHUB_TOKEN"]
 
 ### Language dictionary
 lang_def = "en"
@@ -186,7 +184,7 @@ book_dict = {
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -375,7 +373,11 @@ def fetch_text(fetch_dict, user_number):
         # tree = ET.parse(bible)
         # root = tree.getroot()
         ## Remote XML:
-        response = requests.get(fetch_dict["bible"])
+        headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github.v3.raw"
+        }
+        response = requests.get(fetch_dict["bible"], headers=headers)
         root = ET.fromstring(response.content)
     except Exception:
         raise_exception(True, "Couldn't fetch text", user_number)
@@ -453,4 +455,4 @@ def fetch_text(fetch_dict, user_number):
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+init_dev()

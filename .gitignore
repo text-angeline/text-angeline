@@ -1,7 +1,6 @@
 ngrok
 test.py
 notes.txt
-config.json
 __pycache__/**
 .angeline.py.swp
 function-source.zip
