@@ -11,6 +11,6 @@ qr = qrcode.QRCode(
 qr.add_data(url)
 qr.make(fit=True)
 
-img = qr.make_image(fill_color="black", back_color="white") # Data to send
+img = qr.make_image(fill_color="black", back_color="white")
 img.save("qr_code.png")
 img.show()
