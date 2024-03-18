@@ -11,6 +11,8 @@ import xml.etree.ElementTree as ET
 with open("config.json", 'r') as file:
     config = json.load(file)
 
+SMS_MAX_CAP = 160
+MMS_MAX_CAP = 1600
 telnyx.api_key = config["TELNYX_KEY"]
 GITHUB_TOKEN = config["GITHUB_TOKEN"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
@@ -205,44 +207,36 @@ def raise_exception(is_error, text_content, user_number):
 
 ### Init (Development)
 def init_dev():
-    dev_input = input("dev_input: ")
+    dev_input = input("dev_input = ")
     dev_number = config['dev_number']
     init(dev_input, dev_number)
 
 ### Init (Production)
 def init(user_input, user_number):
     pattern = (
-        r"^(" +
-            r"((?P<book_num>[1-9])(?: )?)?" +
-            r"(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)" +
-            r"(?: (?P<Fchp>\d{1,3}))?" +
+        r"^("
+            r"((?P<book_num>[1-9])(?: )?)?"
+            r"(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)"
+            
+            r"(?: (?P<Fch>\d{1,3})"
+                r"(?:[\.:](?P<FchFvrBeg>\d{1,3}))?(?:-(?P<FchFvrEnd>\d{1,3}))?"
+                r"(?:,(?: )?(?P<FchSvrBeg>\d{1,3}))?(?:-(?P<FchSvrEnd>\d{1,3}))?"
+                r"(?:,(?: )?(?P<FchTvrBeg>\d{1,3}))?(?:-(?P<FchTvrEnd>\d{1,3}))?"
+            r")?"
 
-            r"(?:[\.:](?P<Fchp_Fver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Fchp_Fver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<Fchp_Sver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Fchp_Sver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<Fchp_Tver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Fchp_Tver_end>\d{1,3}))?" +
+            r"((?:;)(?: )?(?P<Sch>\d{1,3})(?:[\.:])?"
+                r"(?:[\.:](?P<SchFvrBeg>\d{1,3}))?(?:-(?P<SchFvrEnd>\d{1,3}))?"
+                r"(?:,(?: )?(?P<SchSvrBeg>\d{1,3}))?(?:-(?P<SchSvrEnd>\d{1,3}))?"
+                r"(?:,(?: )?(?P<SchTvrBeg>\d{1,3}))?(?:-(?P<SchTvrEnd>\d{1,3}))?"
+            r")?"
 
-            r"((?:;)(?: )?(?P<Schp>\d{1,3})(?:[\.:])?)?" +
+            r"((?:;)(?: )?(?P<Tch>\d{1,3})(?:[\.:])?"
+                r"(?:[\.:](?P<TchFvrBeg>\d{1,3}))?(?:-(?P<TchFvrEnd>\d{1,3}))?"
+                r"(?:,(?: )?(?P<TchSvrBeg>\d{1,3}))?(?:-(?P<TchSvrEnd>\d{1,3}))?"
+                r"(?:,(?: )?(?P<TchTvrBeg>\d{1,3}))?(?:-(?P<TchTvrEnd>\d{1,3}))?"
+            r")?"
 
-            r"(?:[\.:](?P<Schp_Fver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Schp_Fver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<Schp_Sver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Schp_Sver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<Schp_Tver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Schp_Tver_end>\d{1,3}))?" +
-
-            r"((?:;)(?: )?(?P<Tchp>\d{1,3})(?:[\.:])?)?" +
-
-            r"(?:[\.:](?P<Tchp_Fver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Tchp_Fver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<Tchp_Sver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Tchp_Sver_end>\d{1,3}))?" +
-            r"(?:,(?: )?(?P<Tchp_Tver_beg>\d{1,3}))?" +
-            r"(?:-(?P<Tchp_Tver_end>\d{1,3}))?" +
-
-            r"(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?" +
+            r"(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?"
         r")$"
     )
 
@@ -253,32 +247,29 @@ def init(user_input, user_number):
             book_num = match.group("book_num")
             book_title = match.group("book_title")
 
-            Fchp = match.group("Fchp")
+            Fch = match.group("Fch")
+            FchFvrBeg = match.group("FchFvrBeg")
+            FchFvrEnd = match.group("FchFvrEnd")
+            FchSvrBeg = match.group("FchSvrBeg")
+            FchSvrEnd = match.group("FchSvrEnd")
+            FchTvrBeg = match.group("FchTvrBeg")
+            FchTvrEnd = match.group("FchTvrEnd")
 
-            Fchp_Fver_beg = match.group("Fchp_Fver_beg")
-            Fchp_Fver_end = match.group("Fchp_Fver_end")
-            Fchp_Sver_beg = match.group("Fchp_Sver_beg")
-            Fchp_Sver_end = match.group("Fchp_Sver_end")
-            Fchp_Tver_beg = match.group("Fchp_Tver_beg")
-            Fchp_Tver_end = match.group("Fchp_Tver_end")
+            Sch = match.group("Sch")
+            SchFvrBeg = match.group("SchFvrBeg")
+            SchFvrEnd = match.group("SchFvrEnd")
+            SchSvrBeg = match.group("SchSvrBeg")
+            SchSvrEnd = match.group("SchSvrEnd")
+            SchTvrBeg = match.group("SchTvrBeg")
+            SchTvrEnd = match.group("SchTvrEnd")
 
-            Schp = match.group("Schp")
-
-            Schp_Fver_beg = match.group("Schp_Fver_beg")
-            Schp_Fver_end = match.group("Schp_Fver_end")
-            Schp_Sver_beg = match.group("Schp_Sver_beg")
-            Schp_Sver_end = match.group("Schp_Sver_end")
-            Schp_Tver_beg = match.group("Schp_Tver_beg")
-            Schp_Tver_end = match.group("Schp_Tver_end")
-
-            Tchp = match.group("Tchp")
-
-            Tchp_Fver_beg = match.group("Tchp_Fver_beg")
-            Tchp_Fver_end = match.group("Tchp_Fver_end")
-            Tchp_Sver_beg = match.group("Tchp_Sver_beg")
-            Tchp_Sver_end = match.group("Tchp_Sver_end")
-            Tchp_Tver_beg = match.group("Tchp_Tver_beg")
-            Tchp_Tver_end = match.group("Tchp_Tver_end")
+            Tch = match.group("Tch")
+            TchFvrBeg = match.group("TchFvrBeg")
+            TchFvrEnd = match.group("TchFvrEnd")
+            TchSvrBeg = match.group("TchSvrBeg")
+            TchSvrEnd = match.group("TchSvrEnd")
+            TchTvrBeg = match.group("TchTvrBeg")
+            TchTvrEnd = match.group("TchTvrEnd")
 
             bible_trans = match.group("bible_trans")
         except AttributeError:
@@ -315,20 +306,14 @@ def init(user_input, user_number):
 
     # Output (System)
     print(
-        f"""Book:\t\t {book}
-Chapter:\t {Fchp}
-| Verse(s):\t {Fchp_Fver_beg}-{Fchp_Fver_end},
-\t\t {Fchp_Sver_beg}-{Fchp_Sver_end},
-\t\t {Fchp_Tver_beg}-{Fchp_Tver_end}
-Chapter:\t {Schp}
-| Verse(s):\t {Schp_Fver_beg}-{Schp_Fver_end},
-\t\t {Schp_Sver_beg}-{Schp_Sver_end},
-\t\t {Schp_Tver_beg}-{Schp_Tver_end}
-Chapter:\t {Tchp}
-| Verse(s):\t {Tchp_Fver_beg}-{Tchp_Fver_end},
-\t\t {Tchp_Sver_beg}-{Tchp_Sver_end},
-\t\t {Tchp_Tver_beg}-{Tchp_Tver_end}
-Translation:\t {bible_trans.upper()}"""
+        f"""Book:\t\t{book}
+Chapter:\t{Fch}
+| Verse(s):\t{FchFvrBeg}-{FchFvrEnd}, {FchSvrBeg}-{FchSvrEnd}, {FchTvrBeg}-{FchTvrEnd}
+Chapter:\t{Sch}
+| Verse(s):\t{SchFvrBeg}-{SchFvrEnd}, {SchSvrBeg}-{SchSvrEnd}, {SchTvrBeg}-{SchTvrEnd}
+Chapter:\t{Tch}
+| Verse(s):\t{TchFvrBeg}-{TchFvrEnd}, {TchSvrBeg}-{TchSvrEnd}, {TchTvrBeg}-{TchTvrEnd}
+Translation:\t{bible_trans.upper()}"""
     )
 
     fetch_dict = {
@@ -336,29 +321,29 @@ Translation:\t {bible_trans.upper()}"""
         "bible_trans": bible_trans,
         "book": book,
         
-        "Fchp": Fchp,
-        "Fchp_Fver_beg": Fchp_Fver_beg,
-        "Fchp_Fver_end": Fchp_Fver_end,
-        "Fchp_Sver_beg": Fchp_Sver_beg,
-        "Fchp_Sver_end": Fchp_Sver_end,
-        "Fchp_Tver_beg": Fchp_Tver_beg,
-        "Fchp_Tver_end": Fchp_Tver_end,
+        "Fch": Fch,
+        "FchFvrBeg": FchFvrBeg,
+        "FchFvrEnd": FchFvrEnd,
+        "FchSvrBeg": FchSvrBeg,
+        "FchSvrEnd": FchSvrEnd,
+        "FchTvrBeg": FchTvrBeg,
+        "FchTvrEnd": FchTvrEnd,
         
-        "Schp": Schp,
-        "Schp_Fver_beg": Schp_Fver_beg,
-        "Schp_Fver_end": Schp_Fver_end,
-        "Schp_Sver_beg": Schp_Sver_beg,
-        "Schp_Sver_end": Schp_Sver_end,
-        "Schp_Tver_beg": Schp_Tver_beg,
-        "Schp_Tver_end": Schp_Tver_end,
+        "Sch": Sch,
+        "SchFvrBeg": SchFvrBeg,
+        "SchFvrEnd": SchFvrEnd,
+        "SchSvrBeg": SchSvrBeg,
+        "SchSvrEnd": SchSvrEnd,
+        "SchTvrBeg": SchTvrBeg,
+        "SchTvrEnd": SchTvrEnd,
         
-        "Tchp": Tchp,
-        "Tchp_Fver_beg": Tchp_Fver_beg,
-        "Tchp_Fver_end": Tchp_Fver_end,
-        "Tchp_Sver_beg": Tchp_Sver_beg,
-        "Tchp_Sver_end": Tchp_Sver_end,
-        "Tchp_Tver_beg": Tchp_Tver_beg,
-        "Tchp_Tver_end": Tchp_Tver_end,
+        "Tch": Tch,
+        "TchFvrBeg": TchFvrBeg,
+        "TchFvrEnd": TchFvrEnd,
+        "TchSvrBeg": TchSvrBeg,
+        "TchSvrEnd": TchSvrEnd,
+        "TchTvrBeg": TchTvrBeg,
+        "TchTvrEnd": TchTvrEnd,
         
         "bible_trans": bible_trans
     }
@@ -386,7 +371,7 @@ def fetch_text(fetch_dict, user_number):
         # Book
         payload = ""
         request_order = ['F', 'S', 'T']
-        if (fetch_dict["Fchp"] is None):
+        if (fetch_dict["Fch"] is None):
             # Unsupported Bible Gateway translation(s)
             if (fetch_dict["bible_trans"] == "nasu"):
                 bible_trans = "nasb"
@@ -394,8 +379,8 @@ def fetch_text(fetch_dict, user_number):
             raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
 
         # Chapter
-        if (fetch_dict["Fchp"] and fetch_dict["Fchp_Fver_beg"] is None):
-            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fchp']}']"
+        if (fetch_dict["Fch"] and fetch_dict["FchFvrBeg"] is None):
+            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fch']}']"
             chapter = root.find(base_query)
             for verse in chapter.findall(".//VERS"):
                 vnumber = verse.attrib.get("vnumber")
@@ -403,23 +388,23 @@ def fetch_text(fetch_dict, user_number):
 
         # Verse(s)
         for corder in request_order:
-            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{corder}chp']}']"
+            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{corder}ch']}']"
             for vorder in request_order:
                 is_new = False
                 if (vorder != 'F'):
                     is_new = True
-                if (fetch_dict[f"{corder}chp_{vorder}ver_beg"]):
+                if (fetch_dict[f"{corder}ch{vorder}vrBeg"]):
                     # Individual
-                    if (fetch_dict[f"{corder}chp_{vorder}ver_end"] is None):
-                        vnumber = fetch_dict[f"{corder}chp_{vorder}ver_beg"]
+                    if (fetch_dict[f"{corder}ch{vorder}vrEnd"] is None):
+                        vnumber = fetch_dict[f"{corder}ch{vorder}vrBeg"]
                         verse = root.find(f"{base_query}/VERS[@vnumber='{vnumber}']") 
                         if (is_new):
                             payload += "...\n"
                         payload += f"{vnumber} {verse.text}\n"
                     # Range
-                    if (fetch_dict[f"{corder}chp_{vorder}ver_end"] is not None):
-                        vnumber_beg = int(fetch_dict[f"{corder}chp_{vorder}ver_beg"])
-                        vnumber_end = int(fetch_dict[f"{corder}chp_{vorder}ver_end"])
+                    if (fetch_dict[f"{corder}ch{vorder}vrEnd"] is not None):
+                        vnumber_beg = int(fetch_dict[f"{corder}ch{vorder}vrBeg"])
+                        vnumber_end = int(fetch_dict[f"{corder}ch{vorder}vrEnd"])
                         if (vnumber_beg > vnumber_end):
                             raise_exception(True, "Invalid range", user_number)
                         elif ((vnumber_end - vnumber_beg) <= 12):
@@ -430,15 +415,12 @@ def fetch_text(fetch_dict, user_number):
                                 payload += f"{vnumber} {verse.text}\n"
                         else:
                             raise_exception(True, "Range request too large", user_number)
-            # Print chapter separator only when needed
-            # To-do: Refactor
-            if fetch_dict[f'{corder}chp'] is not None and corder != 'T':
-                verses_to_fetch = [fetch_dict[f"{corder}chp_{vorder}ver_beg"] for vorder in request_order if fetch_dict[f"{corder}chp_{vorder}ver_beg"]]
-                if any(verses_to_fetch):
-                    if len(verses_to_fetch) > 1 or (corder == 'F' and fetch_dict['Schp']):
-                        payload += "---\n"
-
-
+            # Print chapter separator
+            cindex = request_order.index(corder)
+            if (cindex < len(request_order) - 1):
+                cnext = request_order[cindex + 1]
+                if (fetch_dict[f"{cnext}ch"]):
+                    payload += "---\n"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
@@ -448,8 +430,6 @@ def fetch_text(fetch_dict, user_number):
     payload += "\n\n* Reply STOP to block, or HELP for assistance."
 
     # Determine message type based on payload size
-    SMS_MAX_CAP = 160
-    MMS_MAX_CAP = 1600
     payload_size = len(payload)
     if (payload_size <= 0):
         raise_exception(True, "Text returned empty; Consider a different translation", user_number)
@@ -460,7 +440,7 @@ def fetch_text(fetch_dict, user_number):
     elif (payload_size > MMS_MAX_CAP):
         # To-do: Implement chunking function
         raise_exception(True, "Request too large; Consider a smaller request", user_number)
-    print(f"Text:\n{payload}#")
+    print(f"Protocol:\t{protocol} ({payload_size})\nText:\n{payload}")
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
