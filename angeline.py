@@ -13,6 +13,7 @@ with open("config.json", 'r') as file:
 
 SMS_MAX_CAP = 160
 MMS_MAX_CAP = 1600
+
 telnyx.api_key = config["TELNYX_KEY"]
 GITHUB_TOKEN = config["GITHUB_TOKEN"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
@@ -383,43 +384,43 @@ def fetch_text(fetch_dict, user_number):
             base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fch']}']"
             chapter = root.find(base_query)
             for verse in chapter.findall(".//VERS"):
-                vnumber = verse.attrib.get("vnumber")
-                payload += f"{vnumber} {verse.text}\n"
+                vr_num = verse.attrib.get("vnumber")
+                payload += f"{vr_num} {verse.text}\n"
 
         # Verse(s)
-        for corder in request_order:
-            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{corder}ch']}']"
-            for vorder in request_order:
+        for ch_order in request_order:
+            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{ch_order}ch']}']"
+            for vr_order in request_order:
                 is_new = False
-                if (vorder != 'F'):
+                if (vr_order != 'F'):
                     is_new = True
-                if (fetch_dict[f"{corder}ch{vorder}vrBeg"]):
+                if (fetch_dict[f"{ch_order}ch{vr_order}vrBeg"]):
                     # Individual
-                    if (fetch_dict[f"{corder}ch{vorder}vrEnd"] is None):
-                        vnumber = fetch_dict[f"{corder}ch{vorder}vrBeg"]
-                        verse = root.find(f"{base_query}/VERS[@vnumber='{vnumber}']") 
+                    if (fetch_dict[f"{ch_order}ch{vr_order}vrEnd"] is None):
+                        vr_num = fetch_dict[f"{ch_order}ch{vr_order}vrBeg"]
+                        verse = root.find(f"{base_query}/VERS[@vnumber='{vr_num}']") 
                         if (is_new):
                             payload += "...\n"
-                        payload += f"{vnumber} {verse.text}\n"
+                        payload += f"{vr_num} {verse.text}\n"
                     # Range
-                    if (fetch_dict[f"{corder}ch{vorder}vrEnd"] is not None):
-                        vnumber_beg = int(fetch_dict[f"{corder}ch{vorder}vrBeg"])
-                        vnumber_end = int(fetch_dict[f"{corder}ch{vorder}vrEnd"])
-                        if (vnumber_beg > vnumber_end):
+                    if (fetch_dict[f"{ch_order}ch{vr_order}vrEnd"] is not None):
+                        vr_num_beg = int(fetch_dict[f"{ch_order}ch{vr_order}vrBeg"])
+                        vr_num_end = int(fetch_dict[f"{ch_order}ch{vr_order}vrEnd"])
+                        if (vr_num_beg > vr_num_end):
                             raise_exception(True, "Invalid range", user_number)
-                        elif ((vnumber_end - vnumber_beg) <= 12):
+                        elif ((vr_num_end - vr_num_beg) <= 12):
                             if (is_new):
                                 payload += "...\n"
-                            for vnumber in range(vnumber_beg, (vnumber_end + 1)):
-                                verse = root.find(f"{base_query}/VERS[@vnumber='{vnumber}']")
-                                payload += f"{vnumber} {verse.text}\n"
+                            for vr_num in range(vr_num_beg, (vr_num_end + 1)):
+                                verse = root.find(f"{base_query}/VERS[@vnumber='{vr_num}']")
+                                payload += f"{vr_num} {verse.text}\n"
                         else:
                             raise_exception(True, "Range request too large", user_number)
             # Print chapter separator
-            cindex = request_order.index(corder)
-            if (cindex < len(request_order) - 1):
-                cnext = request_order[cindex + 1]
-                if (fetch_dict[f"{cnext}ch"]):
+            ch_index = request_order.index(ch_order)
+            if (ch_index < len(request_order) - 1):
+                ch_next = request_order[ch_index + 1]
+                if (fetch_dict[f"{ch_next}ch"]):
                     payload += "---\n"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
