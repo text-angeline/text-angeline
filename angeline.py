@@ -11,9 +11,9 @@ import xml.etree.ElementTree as ET
 with open("config.json", 'r') as file:
     config = json.load(file)
 
+### Constants
 SMS_MAX_CAP = 160
 MMS_MAX_CAP = 1600
-
 telnyx.api_key = config["TELNYX_KEY"]
 GITHUB_TOKEN = config["GITHUB_TOKEN"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
@@ -49,10 +49,13 @@ book_dict = {
     "start": "START",
     "stop": "STOP",
     # Books
+    "gn": "Genesis",
     "gen": "Genesis",
     "genesis": "Genesis",
+    "ex": "Exodus",
     "exo": "Exodus",
     "exodus": "Exodus",
+    "lv": "Leviticus",
     "lev": "Leviticus",
     "leviticus": "Leviticus",
     "num": "Numbers",
@@ -207,10 +210,7 @@ def raise_exception(is_error, text_content, user_number):
     raise Exception("Aborting")
 
 ### Init (Development)
-def init_dev():
-    dev_input = input("dev_input = ")
-    dev_number = config['dev_number']
-    init(dev_input, dev_number)
+def init_dev(): init(input("dev_input = "), config["dev_number"])
 
 ### Init (Production)
 def init(user_input, user_number):
@@ -218,8 +218,8 @@ def init(user_input, user_number):
         r"^("
             r"((?P<book_num>[1-9])(?: )?)?"
             r"(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)"
-            
-            r"(?: (?P<Fch>\d{1,3})"
+
+            r"(?:(?: )?(?P<Fch>\d{1,3})"
                 r"(?:[\.:](?P<FchFvrBeg>\d{1,3}))?(?:-(?P<FchFvrEnd>\d{1,3}))?"
                 r"(?:,(?: )?(?P<FchSvrBeg>\d{1,3}))?(?:-(?P<FchSvrEnd>\d{1,3}))?"
                 r"(?:,(?: )?(?P<FchTvrBeg>\d{1,3}))?(?:-(?P<FchTvrEnd>\d{1,3}))?"
@@ -237,7 +237,7 @@ def init(user_input, user_number):
                 r"(?:,(?: )?(?P<TchTvrBeg>\d{1,3}))?(?:-(?P<TchTvrEnd>\d{1,3}))?"
             r")?"
 
-            r"(?: (?P<bible_trans>[0-9a-zA-Z]{,4}))?"
+            r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{,4}))?"
         r")$"
     )
 
@@ -247,43 +247,44 @@ def init(user_input, user_number):
         try:
             book_num = match.group("book_num")
             book_title = match.group("book_title")
+            fetch_dict = {
+                "Fch": match.group("Fch"),
+                "FchFvrBeg": match.group("FchFvrBeg"),
+                "FchFvrEnd": match.group("FchFvrEnd"),
+                "FchSvrBeg": match.group("FchSvrBeg"),
+                "FchSvrEnd": match.group("FchSvrEnd"),
+                "FchTvrBeg": match.group("FchTvrBeg"),
+                "FchTvrEnd": match.group("FchTvrEnd"),
 
-            Fch = match.group("Fch")
-            FchFvrBeg = match.group("FchFvrBeg")
-            FchFvrEnd = match.group("FchFvrEnd")
-            FchSvrBeg = match.group("FchSvrBeg")
-            FchSvrEnd = match.group("FchSvrEnd")
-            FchTvrBeg = match.group("FchTvrBeg")
-            FchTvrEnd = match.group("FchTvrEnd")
+                "Sch": match.group("Sch"),
+                "SchFvrBeg": match.group("SchFvrBeg"),
+                "SchFvrEnd": match.group("SchFvrEnd"),
+                "SchSvrBeg": match.group("SchSvrBeg"),
+                "SchSvrEnd": match.group("SchSvrEnd"),
+                "SchTvrBeg": match.group("SchTvrBeg"),
+                "SchTvrEnd": match.group("SchTvrEnd"),
 
-            Sch = match.group("Sch")
-            SchFvrBeg = match.group("SchFvrBeg")
-            SchFvrEnd = match.group("SchFvrEnd")
-            SchSvrBeg = match.group("SchSvrBeg")
-            SchSvrEnd = match.group("SchSvrEnd")
-            SchTvrBeg = match.group("SchTvrBeg")
-            SchTvrEnd = match.group("SchTvrEnd")
+                "Tch": match.group("Tch"),
+                "TchFvrBeg": match.group("TchFvrBeg"),
+                "TchFvrEnd": match.group("TchFvrEnd"),
+                "TchSvrBeg": match.group("TchSvrBeg"),
+                "TchSvrEnd": match.group("TchSvrEnd"),
+                "TchTvrBeg": match.group("TchTvrBeg"),
+                "TchTvrEnd": match.group("TchTvrEnd"),
 
-            Tch = match.group("Tch")
-            TchFvrBeg = match.group("TchFvrBeg")
-            TchFvrEnd = match.group("TchFvrEnd")
-            TchSvrBeg = match.group("TchSvrBeg")
-            TchSvrEnd = match.group("TchSvrEnd")
-            TchTvrBeg = match.group("TchTvrBeg")
-            TchTvrEnd = match.group("TchTvrEnd")
-
-            bible_trans = match.group("bible_trans")
+                "bible_trans": match.group("bible_trans")
+            }
         except AttributeError:
             raise_exception(True, "Couldn't parse request", user_number)
     else:
         raise_exception(True, "Invalid format", user_number)
 
     # Translation (if none specified)
-    if (bible_trans is None):
+    if (fetch_dict["bible_trans"] is None):
         bible_trans = DEFAULT_TRANS
-        bible = trans_dict[bible_trans]
-    elif (bible_trans in trans_dict):
-        bible = trans_dict[bible_trans]
+        fetch_dict["bible_xml"] = trans_dict[fetch_dict["bible_trans"]]
+    elif (fetch_dict["bible_trans"] in trans_dict):
+        fetch_dict["bible_xml"] = trans_dict[fetch_dict["bible_trans"]]
     else:
         raise_exception(True, "Invalid translation", user_number)
 
@@ -298,57 +299,15 @@ def init(user_input, user_number):
                 raise_exception(False, "", user_number)
             else:
                 # Ex: "John"
-                book = book_dict[book_title]
+                fetch_dict["book"] = book_dict[book_title]
         else:
             # Ex: "1 John"
-            book = book_dict[f"{book_num} {book_title}"]
+            fetch_dict["book"] = book_dict[f"{book_num} {book_title}"]
     except KeyError:
         raise_exception(True, "Couldn't locate book", user_number)
 
-    # Output (System)
-    print(
-        f"""Book:\t\t{book}
-Chapter:\t{Fch}
-| Verse(s):\t{FchFvrBeg}-{FchFvrEnd}, {FchSvrBeg}-{FchSvrEnd}, {FchTvrBeg}-{FchTvrEnd}
-Chapter:\t{Sch}
-| Verse(s):\t{SchFvrBeg}-{SchFvrEnd}, {SchSvrBeg}-{SchSvrEnd}, {SchTvrBeg}-{SchTvrEnd}
-Chapter:\t{Tch}
-| Verse(s):\t{TchFvrBeg}-{TchFvrEnd}, {TchSvrBeg}-{TchSvrEnd}, {TchTvrBeg}-{TchTvrEnd}
-Translation:\t{bible_trans.upper()}"""
-    )
-
-    fetch_dict = {
-        "bible": bible,
-        "bible_trans": bible_trans,
-        "book": book,
-
-        "Fch": Fch,
-        "FchFvrBeg": FchFvrBeg,
-        "FchFvrEnd": FchFvrEnd,
-        "FchSvrBeg": FchSvrBeg,
-        "FchSvrEnd": FchSvrEnd,
-        "FchTvrBeg": FchTvrBeg,
-        "FchTvrEnd": FchTvrEnd,
-
-        "Sch": Sch,
-        "SchFvrBeg": SchFvrBeg,
-        "SchFvrEnd": SchFvrEnd,
-        "SchSvrBeg": SchSvrBeg,
-        "SchSvrEnd": SchSvrEnd,
-        "SchTvrBeg": SchTvrBeg,
-        "SchTvrEnd": SchTvrEnd,
-
-        "Tch": Tch,
-        "TchFvrBeg": TchFvrBeg,
-        "TchFvrEnd": TchFvrEnd,
-        "TchSvrBeg": TchSvrBeg,
-        "TchSvrEnd": TchSvrEnd,
-        "TchTvrBeg": TchTvrBeg,
-        "TchTvrEnd": TchTvrEnd
-    }
-
     # Fetch text
-    fetch_text(fetch_dict, user_number)
+    build_payload(fetch_dict, user_number)
 
 ### Fetch text
 def fetch_text(fetch_dict, user_number):
@@ -361,15 +320,33 @@ def fetch_text(fetch_dict, user_number):
             "Authorization": f"token {GITHUB_TOKEN}",
             "Accept": "application/vnd.github.v3.raw"
         }
-        response = requests.get(fetch_dict["bible"], headers=headers)
+        response = requests.get(fetch_dict["bible_xml"], headers=headers)
         root = ET.fromstring(response.content)
+        return root
     except Exception:
         raise_exception(True, "Couldn't fetch text", user_number)
 
+def determine_protocol(payload, user_number):
+    # Determine message type based on payload size
+    payload_size = len(payload)
+    if (payload_size <= 0):
+        raise_exception(True, "Text returned empty; Consider a different translation", user_number)
+    elif (payload_size <= SMS_MAX_CAP):
+        protocol = "SMS"
+    elif (payload_size <= MMS_MAX_CAP):
+        protocol = "MMS"
+    elif (payload_size > MMS_MAX_CAP):
+        # To-do: Implement chunking function
+        raise_exception(True, "Request too large; Consider a smaller request", user_number)
+    return protocol
+
+def build_payload(fetch_dict, user_number):
+    root = fetch_text(fetch_dict, user_number)
     try:
-        # Book
         payload = ""
         request_order = ['F', 'S', 'T']
+
+        # Book
         if (fetch_dict["Fch"] is None):
             # Unsupported Bible Gateway translation(s)
             if (fetch_dict["bible_trans"] == "nasu"):
@@ -414,7 +391,7 @@ def fetch_text(fetch_dict, user_number):
                                 payload += f"{vr_num} {verse.text}\n"
                         else:
                             raise_exception(True, "Range request too large", user_number)
-            # Print chapter separator
+            # Separate chapters
             ch_index = request_order.index(ch_order)
             if (ch_index < len(request_order) - 1):
                 ch_next = request_order[ch_index + 1]
@@ -427,19 +404,10 @@ def fetch_text(fetch_dict, user_number):
     payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
     # Append "opt-out" prompt for compliance
     payload += "\n\n* Reply STOP to block, or HELP for assistance."
-
-    # Determine message type based on payload size
-    payload_size = len(payload)
-    if (payload_size <= 0):
-        raise_exception(True, "Text returned empty; Consider a different translation", user_number)
-    elif (payload_size <= SMS_MAX_CAP):
-        protocol = "SMS"
-    elif (payload_size <= MMS_MAX_CAP):
-        protocol = "MMS"
-    elif (payload_size > MMS_MAX_CAP):
-        # To-do: Implement chunking function
-        raise_exception(True, "Request too large; Consider a smaller request", user_number)
-    print(f"Protocol:\t{protocol} ({payload_size})\nText:\n{payload}")
+    # Determine protocol basd on payload size
+    protocol = determine_protocol(payload, user_number)
+    # System output
+    print(payload)
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
