@@ -1,7 +1,6 @@
 venv
 ngrok
 test.py
-notes.txt
 __pycache__/**
 .angeline.py.swp
 function-source.zip
