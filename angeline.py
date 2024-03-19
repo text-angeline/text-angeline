@@ -321,7 +321,7 @@ Translation:\t{bible_trans.upper()}"""
         "bible": bible,
         "bible_trans": bible_trans,
         "book": book,
-        
+
         "Fch": Fch,
         "FchFvrBeg": FchFvrBeg,
         "FchFvrEnd": FchFvrEnd,
@@ -329,7 +329,7 @@ Translation:\t{bible_trans.upper()}"""
         "FchSvrEnd": FchSvrEnd,
         "FchTvrBeg": FchTvrBeg,
         "FchTvrEnd": FchTvrEnd,
-        
+
         "Sch": Sch,
         "SchFvrBeg": SchFvrBeg,
         "SchFvrEnd": SchFvrEnd,
@@ -337,16 +337,14 @@ Translation:\t{bible_trans.upper()}"""
         "SchSvrEnd": SchSvrEnd,
         "SchTvrBeg": SchTvrBeg,
         "SchTvrEnd": SchTvrEnd,
-        
+
         "Tch": Tch,
         "TchFvrBeg": TchFvrBeg,
         "TchFvrEnd": TchFvrEnd,
         "TchSvrBeg": TchSvrBeg,
         "TchSvrEnd": TchSvrEnd,
         "TchTvrBeg": TchTvrBeg,
-        "TchTvrEnd": TchTvrEnd,
-        
-        "bible_trans": bible_trans
+        "TchTvrEnd": TchTvrEnd
     }
 
     # Fetch text
