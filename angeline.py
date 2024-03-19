@@ -20,172 +20,102 @@ DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
 ### Language dictionary
-lang_def = "en"
-lang_dict = {
-    "en": "en",
-    "eng": "en",
-    "english": "en"
+lang_dict_tup = {
+    # To-do: Flesh out defintions
+    ("en", "eng", "english"): "en"
 }
+lang_dict = {key: value for keys, value in lang_dict_tup.items() for key in keys}
 
 ### Translation dictionary
-trans_url_base = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/{lang_def}/"
+trans_base_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/{lang_dict['en']}/"
 trans_dict = {
-    "esv": f"{trans_url_base}esv.xml",
-    "kj21": f"{trans_url_base}kj21.xml",
-    "nasb": f"{trans_url_base}nasb-strong.xml",
-    "nasu": f"{trans_url_base}nasu.xml",
-    "niv": f"{trans_url_base}niv.xml",
-    "nkjv": f"{trans_url_base}nkjv.xml",
-    "nlt": f"{trans_url_base}nlt.xml",
-    "nrsv": f"{trans_url_base}nrsv.xml",
-    "rsv": f"{trans_url_base}rsv.xml",
-    "web": f"{trans_url_base}web.xml"
+    "esv": f"{trans_base_url}esv.xml",
+    "kj21": f"{trans_base_url}kj21.xml",
+    "nasb": f"{trans_base_url}nasb-strong.xml",
+    "nasu": f"{trans_base_url}nasu.xml",
+    "niv": f"{trans_base_url}niv.xml",
+    "nkjv": f"{trans_base_url}nkjv.xml",
+    "nlt": f"{trans_base_url}nlt.xml",
+    "nrsv": f"{trans_base_url}nrsv.xml",
+    "rsv": f"{trans_base_url}rsv.xml",
+    "web": f"{trans_base_url}web.xml"
 }
 
-### Book dictionary
-book_dict = {
+### Book dictionary (Tuple)
+book_dict_tup = {
     # Controls
-    "help": "HELP",
-    "start": "START",
-    "stop": "STOP",
+    ("help",): "HELP",
+    ("start",): "START",
+    ("stop",): "STOP",
     # Books
-    "gn": "Genesis",
-    "gen": "Genesis",
-    "genesis": "Genesis",
-    "ex": "Exodus",
-    "exo": "Exodus",
-    "exodus": "Exodus",
-    "lv": "Leviticus",
-    "lev": "Leviticus",
-    "leviticus": "Leviticus",
-    "num": "Numbers",
-    "numbers": "Numbers",
-    "deu": "Deuteronomy",
-    "deuteronomy": "Deuteronomy",
-    "jos": "Joshua",
-    "joshua": "Joshua",
-    "jdg": "Judges",
-    "judges": "Judges",
-    "rut": "Ruth",
-    "ruth": "Ruth",
-    "1 sa": "1 Samuel",
-    "1 samuel": "1 Samuel",
-    "2 sa": "2 Samuel",
-    "2 samuel": "2 Samuel",
-    "1 ki": "1 Kings",
-    "1 kings": "1 Kings",
-    "2 ki": "2 Kings",
-    "2 kings" :"2 Kings",
-    "1 ch": "1 Chronicles",
-    "1 chronicles": "1 Chronicles",
-    "2 ch": "2 Chronicles",
-    "2 chronicles": "2 Chronicles",
-    "ezr": "Ezra",
-    "ezra": "Ezra",
-    "neh": "Nehemiah",
-    "nehemiah": "Nehemiah",
-    "est": "Esther",
-    "esther": "Esther",
-    "job": "Job",
-    "psa": "Psalm",
-    "psalm": "Psalm",
-    "psalms": "Psalm",
-    "pro": "Proverbs",
-    "proverbs": "Proverbs",
-    "ecc": "Ecclesiastes",
-    "ecclesiastes": "Ecclesiastes",
-    "son": "Song of Solomon",
-    "song of songs": "Song of Solomon",
-    "song of solomon": "Song of Solomon",
-    "isa": "Isaiah",
-    "isaiah": "Isaiah",
-    "jer": "Jeremiah",
-    "jeremiah": "Jeremiah",
-    "lam": "Lamentations",
-    "lamentations": "Lamentations",
-    "eze": "Ezekiel",
-    "ezekiel": "Ezekiel",
-    "dan": "Daniel",
-    "daniel": "Daniel",
-    "hos": "Hosea",
-    "hosea": "Hosea",
-    "joe": "Joel",
-    "joel": "Joel",
-    "amo": "Amos",
-    "amos": "Amos",
-    "oba": "Obadiah",
-    "obadiah": "Obadiah",
-    "jon": "Jonah",
-    "jonah": "Jonah",
-    "mic": "Micah",
-    "micah": "Micah",
-    "nah": "Nahum",
-    "nahum": "Nahum",
-    "hab": "Habakkuk",
-    "habakkuk": "Habakkuk",
-    "zep": "Zephaniah",
-    "zephaniah": "Zephaniah",
-    "hag": "Haggai",
-    "haggai": "Haggai",
-    "zec": "Zechariah",
-    "zechariah": "Zechariah",
-    "mal": "Malachi",
-    "malachi": "Malachi",
-    "mat": "Matthew",
-    "matthew": "Matthew",
-    "mar": "Mark",
-    "mark": "Mark",
-    "luk": "Luke",
-    "luke": "Luke",
-    "jhn": "John",
-    "john": "John",
-    "act": "Acts",
-    "acts": "Acts",
-    "rom": "Romans",
-    "romans": "Romans",
-    "1 co": "1 Cortinthians",
-    "1 corinthians": "1 Corinthians",
-    "2 co": "2 Corinthians",
-    "2 corinthians": "2 Corinthians",
-    "gal": "Galatians",
-    "galatians": "Galatians",
-    "eph": "Ephesians",
-    "ephesians": "Ephesians",
-    "phi": "Philippians",
-    "philippians": "Philippians",
-    "col": "Colossians",
-    "colossians": "Colossians",
-    "1 th": "1 Thessalonians",
-    "1 thessalonians": "1 Thessalonians",
-    "2 th": "2 Thessalonians",
-    "2 thessalonians": "2 Thessalonians",
-    "1 ti": "1 Timothy",
-    "1 timothy": "1 Timothy",
-    "2 ti": "2 Timothy",
-    "2 timothy": "2 Timothy",
-    "tit": "Titus",
-    "titus": "Titus",
-    "phm": "Philemon",
-    "philemon": "Philemon",
-    "heb": "Hebrews",
-    "hebrews": "Hebrews",
-    "jam": "James",
-    "james": "James",
-    "1 pe": "1 Peter",
-    "1 peter": "1 Peter",
-    "2 pe": "2 Peter",
-    "2 peter": "2 Peter",
-    "1 jn": "1 John",
-    "1 john": "1 John",
-    "2 jn": "2 John",
-    "2 john": "2 John",
-    "3 jn": "3 jhn",
-    "3 john": "3 John",
-    "jud": "Jude",
-    "jude": "Jude",
-    "rev": "Revelation",
-    "revelation": "Revelation"
+    ("gn", "gen", "genesis"): "Genesis",
+    ("ex", "exo", "exodus"): "Exodus",
+    ("lv", "lev", "leviticus"): "Leviticus",
+    ("nu", "num", "numbers"): "Numbers",
+    ("dt", "deu", "deuteronomy"): "Deuteronomy",
+    ("js", "jos", "joshua"): "Joshua",
+    ("jd", "jdg", "judges"): "Judges",
+    ("rt", "rut", "ruth"): "Ruth",
+    ("1 sa", "1 sam", "1 samuel"): "1 Samuel",
+    ("2 sa", "2 sam", "2 samuel"): "2 Samuel",
+    ("1 ki", "1 kin", "1 kings"): "1 Kings",
+    ("2 ki", "2 king", "2 kings"): "2 Kings",
+    ("1 ch", "1 chr", "1 chronicles"): "1 Chronicles",
+    ("2 ch", "2 chr", "2 chronicles"): "2 Chronicles",
+    ("er", "ezr", "ezra"): "Ezra",
+    ("nh", "neh", "nehemiah"): "Nehemiah",
+    ("et", "est", "esther"): "Esther",
+    ("jb", "job"): "Job",
+    ("ps", "psa", "psalm", "psalms"): "Psalm",
+    ("pr", "pro", "prov", "proverbs"): "Proverbs",
+    ("ec", "ecc", "ecclesiastes"): "Ecclesiastes",
+    ("sn", "son", "song of songs", "song of solomon"): "Song of Solomon",
+    ("is", "isa", "isaiah"): "Isaiah",
+    ("jr", "jer", "jeremiah"): "Jeremiah",
+    ("lm", "lam", "lamentations"): "Lamentations",
+    ("ez", "eze", "ezekiel"): "Ezekiel",
+    ("dn", "dan", "daniel"): "Daniel",
+    ("hs", "hos", "hosea"): "Hosea",
+    ("jl", "joe", "joel"): "Joel",
+    ("am", "amo", "amos"): "Amos",
+    ("ob", "oba", "obadiah"): "Obadiah",
+    ("jo", "jon", "jonah"): "Jonah",
+    ("mi", "mic", "micah"): "Micah",
+    ("na", "nah", "nahum"): "Nahum",
+    ("hb", "hab", "habakkuk"): "Habakkuk",
+    ("zp", "zep", "zephaniah"): "Zephaniah",
+    ("hg", "hag", "haggai"): "Haggai",
+    ("zc", "zec", "zechariah"): "Zechariah",
+    ("ml", "mal", "malachi"): "Malachi",
+    ("mt", "mat", "matthew"): "Matthew",
+    ("mr", "mar", "mark"): "Mark",
+    ("lk", "luk", "luke"): "Luke",
+    ("jn", "jhn", "john"): "John",
+    ("ac", "act", "acts"): "Acts",
+    ("rm", "rom", "romans"): "Romans",
+    ("1 co", "1 cor", "1 corinthians"): "1 Corinthians",
+    ("2 co", "2 cor", "2 corinthians"): "2 Corinthians",
+    ("gl", "gal", "galatians"): "Galatians",
+    ("ep", "eph", "ephesians"): "Ephesians",
+    ("ph", "phi", "philippians"): "Philippians",
+    ("cl", "col", "colossians"): "Colossians",
+    ("1 th", "1 ths", "1 thessalonians"): "1 Thessalonians",
+    ("2 th", "2 ths", "2 thessalonians"): "2 Thessalonians",
+    ("1 ti", "1 tim", "1 timothy"): "1 Timothy",
+    ("2 ti", "2 tim", "2 timothy"): "2 Timothy",
+    ("ti", "tit", "titus"): "Titus",
+    ("pm", "phm", "philemon"): "Philemon",
+    ("he", "heb", "hebrews"): "Hebrews",
+    ("jm", "jam", "james"): "James",
+    ("1 pe", "1 pet", "1 peter"): "1 Peter",
+    ("2 pe", "2 pet", "2 peter"): "2 Peter",
+    ("1 jn", "1 jhn", "1 john"): "1 John",
+    ("2 jn", "2 jhn", "2 john"): "2 John",
+    ("3 jn", "3 jhn", "3 john"): "3 John",
+    ("jd", "jud", "jude"): "Jude",
+    ("rv", "rev", "revelation"): "Revelation"
 }
+book_dict = {key: value for keys, value in book_dict_tup.items() for key in keys}
 
 ### Send text message
 def send_message(protocol, payload, user_number):
@@ -204,7 +134,9 @@ def raise_exception(is_error, text_content, user_number):
         payload = f"Error: {text_content}. Please try again."
     else:
         payload = text_content
-    print(f"Text:\n{payload}#")
+    payload += "\n\n* Reply STOP to block, or HELP for assistance."
+    # System log
+    print(payload)
     if (text_content):
         send_message("SMS", payload, user_number)
     raise Exception("Aborting")
@@ -237,7 +169,8 @@ def init(user_input, user_number):
                 r"(?:,(?: )?(?P<TchTvrBeg>\d{1,3}))?(?:-(?P<TchTvrEnd>\d{1,3}))?"
             r")?"
 
-            r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{,4}))?"
+            r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{3,4}))?"
+            r"(?: (?P<lang>[0-9a-zA-Z]{2,10}))?"
         r")$"
     )
 
@@ -282,7 +215,7 @@ def init(user_input, user_number):
     # Translation (if none specified)
     if (fetch_dict["bible_trans"] is None):
         bible_trans = DEFAULT_TRANS
-        fetch_dict["bible_xml"] = trans_dict[fetch_dict["bible_trans"]]
+        fetch_dict["bible_xml"] = trans_dict[f"{bible_trans}"]
     elif (fetch_dict["bible_trans"] in trans_dict):
         fetch_dict["bible_xml"] = trans_dict[fetch_dict["bible_trans"]]
     else:
@@ -326,8 +259,8 @@ def fetch_text(fetch_dict, user_number):
     except Exception:
         raise_exception(True, "Couldn't fetch text", user_number)
 
+### Determine message protocol
 def determine_protocol(payload, user_number):
-    # Determine message type based on payload size
     payload_size = len(payload)
     if (payload_size <= 0):
         raise_exception(True, "Text returned empty; Consider a different translation", user_number)
@@ -340,12 +273,12 @@ def determine_protocol(payload, user_number):
         raise_exception(True, "Request too large; Consider a smaller request", user_number)
     return protocol
 
+### Build text payload
 def build_payload(fetch_dict, user_number):
     root = fetch_text(fetch_dict, user_number)
     try:
         payload = ""
         request_order = ['F', 'S', 'T']
-
         # Book
         if (fetch_dict["Fch"] is None):
             # Unsupported Bible Gateway translation(s)
@@ -353,7 +286,6 @@ def build_payload(fetch_dict, user_number):
                 bible_trans = "nasb"
             book_url = f"https://www.biblegateway.com/passage/?search={fetch_dict['book']}%201&version={fetch_dict['bible_trans'].upper()}".replace(' ', "%20")
             raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
-
         # Chapter
         if (fetch_dict["Fch"] and fetch_dict["FchFvrBeg"] is None):
             base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fch']}']"
@@ -361,7 +293,6 @@ def build_payload(fetch_dict, user_number):
             for verse in chapter.findall(".//VERS"):
                 vr_num = verse.attrib.get("vnumber")
                 payload += f"{vr_num} {verse.text}\n"
-
         # Verse(s)
         for ch_order in request_order:
             base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{ch_order}ch']}']"
@@ -404,9 +335,9 @@ def build_payload(fetch_dict, user_number):
     payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
     # Append "opt-out" prompt for compliance
     payload += "\n\n* Reply STOP to block, or HELP for assistance."
-    # Determine protocol basd on payload size
+    # Determine message protocol based on payload size
     protocol = determine_protocol(payload, user_number)
-    # System output
+    # System log
     print(payload)
     send_message(protocol, payload, user_number)
 
