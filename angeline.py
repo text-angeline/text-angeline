@@ -239,7 +239,7 @@ def init(user_input, user_number):
     except KeyError:
         raise_exception(True, "Couldn't locate book", user_number)
 
-    # Fetch text
+    # Build message payload
     build_payload(fetch_dict, user_number)
 
 ### Fetch text
