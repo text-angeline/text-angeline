@@ -266,7 +266,7 @@ def determine_protocol(payload, user_number):
         raise_exception(True, "Text returned empty; Consider a different translation", user_number)
     elif (payload_size <= SMS_MAX_CAP):
         protocol = "SMS"
-    elif (payload_size <= MMS_MAX_CAP):
+    elif (payload_size > SMS_MAX_CAP and payload_size <= MMS_MAX_CAP):
         protocol = "MMS"
     elif (payload_size > MMS_MAX_CAP):
         # To-do: Implement chunking function
