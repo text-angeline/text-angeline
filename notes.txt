@@ -2,6 +2,4 @@
 cd text-angeline
 zip -r function-source.zip angeline.py main.py config.json requirements.txt
 # To-do
-# - Convert book_dict to JSON and externalize it as a separate file
 # - Allow users to set a default translation based on the phone number
-# - Switch from GitHub requests to Google Cloud Buckets to privatize translations (Is this the Christian approach? On the other hand, we might get taken down because of licensing)
