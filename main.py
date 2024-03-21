@@ -15,5 +15,5 @@ def receive_sms(request, context):
             angeline.init(user_input, user_number)
             return "", 200
     except KeyError as e:
-        print("Error: Couldn't process webhook.", e)
+        print("Error: Couldn't process webhook; User was not notified.", e)
         return "", 400
