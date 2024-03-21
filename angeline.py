@@ -29,7 +29,7 @@ TELNYX_NUMBER = config["TELNYX_NUMBER"]
 char_dict = {
     'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
     'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
-    'ñ': 'n', 'Ñ': 'N'
+    'ñ': 'n', 'Ñ': 'N', '¡': ''
 }
 
 ## Translation
@@ -355,7 +355,10 @@ def build_payload(fetch_dict, user_number):
     protocol = determine_protocol(payload, user_number)
     # System log
     print(payload)
-    send_message(protocol, payload, user_number)
+    try:
+        send_message(protocol, payload, user_number)
+    except telnyx.error.InvalidRequestError:
+        raise_exception(True, "Request too large for this translation", user_number)
 
 # Allow development run (uncomment):
 # init(input("dev_input = "), config["dev_number"])
