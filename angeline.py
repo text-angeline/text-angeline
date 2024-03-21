@@ -19,26 +19,22 @@ telnyx.api_key = config["TELNYX_KEY"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
-### Language dictionary
-lang_dict_tup = {
-    # To-do: Flesh out defintions
-    ("en", "eng", "english"): "en"
-}
-lang_dict = {key: value for keys, value in lang_dict_tup.items() for key in keys}
-
 ### Translation dictionary
-trans_base_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/{lang_dict['en']}/"
+trans_base_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/"
 trans_dict = {
-    "esv": f"{trans_base_url}esv.xml",
-    "kj21": f"{trans_base_url}kj21.xml",
-    "nasb": f"{trans_base_url}nasb-strong.xml",
-    "nasu": f"{trans_base_url}nasu.xml",
-    "niv": f"{trans_base_url}niv.xml",
-    "nkjv": f"{trans_base_url}nkjv.xml",
-    "nlt": f"{trans_base_url}nlt.xml",
-    "nrsv": f"{trans_base_url}nrsv.xml",
-    "rsv": f"{trans_base_url}rsv.xml",
-    "web": f"{trans_base_url}web.xml"
+    # en
+    "esv": f"{trans_base_url}en/esv.xml",
+    "kj21": f"{trans_base_url}en/kj21.xml",
+    "nasb": f"{trans_base_url}en/nasb-strong.xml",
+    "nasu": f"{trans_base_url}en/nasu.xml",
+    "niv": f"{trans_base_url}en/niv.xml",
+    "nkjv": f"{trans_base_url}en/nkjv.xml",
+    "nlt": f"{trans_base_url}en/nlt.xml",
+    "nrsv": f"{trans_base_url}en/nrsv.xml",
+    "rsv": f"{trans_base_url}en/rsv.xml",
+    "web": f"{trans_base_url}en/web.xml",
+    # nl (Voor mijn moeder)
+    "dsv": f"{trans_base_url}nl/dsv.xml"
 }
 
 ### Book dictionary (Tuple)
@@ -115,12 +111,12 @@ book_dict_tup = {
     ("jd", "jud", "jude"): "Jude",
     ("rv", "rev", "revelation"): "Revelation"
 }
-book_dict = {key: value for keys, value in book_dict_tup.items() for key in keys}
+book_dict = { key: value for keys, value in book_dict_tup.items() for key in keys }
 
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -170,7 +166,6 @@ def init(user_input, user_number):
             r")?"
 
             r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{3,4}))?"
-            r"(?: (?P<lang>[0-9a-zA-Z]{2,10}))?"
         r")$"
     )
 
@@ -205,21 +200,21 @@ def init(user_input, user_number):
                 "TchTvrBeg": match.group("TchTvrBeg"),
                 "TchTvrEnd": match.group("TchTvrEnd"),
 
-                "bible_trans": match.group("bible_trans")
+                "bible_trans": match.group("bible_trans"),
             }
         except AttributeError:
             raise_exception(True, "Couldn't parse request", user_number)
     else:
         raise_exception(True, "Invalid format", user_number)
 
-    # Translation (if none specified)
-    if (fetch_dict["bible_trans"] is None):
+    # Translation
+    if fetch_dict["bible_trans"] is None:
         bible_trans = DEFAULT_TRANS
-        fetch_dict["bible_xml"] = trans_dict[f"{bible_trans}"]
-    elif (fetch_dict["bible_trans"] in trans_dict):
+        fetch_dict["bible_xml"] = trans_dict[DEFAULT_TRANS]
+    elif fetch_dict["bible_trans"] in trans_dict:
         fetch_dict["bible_xml"] = trans_dict[fetch_dict["bible_trans"]]
     else:
-        raise_exception(True, "Invalid translation", user_number)
+        raise_exception(True, "Unsupported translation", user_number)
 
     # Controls/Book
     try:
