@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <XMLBIBLE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  biblename="ENGLISHNIV">
-	<BIBLEBOOK bname="Genesis">
+	<BIBLEBOOK bnumber="1" bname="Genesis">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the beginning God created the heavens and the earth.</VERS>
 			<VERS vnumber="2"> Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters.</VERS>
@@ -1635,7 +1635,7 @@
 			<VERS vnumber="26"> So Joseph died at the age of a hundred and ten. And after they embalmed him, he was placed in a coffin in Egypt.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Exodus">
+	<BIBLEBOOK bnumber="2" bname="Exodus">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> These are the names of the sons of Israel who went to Egypt with Jacob, each with his family:</VERS>
 			<VERS vnumber="2"> Reuben, Simeon, Levi and Judah;</VERS>
@@ -2930,7 +2930,7 @@
 			<VERS vnumber="38"> So the cloud of the LORD was over the tabernacle by day, and fire was in the cloud by night, in the sight of all the house of Israel during all their travels.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Leviticus">
+	<BIBLEBOOK bnumber="3" bname="Leviticus">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The LORD called to Moses and spoke to him from the Tent of Meeting. He said,</VERS>
 			<VERS vnumber="2"> "Speak to the Israelites and say to them: 'When any of you brings an offering to the LORD, bring as your offering an animal from either the herd or the flock.</VERS>
@@ -3845,7 +3845,7 @@
 			<VERS vnumber="34"> These are the commands the LORD gave Moses on Mount Sinai for the Israelites.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Numbers">
+	<BIBLEBOOK bnumber="4" bname="Numbers">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The LORD spoke to Moses in the Tent of Meeting in the Desert of Sinai on the first day of the second month of the second year after the Israelites came out of Egypt. He said:</VERS>
 			<VERS vnumber="2"> "Take a census of the whole Israelite community by their clans and families, listing every man by name, one by one.</VERS>
@@ -5207,7 +5207,7 @@
 			<VERS vnumber="13"> These are the commands and regulations the LORD gave through Moses to the Israelites on the plains of Moab by the Jordan across from Jericho.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Deuteronomy">
+	<BIBLEBOOK bnumber="5" bname="Deuteronomy">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> These are the words Moses spoke to all Israel in the desert east of the Jordan-that is, in the Arabah-opposite Suph, between Paran and Tophel, Laban, Hazeroth and Dizahab.</VERS>
 			<VERS vnumber="2"> (It takes eleven days to go from Horeb to Kadesh Barnea by the Mount Seir road.)</VERS>
@@ -6236,7 +6236,7 @@
 			<VERS vnumber="12"> For no one has ever shown the mighty power or performed the awesome deeds that Moses did in the sight of all Israel.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Joshua">
+	<BIBLEBOOK bnumber="6" bname="Joshua">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> After the death of Moses the servant of the LORD, the LORD said to Joshua son of Nun, Moses' aide:</VERS>
 			<VERS vnumber="2"> "Moses my servant is dead. Now then, you and all these people, get ready to cross the Jordan River into the land I am about to give to them-to the Israelites.</VERS>
@@ -6944,7 +6944,7 @@
 			<VERS vnumber="33"> And Eleazar son of Aaron died and was buried at Gibeah, which had been allotted to his son Phinehas in the hill country of Ephraim.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Judges">
+	<BIBLEBOOK bnumber="7" bname="Judges">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> After the death of Joshua, the Israelites asked the LORD, "Who will be the first to go up and fight for us against the Canaanites?"</VERS>
 			<VERS vnumber="2"> The LORD answered, "Judah is to go; I have given the land into their hands."</VERS>
@@ -7606,7 +7606,7 @@
 			<VERS vnumber="25"> In those days Israel had no king; everyone did as he saw fit.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Ruth">
+	<BIBLEBOOK bnumber="8" bname="Ruth">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the days when the judges ruled, there was a famine in the land, and a man from Bethlehem in Judah, together with his wife and two sons, went to live for a while in the country of Moab.</VERS>
 			<VERS vnumber="2"> The man's name was Elimelech, his wife's name Naomi, and the names of his two sons were Mahlon and Kilion. They were Ephrathites from Bethlehem, Judah. And they went to Moab and lived there.</VERS>
@@ -7701,7 +7701,7 @@
 			<VERS vnumber="22"> Obed the father of Jesse, and Jesse the father of David.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="1 Samuel">
+	<BIBLEBOOK bnumber="9" bname="1 Samuel">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> There was a certain man from Ramathaim, a Zuphite from the hill country of Ephraim, whose name was Elkanah son of Jeroham, the son of Elihu, the son of Tohu, the son of Zuph, an Ephraimite.</VERS>
 			<VERS vnumber="2"> He had two wives; one was called Hannah and the other Peninnah. Peninnah had children, but Hannah had none.</VERS>
@@ -8575,7 +8575,7 @@
 			<VERS vnumber="13"> Then they took their bones and buried them under a tamarisk tree at Jabesh, and they fasted seven days.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="2 Samuel">
+	<BIBLEBOOK bnumber="10" bname="2 Samuel">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> After the death of Saul, David returned from defeating the Amalekites and stayed in Ziklag two days.</VERS>
 			<VERS vnumber="2"> On the third day a man arrived from Saul's camp, with his clothes torn and with dust on his head. When he came to David, he fell to the ground to pay him honor.</VERS>
@@ -9320,7 +9320,7 @@
 			<VERS vnumber="25"> David built an altar to the LORD there and sacrificed burnt offerings and fellowship offerings. Then the LORD answered prayer in behalf of the land, and the plague on Israel was stopped.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="1 Kings">
+	<BIBLEBOOK bnumber="11" bname="1 Kings">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> When King David was old and well advanced in years, he could not keep warm even when they put covers over him.</VERS>
 			<VERS vnumber="2"> So his servants said to him, "Let us look for a young virgin to attend the king and take care of him. She can lie beside him so that our lord the king may keep warm."</VERS>
@@ -10182,7 +10182,7 @@
 			<VERS vnumber="53"> He served and worshiped Baal and provoked the LORD, the God of Israel, to anger, just as his father had done.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="2 Kings">
+	<BIBLEBOOK bnumber="12" bname="2 Kings">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> After Ahab's death, Moab rebelled against Israel.</VERS>
 			<VERS vnumber="2"> Now Ahaziah had fallen through the lattice of his upper room in Samaria and injured himself. So he sent messengers, saying to them, "Go and consult Baal-Zebub, the god of Ekron, to see if I will recover from this injury."</VERS>
@@ -10953,7 +10953,7 @@
 			<VERS vnumber="30"> Day by day the king gave Jehoiachin a regular allowance as long as he lived.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="1 Chronicles">
+	<BIBLEBOOK bnumber="13" bname="1 Chronicles">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Adam, Seth, Enosh,</VERS>
 			<VERS vnumber="2"> Kenan, Mahalalel, Jared,</VERS>
@@ -11955,7 +11955,7 @@
 			<VERS vnumber="30"> together with the details of his reign and power, and the circumstances that surrounded him and Israel and the kingdoms of all the other lands.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="2 Chronicles">
+	<BIBLEBOOK bnumber="14" bname="2 Chronicles">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Solomon son of David established himself firmly over his kingdom, for the LORD his God was with him and made him exceedingly great.</VERS>
 			<VERS vnumber="2"> Then Solomon spoke to all Israel-to the commanders of thousands and commanders of hundreds, to the judges and to all the leaders in Israel, the heads of families-</VERS>
@@ -12851,7 +12851,7 @@
 			<VERS vnumber="23"> "This is what Cyrus king of Persia says: "'The LORD, the God of heaven, has given me all the kingdoms of the earth and he has appointed me to build a temple for him at Jerusalem in Judah. Anyone of his people among you-may the LORD his God be with him, and let him go up.'"</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Ezra">
+	<BIBLEBOOK bnumber="15" bname="Ezra">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the first year of Cyrus king of Persia, in order to fulfill the word of the LORD spoken by Jeremiah, the LORD moved the heart of Cyrus king of Persia to make a proclamation throughout his realm and to put it in writing:</VERS>
 			<VERS vnumber="2"> "This is what Cyrus king of Persia says: "'The LORD, the God of heaven, has given me all the kingdoms of the earth and he has appointed me to build a temple for him at Jerusalem in Judah.</VERS>
@@ -13153,7 +13153,7 @@
 			<VERS vnumber="44"> All these had married foreign women, and some of them had children by these wives.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Nehemiah">
+	<BIBLEBOOK bnumber="16" bname="Nehemiah">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The words of Nehemiah son of Hacaliah: In the month of Kislev in the twentieth year, while I was in the citadel of Susa,</VERS>
 			<VERS vnumber="2"> Hanani, one of my brothers, came from Judah with some other men, and I questioned them about the Jewish remnant that survived the exile, and also about Jerusalem.</VERS>
@@ -13587,7 +13587,7 @@
 			<VERS vnumber="31"> I also made provision for contributions of wood at designated times, and for the firstfruits. Remember me with favor, O my God.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Esther">
+	<BIBLEBOOK bnumber="17" bname="Esther">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> This is what happened during the time of Xerxes, the Xerxes who ruled over 127 provinces stretching from India to Cush:</VERS>
 			<VERS vnumber="2"> At that time King Xerxes reigned from his royal throne in the citadel of Susa,</VERS>
@@ -13776,7 +13776,7 @@
 			<VERS vnumber="3"> Mordecai the Jew was second in rank to King Xerxes, preeminent among the Jews, and held in high esteem by his many fellow Jews, because he worked for the good of his people and spoke up for the welfare of all the Jews.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Job">
+	<BIBLEBOOK bnumber="18" bname="Job">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the land of Uz there lived a man whose name was Job. This man was blameless and upright; he feared God and shunned evil.</VERS>
 			<VERS vnumber="2"> He had seven sons and three daughters,</VERS>
@@ -14932,7 +14932,7 @@
 			<VERS vnumber="17"> And so he died, old and full of years.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Psalm">
+	<BIBLEBOOK bnumber="19" bname="Psalm">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Blessed is the man who does not walk in the counsel of the wicked or stand in the way of sinners or sit in the seat of mockers.</VERS>
 			<VERS vnumber="2"> But his delight is in the law of the LORD, and on his law he meditates day and night.</VERS>
@@ -17695,7 +17695,7 @@
 			<VERS vnumber="6"> Let everything that has breath praise the LORD. Praise the LORD.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Proverbs">
+	<BIBLEBOOK bnumber="20" bname="Proverbs">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The proverbs of Solomon son of David, king of Israel:</VERS>
 			<VERS vnumber="2"> for attaining wisdom and discipline; for understanding words of insight;</VERS>
@@ -18674,7 +18674,7 @@
 			<VERS vnumber="31"> Give her the reward she has earned, and let her works bring her praise at the city gate.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Ecclesiastes">
+	<BIBLEBOOK bnumber="21" bname="Ecclesiastes">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The words of the Teacher, son of David, king in Jerusalem:</VERS>
 			<VERS vnumber="2"> "Meaningless! Meaningless!" says the Teacher. "Utterly meaningless! Everything is meaningless."</VERS>
@@ -18922,7 +18922,7 @@
 			<VERS vnumber="14"> For God will bring every deed into judgment, including every hidden thing, whether it is good or evil.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Song of Solomon">
+	<BIBLEBOOK bnumber="22" bname="Song of Solomon">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Solomon's Song of Songs.</VERS>
 			<VERS vnumber="2"> Let him kiss me with the kisses of his mouth- for your love is more delightful than wine.</VERS>
@@ -19057,7 +19057,7 @@
 			<VERS vnumber="14"> Come away, my lover, and be like a gazelle or like a young stag on the spice-laden mountains.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Isaiah">
+	<BIBLEBOOK bnumber="23" bname="Isaiah">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The vision concerning Judah and Jerusalem that Isaiah son of Amoz saw during the reigns of Uzziah, Jotham, Ahaz and Hezekiah, kings of Judah.</VERS>
 			<VERS vnumber="2"> Hear, O heavens! Listen, O earth! For the LORD has spoken: "I reared children and brought them up, but they have rebelled against me.</VERS>
@@ -20483,7 +20483,7 @@
 			<VERS vnumber="24"> "And they will go out and look upon the dead bodies of those who rebelled against me; their worm will not die, nor will their fire be quenched, and they will be loathsome to all mankind."</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Jeremiah">
+	<BIBLEBOOK bnumber="24" bname="Jeremiah">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The words of Jeremiah son of Hilkiah, one of the priests at Anathoth in the territory of Benjamin.</VERS>
 			<VERS vnumber="2"> The word of the LORD came to him in the thirteenth year of the reign of Josiah son of Amon king of Judah,</VERS>
@@ -21953,7 +21953,7 @@
 			<VERS vnumber="34"> Day by day the king of Babylon gave Jehoiachin a regular allowance as long as he lived, till the day of his death.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Lamentations">
+	<BIBLEBOOK bnumber="25" bname="Lamentations">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> How deserted lies the city, once so full of people! How like a widow is she, who once was great among the nations! She who was queen among the provinces has now become a slave.</VERS>
 			<VERS vnumber="2"> Bitterly she weeps at night, tears are upon her cheeks. Among all her lovers there is none to comfort her. All her friends have betrayed her; they have become her enemies.</VERS>
@@ -22119,7 +22119,7 @@
 			<VERS vnumber="22"> unless you have utterly rejected us and are angry with us beyond measure.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Ezekiel">
+	<BIBLEBOOK bnumber="26" bname="Ezekiel">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the thirtieth year, in the fourth month on the fifth day, while I was among the exiles by the Kebar River, the heavens were opened and I saw visions of God.</VERS>
 			<VERS vnumber="2"> On the fifth of the month-it was the fifth year of the exile of King Jehoiachin-</VERS>
@@ -23490,7 +23490,7 @@
 			<VERS vnumber="35"> "The distance all around will be 18,000 cubits. "And the name of the city from that time on will be: The LORD is There."</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Daniel">
+	<BIBLEBOOK bnumber="27" bname="Daniel">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the third year of the reign of Jehoiakim king of Judah, Nebuchadnezzar king of Babylon came to Jerusalem and besieged it.</VERS>
 			<VERS vnumber="2"> And the Lord delivered Jehoiakim king of Judah into his hand, along with some of the articles from the temple of God. These he carried off to the temple of his god in Babylonia and put in the treasure house of his god.</VERS>
@@ -23873,7 +23873,7 @@
 			<VERS vnumber="13"> "As for you, go your way till the end. You will rest, and then at the end of the days you will rise to receive your allotted inheritance."</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Hosea">
+	<BIBLEBOOK bnumber="28" bname="Hosea">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The word of the LORD that came to Hosea son of Beeri during the reigns of Uzziah, Jotham, Ahaz and Hezekiah, kings of Judah, and during the reign of Jeroboam son of Jehoash king of Israel:</VERS>
 			<VERS vnumber="2"> When the LORD began to speak through Hosea, the LORD said to him, "Go, take to yourself an adulterous wife and children of unfaithfulness, because the land is guilty of the vilest adultery in departing from the LORD."</VERS>
@@ -24100,7 +24100,7 @@
 			<VERS vnumber="9"> Who is wise? He will realize these things. Who is discerning? He will understand them. The ways of the LORD are right; the righteous walk in them, but the rebellious stumble in them.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Joel">
+	<BIBLEBOOK bnumber="29" bname="Joel">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The word of the LORD that came to Joel son of Pethuel.</VERS>
 			<VERS vnumber="2"> Hear this, you elders; listen, all who live in the land. Has anything like this ever happened in your days or in the days of your forefathers?</VERS>
@@ -24181,7 +24181,7 @@
 			<VERS vnumber="21"> Their bloodguilt, which I have not pardoned, I will pardon." The LORD dwells in Zion!</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Amos">
+	<BIBLEBOOK bnumber="30" bname="Amos">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The words of Amos, one of the shepherds of Tekoa-what he saw concerning Israel two years before the earthquake, when Uzziah was king of Judah and Jeroboam son of Jehoash was king of Israel.</VERS>
 			<VERS vnumber="2"> He said: "The LORD roars from Zion and thunders from Jerusalem; the pastures of the shepherds dry up, and the top of Carmel withers."</VERS>
@@ -24347,7 +24347,7 @@
 			<VERS vnumber="15"> I will plant Israel in their own land, never again to be uprooted from the land I have given them," says the LORD your God.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Obadiah">
+	<BIBLEBOOK bnumber="31" bname="Obadiah">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The vision of Obadiah. This is what the Sovereign LORD says about Edom- We have heard a message from the LORD: An envoy was sent to the nations to say, "Rise, and let us go against her for battle"-</VERS>
 			<VERS vnumber="2"> "See, I will make you small among the nations; you will be utterly despised.</VERS>
@@ -24372,7 +24372,7 @@
 			<VERS vnumber="21"> Deliverers will go up on Mount Zion to govern the mountains of Esau. And the kingdom will be the LORD's.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Jonah">
+	<BIBLEBOOK bnumber="32" bname="Jonah">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The word of the LORD came to Jonah son of Amittai:</VERS>
 			<VERS vnumber="2"> "Go to the great city of Nineveh and preach against it, because its wickedness has come up before me."</VERS>
@@ -24430,7 +24430,7 @@
 			<VERS vnumber="11"> But Nineveh has more than a hundred and twenty thousand people who cannot tell their right hand from their left, and many cattle as well. Should I not be concerned about that great city?"</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Micah">
+	<BIBLEBOOK bnumber="33" bname="Micah">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The word of the LORD that came to Micah of Moresheth during the reigns of Jotham, Ahaz and Hezekiah, kings of Judah-the vision he saw concerning Samaria and Jerusalem.</VERS>
 			<VERS vnumber="2"> Hear, O peoples, all of you, listen, O earth and all who are in it, that the Sovereign LORD may witness against you, the Lord from his holy temple.</VERS>
@@ -24551,7 +24551,7 @@
 			<VERS vnumber="20"> You will be true to Jacob, and show mercy to Abraham, as you pledged on oath to our fathers in days long ago.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Nahum">
+	<BIBLEBOOK bnumber="34" bname="Nahum">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> An oracle concerning Nineveh. The book of the vision of Nahum the Elkoshite.</VERS>
 			<VERS vnumber="2"> The LORD is a jealous and avenging God; the LORD takes vengeance and is filled with wrath. The LORD takes vengeance on his foes and maintains his wrath against his enemies.</VERS>
@@ -24606,7 +24606,7 @@
 			<VERS vnumber="19"> Nothing can heal your wound; your injury is fatal. Everyone who hears the news about you claps his hands at your fall, for who has not felt your endless cruelty?</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Habakkuk">
+	<BIBLEBOOK bnumber="35" bname="Habakkuk">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The oracle that Habakkuk the prophet received.</VERS>
 			<VERS vnumber="2"> How long, O LORD, must I call for help, but you do not listen? Or cry out to you, "Violence!" but you do not save?</VERS>
@@ -24670,7 +24670,7 @@
 			<VERS vnumber="19"> The Sovereign LORD is my strength; he makes my feet like the feet of a deer, he enables me to go on the heights. For the director of music. On my stringed instruments.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Zephaniah">
+	<BIBLEBOOK bnumber="36" bname="Zephaniah">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The word of the LORD that came to Zephaniah son of Cushi, the son of Gedaliah, the son of Amariah, the son of Hezekiah, during the reign of Josiah son of Amon king of Judah:</VERS>
 			<VERS vnumber="2"> "I will sweep away everything from the face of the earth," declares the LORD.</VERS>
@@ -24731,7 +24731,7 @@
 			<VERS vnumber="20"> At that time I will gather you; at that time I will bring you home. I will give you honor and praise among all the peoples of the earth when I restore your fortunes before your very eyes," says the LORD.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Haggai">
+	<BIBLEBOOK bnumber="37" bname="Haggai">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the second year of King Darius, on the first day of the sixth month, the word of the LORD came through the prophet Haggai to Zerubbabel son of Shealtiel, governor of Judah, and to Joshua son of Jehozadak, the high priest:</VERS>
 			<VERS vnumber="2"> This is what the LORD Almighty says: "These people say, 'The time has not yet come for the LORD's house to be built.'"</VERS>
@@ -24775,7 +24775,7 @@
 			<VERS vnumber="23"> "'On that day,' declares the LORD Almighty, 'I will take you, my servant Zerubbabel son of Shealtiel,' declares the LORD, 'and I will make you like my signet ring, for I have chosen you,' declares the LORD Almighty."</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Zechariah">
+	<BIBLEBOOK bnumber="38" bname="Zechariah">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the eighth month of the second year of Darius, the word of the LORD came to the prophet Zechariah son of Berekiah, the son of Iddo:</VERS>
 			<VERS vnumber="2"> "The LORD was very angry with your forefathers.</VERS>
@@ -25016,7 +25016,7 @@
 			<VERS vnumber="21"> Every pot in Jerusalem and Judah will be holy to the LORD Almighty, and all who come to sacrifice will take some of the pots and cook in them. And on that day there will no longer be a Canaanite in the house of the LORD Almighty.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Malachi">
+	<BIBLEBOOK bnumber="39" bname="Malachi">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> An oracle: The word of the LORD to Israel through Malachi.</VERS>
 			<VERS vnumber="2"> "I have loved you," says the LORD. "But you ask, 'How have you loved us?'"Was not Esau Jacob's brother?" the LORD says. "Yet I have loved Jacob,</VERS>
@@ -25081,7 +25081,7 @@
 			<VERS vnumber="6"> He will turn the hearts of the fathers to their children, and the hearts of the children to their fathers; or else I will come and strike the land with a curse."</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Matthew">
+	<BIBLEBOOK bnumber="40" bname="Matthew">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> A record of the genealogy of Jesus Christ the son of David, the son of Abraham:</VERS>
 			<VERS vnumber="2"> Abraham was the father of Isaac, Isaac the father of Jacob, Jacob the father of Judah and his brothers,</VERS>
@@ -26210,7 +26210,7 @@
 			<VERS vnumber="20"> and teaching them to obey everything I have commanded you. And surely I am with you always, to the very end of the age."</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Mark">
+	<BIBLEBOOK bnumber="41" bname="Mark">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The beginning of the gospel about Jesus Christ, the Son of God.</VERS>
 			<VERS vnumber="2"> It is written in Isaiah the prophet: "I will send my messenger ahead of you, who will prepare your way"--</VERS>
@@ -26922,7 +26922,7 @@
 			<VERS vnumber="20"> Then the disciples went out and preached everywhere, and the Lord worked with them and confirmed his word by the signs that accompanied it.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Luke">
+	<BIBLEBOOK bnumber="42" bname="Luke">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Many have undertaken to draw up an account of the things that have been fulfilled among us,</VERS>
 			<VERS vnumber="2"> just as they were handed down to us by those who from the first were eyewitnesses and servants of the word.</VERS>
@@ -28123,7 +28123,7 @@
 			<VERS vnumber="53"> And they stayed continually at the temple, praising God.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="John">
+	<BIBLEBOOK bnumber="43" bname="John">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the beginning was the Word, and the Word was with God, and the Word was God.</VERS>
 			<VERS vnumber="2"> He was with God in the beginning.</VERS>
@@ -29046,7 +29046,7 @@
 			<VERS vnumber="25"> Jesus did many other things as well. If every one of them were written down, I suppose that even the whole world would not have room for the books that would be written.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Acts">
+	<BIBLEBOOK bnumber="44" bname="Acts">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In my former book, Theophilus, I wrote about all that Jesus began to do and to teach</VERS>
 			<VERS vnumber="2"> until the day he was taken up to heaven, after giving instructions through the Holy Spirit to the apostles he had chosen.</VERS>
@@ -30111,7 +30111,7 @@
 			<VERS vnumber="31"> Boldly and without hindrance he preached the kingdom of God and taught about the Lord Jesus Christ.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Romans">
+	<BIBLEBOOK bnumber="45" bname="Romans">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, a servant of Christ Jesus, called to be an apostle and set apart for the gospel of God--</VERS>
 			<VERS vnumber="2"> the gospel he promised beforehand through his prophets in the Holy Scriptures</VERS>
@@ -30578,7 +30578,7 @@
 			<VERS vnumber="27"> to the only wise God be glory forever through Jesus Christ! Amen.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="1 Corinthians">
+	<BIBLEBOOK bnumber="46" bname="1 Corinthians">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, called to be an apostle of Christ Jesus by the will of God, and our brother Sosthenes,</VERS>
 			<VERS vnumber="2"> To the church of God in Corinth, to those sanctified in Christ Jesus and called to be holy, together with all those everywhere who call on the name of our Lord Jesus Christ--their Lord and ours:</VERS>
@@ -31049,7 +31049,7 @@
 			<VERS vnumber="24"> My love to all of you in Christ Jesus. Amen.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="2 Corinthians">
+	<BIBLEBOOK bnumber="47" bname="2 Corinthians">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, an apostle of Christ Jesus by the will of God, and Timothy our brother, To the church of God in Corinth, together with all the saints throughout Achaia:</VERS>
 			<VERS vnumber="2"> Grace and peace to you from God our Father and the Lord Jesus Christ.</VERS>
@@ -31334,7 +31334,7 @@
 			<VERS vnumber="14"> May the grace of the Lord Jesus Christ, and the love of God, and the fellowship of the Holy Spirit be with you all.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Galatians">
+	<BIBLEBOOK bnumber="48" bname="Galatians">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, an apostle--sent not from men nor by man, but by Jesus Christ and God the Father, who raised him from the dead--</VERS>
 			<VERS vnumber="2"> and all the brothers with me, To the churches in Galatia:</VERS>
@@ -31497,7 +31497,7 @@
 			<VERS vnumber="18"> The grace of our Lord Jesus Christ be with your spirit, brothers. Amen.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Ephesians">
+	<BIBLEBOOK bnumber="49" bname="Ephesians">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, an apostle of Christ Jesus by the will of God, To the saints in Ephesus, the faithful in Christ Jesus:</VERS>
 			<VERS vnumber="2"> Grace and peace to you from God our Father and the Lord Jesus Christ.</VERS>
@@ -31666,7 +31666,7 @@
 			<VERS vnumber="24"> Grace to all who love our Lord Jesus Christ with an undying love.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Philippians">
+	<BIBLEBOOK bnumber="50" bname="Philippians">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul and Timothy, servants of Christ Jesus, To all the saints in Christ Jesus at Philippi, together with the overseers and deacons:</VERS>
 			<VERS vnumber="2"> Grace and peace to you from God our Father and the Lord Jesus Christ.</VERS>
@@ -31780,7 +31780,7 @@
 			<VERS vnumber="23"> The grace of the Lord Jesus Christ be with your spirit. Amen.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Colossians">
+	<BIBLEBOOK bnumber="51" bname="Colossians">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, an apostle of Christ Jesus by the will of God, and Timothy our brother,</VERS>
 			<VERS vnumber="2"> To the holy and faithful brothers in Christ at Colosse: Grace and peace to you from God our Father.</VERS>
@@ -31885,7 +31885,7 @@
 			<VERS vnumber="18"> I, Paul, write this greeting in my own hand. Remember my chains. Grace be with you.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="1 Thessalonians">
+	<BIBLEBOOK bnumber="52" bname="1 Thessalonians">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, Silas and Timothy, To the church of the Thessalonians in God the Father and the Lord Jesus Christ: Grace and peace to you.</VERS>
 			<VERS vnumber="2"> We always thank God for all of you, mentioning you in our prayers.</VERS>
@@ -31986,7 +31986,7 @@
 			<VERS vnumber="28"> The grace of our Lord Jesus Christ be with you.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="2 Thessalonians">
+	<BIBLEBOOK bnumber="53" bname="2 Thessalonians">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, Silas and Timothy, To the church of the Thessalonians in God our Father and the Lord Jesus Christ:</VERS>
 			<VERS vnumber="2"> Grace and peace to you from God the Father and the Lord Jesus Christ.</VERS>
@@ -32041,7 +32041,7 @@
 			<VERS vnumber="18"> The grace of our Lord Jesus Christ be with you all.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="1 Timothy">
+	<BIBLEBOOK bnumber="54" bname="1 Timothy">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, an apostle of Christ Jesus by the command of God our Savior and of Christ Jesus our hope,</VERS>
 			<VERS vnumber="2"> To Timothy my true son in the faith: Grace, mercy and peace from God the Father and Christ Jesus our Lord.</VERS>
@@ -32168,7 +32168,7 @@
 			<VERS vnumber="21"> which some have professed and in so doing have wandered from the faith. Grace be with you.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="2 Timothy">
+	<BIBLEBOOK bnumber="55" bname="2 Timothy">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, an apostle of Christ Jesus by the will of God, according to the promise of life that is in Christ Jesus,</VERS>
 			<VERS vnumber="2"> To Timothy, my dear son: Grace, mercy and peace from God the Father and Christ Jesus our Lord.</VERS>
@@ -32261,7 +32261,7 @@
 			<VERS vnumber="22"> The Lord be with your spirit. Grace be with you.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Titus">
+	<BIBLEBOOK bnumber="56" bname="Titus">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, a servant of God and an apostle of Jesus Christ for the faith of God's elect and the knowledge of the truth that leads to godliness--</VERS>
 			<VERS vnumber="2"> a faith and knowledge resting on the hope of eternal life, which God, who does not lie, promised before the beginning of time,</VERS>
@@ -32315,7 +32315,7 @@
 			<VERS vnumber="15"> Everyone with me sends you greetings. Greet those who love us in the faith. Grace be with you all.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Philemon">
+	<BIBLEBOOK bnumber="57" bname="Philemon">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Paul, a prisoner of Christ Jesus, and Timothy our brother,</VERS>
 			<VERS vnumber="2"> To Philemon our dear friend and fellow worker, to Apphia our sister, to Archippus our fellow soldier and to the church that meets in your home:</VERS>
@@ -32344,7 +32344,7 @@
 			<VERS vnumber="25"> The grace of the Lord Jesus Christ be with your spirit.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Hebrews">
+	<BIBLEBOOK bnumber="58" bname="Hebrews">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> In the past God spoke to our forefathers through the prophets at many times and in various ways,</VERS>
 			<VERS vnumber="2"> but in these last days he has spoken to us by his Son, whom he appointed heir of all things, and through whom he made the universe.</VERS>
@@ -32675,7 +32675,7 @@
 			<VERS vnumber="25"> Grace be with you all.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="James">
+	<BIBLEBOOK bnumber="59" bname="James">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> James, a servant of God and of the Lord Jesus Christ, To the twelve tribes scattered among the nations: Greetings.</VERS>
 			<VERS vnumber="2"> Consider it pure joy, my brothers, whenever you face trials of many kinds,</VERS>
@@ -32795,7 +32795,7 @@
 			<VERS vnumber="20"> remember this: Whoever turns a sinner from the error of his way will save him from death and cover over a multitude of sins.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="1 Peter">
+	<BIBLEBOOK bnumber="60" bname="1 Peter">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Peter, an apostle of Jesus Christ, To God's elect, strangers in the world, scattered throughout Pontus, Galatia, Cappadocia, Asia and Bithynia,</VERS>
 			<VERS vnumber="2"> who have been chosen according to the foreknowledge of God the Father, through the sanctifying work of the Spirit, for obedience to Jesus Christ and sprinkling by his blood: Grace and peace be yours in abundance.</VERS>
@@ -32912,7 +32912,7 @@
 			<VERS vnumber="14"> Greet one another with a kiss of love. Peace to all of you who are in Christ.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="2 Peter">
+	<BIBLEBOOK bnumber="61" bname="2 Peter">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Simon Peter, a servant and apostle of Jesus Christ, To those who through the righteousness of our God and Savior Jesus Christ have received a faith as precious as ours:</VERS>
 			<VERS vnumber="2"> Grace and peace be yours in abundance through the knowledge of God and of Jesus our Lord.</VERS>
@@ -32981,7 +32981,7 @@
 			<VERS vnumber="18"> But grow in the grace and knowledge of our Lord and Savior Jesus Christ. To him be glory both now and forever! Amen.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="1 John">
+	<BIBLEBOOK bnumber="62" bname="1 John">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> That which was from the beginning, which we have heard, which we have seen with our eyes, which we have looked at and our hands have touched--this we proclaim concerning the Word of life.</VERS>
 			<VERS vnumber="2"> The life appeared; we have seen it and testify to it, and we proclaim to you the eternal life, which was with the Father and has appeared to us.</VERS>
@@ -33098,7 +33098,7 @@
 			<VERS vnumber="21"> Dear children, keep yourselves from idols.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="2 John">
+	<BIBLEBOOK bnumber="63" bname="2 John">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The elder,</VERS>
 			<VERS vnumber="2"> To the chosen lady and her children, whom I love in the truth--and not I only, but also all who know the truth--because of the truth, which lives in us and will be with us forever:</VERS>
@@ -33115,7 +33115,7 @@
 			<VERS vnumber="13"> The children of your chosen sister send their greetings.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="3 John">
+	<BIBLEBOOK bnumber="64" bname="3 John">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The elder, To my dear friend Gaius, whom I love in the truth.</VERS>
 			<VERS vnumber="2"> Dear friend, I pray that you may enjoy good health and that all may go well with you, even as your soul is getting along well.</VERS>
@@ -33133,7 +33133,7 @@
 			<VERS vnumber="14"> I hope to see you soon, and we will talk face to face. Peace to you. The friends here send their greetings. Greet the friends there by name.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Jude">
+	<BIBLEBOOK bnumber="65" bname="Jude">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> Jude, a servant of Jesus Christ and a brother of James, To those who have been called, who are loved by God the Father and kept by Jesus Christ:</VERS>
 			<VERS vnumber="2"> Mercy, peace and love be yours in abundance.</VERS>
@@ -33162,7 +33162,7 @@
 			<VERS vnumber="25"> to the only God our Savior be glory, majesty, power and authority, through Jesus Christ our Lord, before all ages, now and forevermore! Amen.</VERS>
 		</CHAPTER>
 	</BIBLEBOOK>
-	<BIBLEBOOK bname="Revelation">
+	<BIBLEBOOK bnumber="66" bname="Revelation">
 		<CHAPTER cnumber="1">
 			<VERS vnumber="1"> The revelation of Jesus Christ, which God gave him to show his servants what must soon take place. He made it known by sending his angel to his servant John,</VERS>
 			<VERS vnumber="2"> who testifies to everything he saw--that is, the word of God and the testimony of Jesus Christ.</VERS>
