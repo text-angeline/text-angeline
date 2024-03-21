@@ -11,11 +11,13 @@ import xml.etree.ElementTree as ET
 with open("config.json", 'r') as file:
     config = json.load(file)
 
-### Constants
+### Global variables
+# Telnyx
+telnyx.api_key = config["TELNYX_KEY"]
+# Constants
 SMS_MAX_CAP = 160
 MMS_MAX_CAP = 1600
 GITHUB_TOKEN = config["GITHUB_TOKEN"]
-telnyx.api_key = config["TELNYX_KEY"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
