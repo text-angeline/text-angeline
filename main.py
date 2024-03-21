@@ -9,7 +9,7 @@ def receive_sms(request, context):
         event_type = request.get("event_type")
         if (event_type == "message.received"):
             user_input = bleach.clean(request["payload"]["text"])
-            user_number = request["payload"]["from"]['phone_number"]
+            user_number = request["payload"]["from"]["phone_number"]
             print("user_input:", user_input)
             print("user_number:", user_number)
             angeline.init(user_input, user_number)
