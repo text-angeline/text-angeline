@@ -2,7 +2,7 @@
 
 import re
 import json
-import telnyx
+# import telnyx
 import string
 import requests
 import xml.etree.ElementTree as ET
@@ -12,36 +12,47 @@ with open("config.json", 'r') as file:
     config = json.load(file)
 
 ### Global variables
-# Telnyx
-telnyx.api_key = config["TELNYX_KEY"]
-# Constants
+
+## Telnyx
+# telnyx.api_key = config["TELNYX_KEY"]
+
+## Constants
 SMS_MAX_CAP = 160
 MMS_MAX_CAP = 1600
 GITHUB_TOKEN = config["GITHUB_TOKEN"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
-### Translation dictionary
-trans_base_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/"
-trans_dict = {
-    # Dutch (NL)
-    "dsv": f"{trans_base_url}nl/dsv.xml",
-    # English (EN)
-    "esv": f"{trans_base_url}en/esv.xml",
-    "kj21": f"{trans_base_url}en/kj21.xml",
-    "nasb": f"{trans_base_url}en/nasb-strong.xml",
-    "nasu": f"{trans_base_url}en/nasu.xml",
-    "niv": f"{trans_base_url}en/niv.xml",
-    "nkjv": f"{trans_base_url}en/nkjv.xml",
-    "nlt": f"{trans_base_url}en/nlt.xml",
-    "nrsv": f"{trans_base_url}en/nrsv.xml",
-    "rsv": f"{trans_base_url}en/rsv.xml",
-    "web": f"{trans_base_url}en/web.xml",
-    # Spanish (ES)
-    "oso": f"{trans_base_url}es/oso.xml"
+### Dictionaries
+
+## Character
+char_dict = {
+    'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+    'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
+    'ñ': 'n', 'Ñ': 'N'
 }
 
-### Book dictionary (Tuple)
+## Translation
+trans_dict_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/"
+trans_dict = {
+    # Dutch (NL)
+    "dsv": f"{trans_dict_url}nl/dsv.xml",
+    # English (EN)
+    "esv": f"{trans_dict_url}en/esv.xml",
+    "kj21": f"{trans_dict_url}en/kj21.xml",
+    "nasb": f"{trans_dict_url}en/nasb-strong.xml",
+    "nasu": f"{trans_dict_url}en/nasu.xml",
+    "niv": f"{trans_dict_url}en/niv.xml",
+    "nkjv": f"{trans_dict_url}en/nkjv.xml",
+    "nlt": f"{trans_dict_url}en/nlt.xml",
+    "nrsv": f"{trans_dict_url}en/nrsv.xml",
+    "rsv": f"{trans_dict_url}en/rsv.xml",
+    "web": f"{trans_dict_url}en/web.xml",
+    # Spanish (ES)
+    "oso": f"{trans_dict_url}es/oso.xml"
+}
+
+## Book
 book_dict_tup = {
     # Controls
     ("help",): "HELP",
@@ -141,9 +152,6 @@ def raise_exception(is_error, text_content, user_number):
         send_message("SMS", payload, user_number)
     raise Exception("Aborting")
 
-### Init (Development)
-def init_dev(): init(input("dev_input = "), config["dev_number"])
-
 ### Init (Production)
 def init(user_input, user_number):
     pattern = (
@@ -211,7 +219,7 @@ def init(user_input, user_number):
     else:
         raise_exception(True, "Invalid format", user_number)
 
-    # Translation
+    ## Translation
     if fetch_dict["bible_trans"] is None:
         bible_trans = DEFAULT_TRANS
         fetch_dict["bible_xml"] = trans_dict[DEFAULT_TRANS]
@@ -220,7 +228,7 @@ def init(user_input, user_number):
     else:
         raise_exception(True, "Unsupported translation", user_number)
 
-    # Controls/Book
+    ## Controls/Book
     try:
         if (book_num is None):
             if (book_dict[book_title] == "HELP"):
@@ -238,16 +246,17 @@ def init(user_input, user_number):
     except KeyError:
         raise_exception(True, "Couldn't locate book", user_number)
 
-    # Build message payload
+    ## Build message payload
     build_payload(fetch_dict, user_number)
 
 ### Fetch text
 def fetch_text(fetch_dict, user_number):
     try:
-        ## Local XML:
+        ## Local:
         # tree = ET.parse(bible)
         # root = tree.getroot()
-        ## Remote XML:
+
+        ## Remote:
         headers = {
             "Authorization": f"token {GITHUB_TOKEN}",
             "Accept": "application/vnd.github.v3.raw"
@@ -278,21 +287,24 @@ def build_payload(fetch_dict, user_number):
     try:
         payload = ""
         request_order = ['F', 'S', 'T']
-        # Book
+
+        ## Book
         if (fetch_dict["Fch"] is None):
             # Unsupported Bible Gateway translation(s)
             if (fetch_dict["bible_trans"] == "nasu"):
                 bible_trans = "nasb"
             book_url = f"https://www.biblegateway.com/passage/?search={fetch_dict['book']}%201&version={fetch_dict['bible_trans'].upper()}".replace(' ', "%20")
             raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
-        # Chapter
+
+        ## Chapter
         if (fetch_dict["Fch"] and fetch_dict["FchFvrBeg"] is None):
             base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fch']}']"
             chapter = root.find(base_query)
             for verse in chapter.findall(".//VERS"):
                 vr_num = verse.attrib.get("vnumber")
                 payload += f"{vr_num} {verse.text}\n"
-        # Verse(s)
+
+        ## Verse(s)
         for ch_order in request_order:
             base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{ch_order}ch']}']"
             for vr_order in request_order:
@@ -307,7 +319,8 @@ def build_payload(fetch_dict, user_number):
                         if (is_new):
                             payload += "...\n"
                         payload += f"{vr_num} {verse.text}\n"
-                    # Range
+
+                    ## Range
                     if (fetch_dict[f"{ch_order}ch{vr_order}vrEnd"] is not None):
                         vr_num_beg = int(fetch_dict[f"{ch_order}ch{vr_order}vrBeg"])
                         vr_num_end = int(fetch_dict[f"{ch_order}ch{vr_order}vrEnd"])
@@ -321,7 +334,8 @@ def build_payload(fetch_dict, user_number):
                                 payload += f"{vr_num} {verse.text}\n"
                         else:
                             raise_exception(True, "Range request too large", user_number)
-            # Separate chapters
+
+            ## Separate chapters
             ch_index = request_order.index(ch_order)
             if (ch_index < len(request_order) - 1):
                 ch_next = request_order[ch_index + 1]
@@ -332,6 +346,9 @@ def build_payload(fetch_dict, user_number):
 
     # Cleanup extranneous whitespace/Psalm titles
     payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
+    # Replace special characters with Latin-based equivalents
+    for char, replacement in char_dict.items():
+        payload = payload.replace(char, replacement)
     # Append "opt-out" prompt for compliance
     payload += "\n\n* Reply STOP to block, or HELP for assistance."
     # Determine message protocol based on payload size
@@ -341,4 +358,4 @@ def build_payload(fetch_dict, user_number):
     send_message(protocol, payload, user_number)
 
 # Allow development run (uncomment):
-# init_dev()
+# init(input("dev_input = "), config["dev_number"])
