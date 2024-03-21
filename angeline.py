@@ -24,7 +24,7 @@ TELNYX_NUMBER = config["TELNYX_NUMBER"]
 ### Translation dictionary
 trans_base_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/"
 trans_dict = {
-    # en (English)
+    # English (EN)
     "esv": f"{trans_base_url}en/esv.xml",
     "kj21": f"{trans_base_url}en/kj21.xml",
     "nasb": f"{trans_base_url}en/nasb-strong.xml",
@@ -35,9 +35,9 @@ trans_dict = {
     "nrsv": f"{trans_base_url}en/nrsv.xml",
     "rsv": f"{trans_base_url}en/rsv.xml",
     "web": f"{trans_base_url}en/web.xml",
-    # es (Spanish)
+    # Spanish (ES)
     "oso": f"{trans_base_url}es/oso.xml",
-    # nl (Dutch [Voor mijn moeder])
+    # Dutch (NL)
     "dsv": f"{trans_base_url}nl/dsv.xml"
 }
 
