@@ -13,12 +13,14 @@ with open("config.json", 'r') as file:
 
 ### Global variables
 
-## Telnyx
-telnyx.api_key = config["TELNYX_KEY"]
-
 ## Constants
 SMS_MAX_CAP = 160
 MMS_MAX_CAP = 1600
+
+## Telnyx
+telnyx.api_key = config["TELNYX_KEY"]
+
+## Configuration
 GITHUB_TOKEN = config["GITHUB_TOKEN"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
@@ -294,7 +296,7 @@ def build_payload(fetch_dict, user_number):
             if (fetch_dict["bible_trans"] == "nasu"):
                 bible_trans = "nasb"
             book_url = f"https://www.biblegateway.com/passage/?search={fetch_dict['book']}%201&version={fetch_dict['bible_trans'].upper()}".replace(' ', "%20")
-            raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
+            raise_exception(True, f"Request too large; Consider visittrans_dict_urling {book_url}", user_number)
 
         ## Chapter
         if (fetch_dict["Fch"] and fetch_dict["FchFvrBeg"] is None):
