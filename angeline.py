@@ -24,6 +24,8 @@ TELNYX_NUMBER = config["TELNYX_NUMBER"]
 ### Translation dictionary
 trans_base_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/"
 trans_dict = {
+    # Dutch (NL)
+    "dsv": f"{trans_base_url}nl/dsv.xml",
     # English (EN)
     "esv": f"{trans_base_url}en/esv.xml",
     "kj21": f"{trans_base_url}en/kj21.xml",
@@ -36,9 +38,7 @@ trans_dict = {
     "rsv": f"{trans_base_url}en/rsv.xml",
     "web": f"{trans_base_url}en/web.xml",
     # Spanish (ES)
-    "oso": f"{trans_base_url}es/oso.xml",
-    # Dutch (NL)
-    "dsv": f"{trans_base_url}nl/dsv.xml"
+    "oso": f"{trans_base_url}es/oso.xml"
 }
 
 ### Book dictionary (Tuple)
