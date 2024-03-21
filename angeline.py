@@ -2,7 +2,7 @@
 
 import re
 import json
-# import telnyx
+import telnyx
 import string
 import requests
 import xml.etree.ElementTree as ET
@@ -14,7 +14,7 @@ with open("config.json", 'r') as file:
 ### Global variables
 
 ## Telnyx
-# telnyx.api_key = config["TELNYX_KEY"]
+telnyx.api_key = config["TELNYX_KEY"]
 
 ## Constants
 SMS_MAX_CAP = 160
@@ -152,7 +152,7 @@ def raise_exception(is_error, text_content, user_number):
         send_message("SMS", payload, user_number)
     raise Exception("Aborting")
 
-### Init (Production)
+### Initial
 def init(user_input, user_number):
     pattern = (
         r"^("
@@ -246,7 +246,7 @@ def init(user_input, user_number):
     except KeyError:
         raise_exception(True, "Couldn't locate book", user_number)
 
-    ## Build message payload
+    # Build message payload
     build_payload(fetch_dict, user_number)
 
 ### Fetch text
