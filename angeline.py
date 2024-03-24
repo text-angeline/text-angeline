@@ -39,15 +39,22 @@ trans_dict = {
     # Dutch (NL)
     "dsv": f"{trans_dict_url}nl/dsv.xml",
     # English (EN)
+    "acv": f"{trans_dict_url}en/acv.xml",
+    "bb": f"{trans_dict_url}en/bb.xml",
     "esv": f"{trans_dict_url}en/esv.xml",
     "kj21": f"{trans_dict_url}en/kj21.xml",
+    "mkjv": f"{trans_dict_url}en/mkjv.xml",
     "nasb": f"{trans_dict_url}en/nasb-strong.xml",
     "nasu": f"{trans_dict_url}en/nasu.xml",
     "niv": f"{trans_dict_url}en/niv.xml",
+    "niv": f"{trans_dict_url}en/nivuk.xml",
     "nkjv": f"{trans_dict_url}en/nkjv.xml",
     "nlt": f"{trans_dict_url}en/nlt.xml",
     "nrsv": f"{trans_dict_url}en/nrsv.xml",
+    "rnkjv": f"{trans_dict_url}en/rnkjv.xml",
     "rsv": f"{trans_dict_url}en/rsv.xml",
+    "tmb": f"{trans_dict_url}en/tmb.xml",
+    "tniv": f"{trans_dict_url}en/tniv.xml",
     "web": f"{trans_dict_url}en/web.xml",
     # Spanish (ES)
     "oso": f"{trans_dict_url}es/oso.xml"
@@ -178,7 +185,7 @@ def init(user_input, user_number):
                 r"(?:,(?: )?(?P<TchTvrBeg>\d{1,3}))?(?:-(?P<TchTvrEnd>\d{1,3}))?"
             r")?"
 
-            r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{3,4}))?"
+            r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{2,5}))?"
         r")$"
     )
 
