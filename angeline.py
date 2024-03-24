@@ -69,7 +69,7 @@ book_dict_tup = {
     # Books
     ("gn", "gen", "gene", "gens", "genes", "genesis"): "Genesis",
     ("ex", "exo", "exod", "exodu", "exods", "exodus"): "Exodus",
-    ("lv", "lev", "levi", "levit", "leviticus"): "Leviticus",
+    ("lv", "lev", "levi", "levt", "levit", "leviticus"): "Leviticus",
     ("nu", "num", "numb", "nums", "numbr", "numbs", "numbers"): "Numbers",
     ("dt", "deu", "deut", "deute", "deutr", "deuteronomy"): "Deuteronomy",
     ("js", "jos", "josh", "joshu", "joshua"): "Joshua",
@@ -229,7 +229,6 @@ def init(user_input, user_number):
 
     ## Translation
     if fetch_dict["bible_trans"] is None:
-        bible_trans = DEFAULT_TRANS
         fetch_dict["bible_xml"] = trans_dict[DEFAULT_TRANS]
     elif fetch_dict["bible_trans"] in trans_dict:
         fetch_dict["bible_xml"] = trans_dict[fetch_dict["bible_trans"]]
@@ -298,11 +297,8 @@ def build_payload(fetch_dict, user_number):
 
         ## Book
         if (fetch_dict["Fch"] is None):
-            # Unsupported Bible Gateway translation(s)
-            if (fetch_dict["bible_trans"] == "nasu"):
-                bible_trans = "nasb"
-            book_url = f"https://www.biblegateway.com/passage/?search={fetch_dict['book']}%201&version={fetch_dict['bible_trans'].upper()}".replace(' ', "%20")
-            raise_exception(True, f"Request too large; Consider visittrans_dict_urling {book_url}", user_number)
+            book_url = f"https://www.biblegateway.com/passage/?search={fetch_dict['book']}%201".replace(' ', "%20")
+            raise_exception(True, f"Request too large; Consider visiting {book_url}", user_number)
 
         ## Chapter
         if (fetch_dict["Fch"] and fetch_dict["FchFvrBeg"] is None):
