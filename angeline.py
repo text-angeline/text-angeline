@@ -16,6 +16,7 @@ with open("config.json", 'r') as file:
 ## Constants
 SMS_MAX_CAP = 160
 MMS_MAX_CAP = 1600
+GSM_CHAR_SET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\n\r !\"#$%&'()*+,-./:;<=>?@[\\]^_{}|~"
 
 ## Configuration
 telnyx.api_key = config["TELNYX_KEY"]
@@ -187,7 +188,7 @@ book_dict = { key: value for keys, value in book_dict_tup.items() for key in key
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    return
+    # return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -325,6 +326,10 @@ def fetch_text(fetch_dict, user_number):
 ### Determine message protocol
 def determine_protocol(payload, user_number):
     payload_size = len(payload)
+    for char in payload:
+        if (char not in GSM_CHAR_SET):
+            payload_size += 3
+    print("Approximate payload size:", payload_size)
     if (payload_size <= 0):
         raise_exception(True, "Text returned empty; Consider a different translation", user_number)
     elif (payload_size <= SMS_MAX_CAP):
@@ -410,4 +415,4 @@ def build_payload(fetch_dict, user_number):
         raise_exception(True, "Request too large for this translation", user_number)
 
 # Allow development run (uncomment):
-init(input("dev_input = "), config["dev_number"])
+# init(input("dev_input = "), config["dev_number"])
