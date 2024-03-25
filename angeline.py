@@ -25,39 +25,87 @@ TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
 ### Dictionaries
 
-## Character
-char_dict = {
-    # Spanish (ES)
-    'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
-    'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
-    'ñ': 'n', 'Ñ': 'N', '¡': ''
-}
-
 ## Translation
 trans_dict_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/"
 trans_dict = {
-    # Dutch (NL)
-    "dsv": f"{trans_dict_url}nl/dsv.xml",
-    # English (EN)
-    "acv": f"{trans_dict_url}en/acv.xml",
-    "bb": f"{trans_dict_url}en/bb.xml",
-    "esv": f"{trans_dict_url}en/esv.xml",
-    "kj21": f"{trans_dict_url}en/kj21.xml",
-    "mkjv": f"{trans_dict_url}en/mkjv.xml",
-    "nasb": f"{trans_dict_url}en/nasb-strong.xml",
-    "nasu": f"{trans_dict_url}en/nasu.xml",
-    "niv": f"{trans_dict_url}en/niv.xml",
-    "niv": f"{trans_dict_url}en/nivuk.xml",
-    "nkjv": f"{trans_dict_url}en/nkjv.xml",
-    "nlt": f"{trans_dict_url}en/nlt.xml",
-    "nrsv": f"{trans_dict_url}en/nrsv.xml",
-    "rnkjv": f"{trans_dict_url}en/rnkjv.xml",
-    "rsv": f"{trans_dict_url}en/rsv.xml",
-    "tmb": f"{trans_dict_url}en/tmb.xml",
-    "tniv": f"{trans_dict_url}en/tniv.xml",
-    "web": f"{trans_dict_url}en/web.xml",
-    # Spanish (ES)
-    "oso": f"{trans_dict_url}es/oso.xml"
+    # Basque (baq)
+    "bhnt": f"{trans_dict_url}bhnt/dsv.xml",
+    # Dutch (dut)
+    "dsv": f"{trans_dict_url}dut/dsv.xml",
+    # Coptic (cop)
+    "cnt": f"{trans_dict_url}cop/cnt.xml",
+    # Danish (dan)
+    "d31": f"{trans_dict_url}dan/d31.xml",
+    # English (eng)
+    "abc": f"{trans_dict_url}eng/abc.xml",
+    "acv": f"{trans_dict_url}eng/acv.xml",
+    "akjv": f"{trans_dict_url}eng/akjv-strong.xml",
+    "amp": f"{trans_dict_url}eng/amp.xml",
+    "bb": f"{trans_dict_url}eng/bb.xml",
+    "bbe": f"{trans_dict_url}eng/bbe.xml",
+    "cev": f"{trans_dict_url}eng/cev.xml",
+    "cjb": f"{trans_dict_url}eng/cjb.xml",
+    "cvb": f"{trans_dict_url}eng/cvb.xml",
+    "dby": f"{trans_dict_url}eng/dby.xml",
+    "drb": f"{trans_dict_url}eng/drb.xml",
+    "erv": f"{trans_dict_url}eng/erv.xml",
+    "esv": f"{trans_dict_url}eng/esv.xml",
+    "gb": f"{trans_dict_url}eng/gb.xml",
+    "gnb": f"{trans_dict_url}eng/gnb.xml",
+    "gw": f"{trans_dict_url}eng/gw.xml",
+    "hcsb": f"{trans_dict_url}eng/hcsb.xml",
+    "jub": f"{trans_dict_url}eng/jub.xml",
+    "kj21": f"{trans_dict_url}eng/kj21.xml",
+    "litv": f"{trans_dict_url}eng/litv.xml",
+    "lxxe": f"{trans_dict_url}eng/lxxe.xml",
+    "mkjv": f"{trans_dict_url}eng/mkjv.xml",
+    "msg": f"{trans_dict_url}eng/msg.xml",
+    "nasb": f"{trans_dict_url}eng/nasb-strong.xml",
+    "nasu": f"{trans_dict_url}eng/nasu.xml",
+    "ncv": f"{trans_dict_url}eng/ncv.xml",
+    "net": f"{trans_dict_url}eng/net.xml",
+    "nirv": f"{trans_dict_url}eng/nirv.xml",
+    "niv": f"{trans_dict_url}eng/niv.xml",
+    "nivuk": f"{trans_dict_url}eng/nivuk.xml",
+    "njb": f"{trans_dict_url}eng/njb.xml",
+    "nkjv": f"{trans_dict_url}eng/nkjv.xml",
+    "nlt": f"{trans_dict_url}eng/nlt.xml",
+    "nlv": f"{trans_dict_url}eng/nlv.xml",
+    "nrsv": f"{trans_dict_url}eng/nrsv.xml",
+    "rnkjv": f"{trans_dict_url}eng/rnkjv.xml",
+    "rsv": f"{trans_dict_url}eng/rsv.xml",
+    "rwb": f"{trans_dict_url}eng/rwb.xml",
+    "tmb": f"{trans_dict_url}eng/tmb.xml",
+    "tniv": f"{trans_dict_url}eng/tniv.xml",
+    "trc": f"{trans_dict_url}eng/trc.xml",
+    "vw": f"{trans_dict_url}eng/vw.xml",
+    "web": f"{trans_dict_url}eng/web.xml",
+    "ylt": f"{trans_dict_url}eng/ylt.xml",
+    # French (fre)
+    "dby": f"{trans_dict_url}fre/dby.xml",
+    "dmb": f"{trans_dict_url}fre/dmb.xml",
+    "lsg": f"{trans_dict_url}fre/lsg.xml",
+    "ostr": f"{trans_dict_url}fre/ostr.xml",
+    # German (ger)
+    "elb": f"{trans_dict_url}ger/elb-strong.xml",
+    "ebl1": f"{trans_dict_url}ger/elb1.xml",
+    "lb": f"{trans_dict_url}ger/lb.xml",
+    "lutd": f"{trans_dict_url}ger/lutd.xml",
+    "s00": f"{trans_dict_url}ger/s00.xml",
+    # Italian (ita)
+    "lnd": f"{trans_dict_url}ita/lnd.xml",
+    "nr2006": f"{trans_dict_url}ita/nr2006.xml",
+    "riv": f"{trans_dict_url}ita/riv.xml",
+    # Latin (lat)
+    "nvul": f"{trans_dict_url}lat/nvul.xml",
+    "v": f"{trans_dict_url}lat/v.xml",
+    # Romanian (rum)
+    "gps": f"{trans_dict_url}rum/gps.xml",
+    # Spanish (spa)
+    "oso": f"{trans_dict_url}spa/oso.xml",
+    "rv09": f"{trans_dict_url}spa/rv09.xml",
+    # Swedish (swe)
+    "s17": f"{trans_dict_url}swe/s17.xml"
 }
 
 ## Book
@@ -139,7 +187,7 @@ book_dict = { key: value for keys, value in book_dict_tup.items() for key in key
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Allow development halt (uncomment):
-    # return
+    return
     telnyx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
@@ -164,7 +212,7 @@ def raise_exception(is_error, text_content, user_number):
 def init(user_input, user_number):
     pattern = (
         r"^("
-            r"((?P<book_num>[1-9])(?: )?)?"
+            r"((?P<book_num>[1-3])(?: )?)?"
             r"(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)"
 
             r"(?:(?: )?(?P<Fch>\d{1,3})"
@@ -185,7 +233,7 @@ def init(user_input, user_number):
                 r"(?:,(?: )?(?P<TchTvrBeg>\d{1,3}))?(?:-(?P<TchTvrEnd>\d{1,3}))?"
             r")?"
 
-            r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{2,5}))?"
+            r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{1,6}))?"
         r")$"
     )
 
@@ -350,9 +398,6 @@ def build_payload(fetch_dict, user_number):
 
     # Cleanup extranneous whitespace/Psalm titles
     payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
-    # Replace special characters with Latin-based equivalents
-    for char, replacement in char_dict.items():
-        payload = payload.replace(char, replacement)
     # Append "opt-out" prompt for compliance
     payload += "\n\n* Reply STOP to block, or HELP for assistance."
     # Determine message protocol based on payload size
@@ -365,4 +410,4 @@ def build_payload(fetch_dict, user_number):
         raise_exception(True, "Request too large for this translation", user_number)
 
 # Allow development run (uncomment):
-# init(input("dev_input = "), config["dev_number"])
+init(input("dev_input = "), config["dev_number"])
