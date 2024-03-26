@@ -188,7 +188,7 @@ book_dict = { key: value for keys, value in book_dict_tup.items() for key in key
 ### Send text message
 def send_message(protocol, payload, user_number):
     # Append "opt-out" prompt for compliance
-    payload += "\n\n* Reply STOP to block, or HELP for assistance."
+    payload += "\n\n* Reply STOP to block, or HELP for assistance"
     # System log
     print(payload)
     # Allow development halt (uncomment):
@@ -223,13 +223,13 @@ def init(user_input, user_number):
                 r"(?:,(?: )?(?P<FchTvrBeg>\d{1,3}))?(?:-(?P<FchTvrEnd>\d{1,3}))?"
             r")?"
 
-            r"((?:;)(?: )?(?P<Sch>\d{1,3})(?:[\.:])?"
+            r"((?:;)(?: )?(?P<Sch>\d{1,3})"
                 r"(?:[\.:](?P<SchFvrBeg>\d{1,3}))?(?:-(?P<SchFvrEnd>\d{1,3}))?"
                 r"(?:,(?: )?(?P<SchSvrBeg>\d{1,3}))?(?:-(?P<SchSvrEnd>\d{1,3}))?"
                 r"(?:,(?: )?(?P<SchTvrBeg>\d{1,3}))?(?:-(?P<SchTvrEnd>\d{1,3}))?"
             r")?"
 
-            r"((?:;)(?: )?(?P<Tch>\d{1,3})(?:[\.:])?"
+            r"((?:;)(?: )?(?P<Tch>\d{1,3})"
                 r"(?:[\.:](?P<TchFvrBeg>\d{1,3}))?(?:-(?P<TchFvrEnd>\d{1,3}))?"
                 r"(?:,(?: )?(?P<TchSvrBeg>\d{1,3}))?(?:-(?P<TchSvrEnd>\d{1,3}))?"
                 r"(?:,(?: )?(?P<TchTvrBeg>\d{1,3}))?(?:-(?P<TchTvrEnd>\d{1,3}))?"
@@ -398,7 +398,7 @@ def build_payload(fetch_dict, user_number):
             if (ch_index < (len(request_order) - 1)):
                 ch_next = request_order[ch_index + 1]
                 if (fetch_dict[f"{ch_next}ch"]):
-                    payload += "~\n"
+                    payload += "---\n"
     except AttributeError:
         raise_exception(True, "Text doesn't exist", user_number)
 
