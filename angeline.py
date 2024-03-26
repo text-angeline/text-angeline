@@ -30,7 +30,7 @@ TELNYX_NUMBER = config["TELNYX_NUMBER"]
 trans_dict_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline/main/trans/"
 trans_dict = {
     # Basque (baq)
-    "bhnt": f"{trans_dict_url}bhnt/dsv.xml",
+    "bhnt": f"{trans_dict_url}baq/bhnt.xml",
     # Coptic (cop)
     "cnt": f"{trans_dict_url}cop/cnt.xml",
     # Danish (dan)
@@ -66,7 +66,7 @@ trans_dict = {
     "ncv": f"{trans_dict_url}eng/ncv.xml",
     "net": f"{trans_dict_url}eng/net.xml",
     "nirv": f"{trans_dict_url}eng/nirv.xml",
-    "niv": f"{trans_dict_url}eng/niv.xml",
+    "niv": f"{trans_dict_url}eng/niv-1984.xml",
     "nivuk": f"{trans_dict_url}eng/nivuk.xml",
     "njb": f"{trans_dict_url}eng/njb.xml",
     "nkjv": f"{trans_dict_url}eng/nkjv.xml",
