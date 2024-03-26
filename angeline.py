@@ -31,12 +31,12 @@ trans_dict_url = f"https://raw.githubusercontent.com/text-angeline/text-angeline
 trans_dict = {
     # Basque (baq)
     "bhnt": f"{trans_dict_url}bhnt/dsv.xml",
-    # Dutch (dut)
-    "dsv": f"{trans_dict_url}dut/dsv.xml",
     # Coptic (cop)
     "cnt": f"{trans_dict_url}cop/cnt.xml",
     # Danish (dan)
     "d31": f"{trans_dict_url}dan/d31.xml",
+    # Dutch (dut)
+    "dsv": f"{trans_dict_url}dut/dsv.xml",
     # English (eng)
     "abc": f"{trans_dict_url}eng/abc.xml",
     "acv": f"{trans_dict_url}eng/acv.xml",
@@ -49,13 +49,13 @@ trans_dict = {
     "cvb": f"{trans_dict_url}eng/cvb.xml",
     "dby": f"{trans_dict_url}eng/dby.xml",
     "drb": f"{trans_dict_url}eng/drb.xml",
+    "ejb": f"{trans_dict_url}eng/ejb.xml",
     "erv": f"{trans_dict_url}eng/erv.xml",
     "esv": f"{trans_dict_url}eng/esv.xml",
     "gb": f"{trans_dict_url}eng/gb.xml",
     "gnb": f"{trans_dict_url}eng/gnb.xml",
     "gw": f"{trans_dict_url}eng/gw.xml",
     "hcsb": f"{trans_dict_url}eng/hcsb.xml",
-    "jub": f"{trans_dict_url}eng/jub.xml",
     "kj21": f"{trans_dict_url}eng/kj21.xml",
     "litv": f"{trans_dict_url}eng/litv.xml",
     "lxxe": f"{trans_dict_url}eng/lxxe.xml",
