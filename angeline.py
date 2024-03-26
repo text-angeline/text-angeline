@@ -187,6 +187,10 @@ book_dict = { key: value for keys, value in book_dict_tup.items() for key in key
 
 ### Send text message
 def send_message(protocol, payload, user_number):
+    # Append "opt-out" prompt for compliance
+    payload += "\n\n* Reply STOP to block, or HELP for assistance."
+    # System log
+    print(payload)
     # Allow development halt (uncomment):
     # return
     telnyx.Message.create(
@@ -202,11 +206,8 @@ def raise_exception(is_error, text_content, user_number):
         payload = f"Error: {text_content}. Please try again."
     else:
         payload = text_content
-    payload += "\n\n* Reply STOP to block, or HELP for assistance."
-    # System log
-    print(payload)
     if (text_content):
-        send_message("SMS", payload, user_number)
+        send_message("MMS", payload, user_number)
     raise Exception("Aborting")
 
 ### Initial
@@ -288,7 +289,7 @@ def init(user_input, user_number):
     try:
         if (book_num is None):
             if (book_dict[book_title] == "HELP"):
-                raise_exception(False, "AngeLine\n\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\n⫺ Reply STOP to block.", user_number)
+                raise_exception(False, "        AngeLine\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\nCopyright (c) 2024 Dane Hobrecht. All Rights Reserved.", user_number)
             elif (book_dict[book_title] == "START"):
                 raise_exception(False, "", user_number)
             elif (book_dict[book_title] == "STOP"):
@@ -394,7 +395,7 @@ def build_payload(fetch_dict, user_number):
 
             ## Separate chapters
             ch_index = request_order.index(ch_order)
-            if (ch_index < len(request_order) - 1):
+            if (ch_index < (len(request_order) - 1)):
                 ch_next = request_order[ch_index + 1]
                 if (fetch_dict[f"{ch_next}ch"]):
                     payload += "~\n"
@@ -403,12 +404,8 @@ def build_payload(fetch_dict, user_number):
 
     # Cleanup extranneous whitespace/Psalm titles
     payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
-    # Append "opt-out" prompt for compliance
-    payload += "\n\n* Reply STOP to block, or HELP for assistance."
     # Determine message protocol based on payload size
     protocol = determine_protocol(payload, user_number)
-    # System log
-    print(payload)
     try:
         send_message(protocol, payload, user_number)
     except telnyx.error.InvalidRequestError:
