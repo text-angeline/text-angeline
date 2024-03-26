@@ -83,7 +83,7 @@ trans_dict = {
     "web": f"{trans_dict_url}eng/web.xml",
     "ylt": f"{trans_dict_url}eng/ylt.xml",
     # French (fre)
-    "dby": f"{trans_dict_url}fre/dby.xml",
+    "dbyf": f"{trans_dict_url}fre/dby.xml",
     "dmb": f"{trans_dict_url}fre/dmb.xml",
     "lsg": f"{trans_dict_url}fre/lsg.xml",
     "ostr": f"{trans_dict_url}fre/ostr.xml",
