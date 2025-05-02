@@ -412,4 +412,4 @@ def build_payload(fetch_dict, user_number):
         raise_exception(True, "Request too large for this translation", user_number)
 
 # Allow development run (uncomment):
-# init(input("dev_input = "), config["dev_number"])
+# init(input("dev_input = "), config["DEV_NUMBER"])
