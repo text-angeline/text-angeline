@@ -20,7 +20,7 @@ GSM_CHAR_SET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\n
 
 ## Configuration
 telnyx.api_key = config["TELNYX_KEY"]
-GITHUB_TOKEN = config["GITHUB_TOKEN"]
+GHP_TOKEN = config["GHP_TOKEN"]
 DEFAULT_TRANS = config["DEFAULT_TRANS"]
 TELNYX_NUMBER = config["TELNYX_NUMBER"]
 
@@ -315,7 +315,7 @@ def fetch_text(fetch_dict, user_number):
 
         ## Remote:
         headers = {
-            "Authorization": f"token {GITHUB_TOKEN}",
+            "Authorization": f"token {GHP_TOKEN}",
             "Accept": "application/vnd.github.v3.raw"
         }
         response = requests.get(fetch_dict["bible_xml"], headers=headers)
