@@ -1,6 +1,7 @@
 ngrok
 venv/**
 test.py
+config.json
 __pycache__/**
 .angeline.py.swp
 function-source.zip
