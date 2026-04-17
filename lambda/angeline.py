@@ -239,7 +239,7 @@ def parse_input(user_input):
 
     book = book_dict[book_key]
 
-    ## Commands (not errors -normal control flow)
+    ## Commands (not errors - normal control flow)
     if book == "HELP":
         return {
             "type": "command",
@@ -299,7 +299,7 @@ def parse_input(user_input):
 
             chapters.append({"ch": ch_num, "verses": verses})
     else:
-        # Book only, no chapter -too large
+        # Book only, no chapter - too large
         book_url = f"https://www.biblegateway.com/passage/?search={book}%201".replace(" ", "%20")
         raise AngelineError(f"Request too large; Consider visiting {book_url}")
 
