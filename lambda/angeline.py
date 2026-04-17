@@ -428,8 +428,8 @@ class AngelineError(Exception):
         super().__init__(message)
 
 # Allow development run (uncomment):
-request = parse_input(input("dev_input = "))
-if request["type"] == "lookup":
-    root = fetch_text(request["trans_key"])
-    payload = build_payload(root, request)
-    print(payload)
+# request = parse_input(input("dev_input = "))
+# if request["type"] == "lookup":
+#     root = fetch_text(request["trans_key"])
+#     payload = build_payload(root, request)
+#     print(payload)
