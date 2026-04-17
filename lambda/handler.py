@@ -47,5 +47,11 @@ def receive_sms(event, context):
         except KeyError as e:
             print("Error: Couldn't process webhook; User was not notified.", e)
             return {"statusCode": 400, "body": "Missing field"}
+        except Exception as e:
+            print("Error:", e)
+            try:
+                send_message("MMS", "Error: Something went wrong. Please try again.", user_number)
+            except Exception:
+                print("Error: Couldn't send error message; User was not notified.")
 
     return {"statusCode": 200, "body": "OK"}
