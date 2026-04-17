@@ -39,7 +39,7 @@ Resources:
   AngelineFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handler.lambda_handler
+      Handler: handler.receive_sms
       CodeUri: lambda/
       Environment:
         Variables:
