@@ -1,7 +1,10 @@
-ngrok
-venv/**
-test.py
+venv/
+__pycache__/
+*.pyc
+.aws-sam/
+.env
 config.json
-__pycache__/**
+*.zip
+.DS_Store
+ngrok
 .angeline.py.swp
-function-source.zip

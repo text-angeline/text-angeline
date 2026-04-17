@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  AngeLine — Bible verse SMS service.
+  Lambda Function URL (free) + S3 for translations.
+
+Parameters:
+  TelnyxKey:
+    Type: String
+    NoEcho: true
+  TelnyxNumber:
+    Type: String
+    Default: "+18887661494"
+  DefaultTranslation:
+    Type: String
+    Default: "niv"
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.12
+
+Resources:
+
+  # --- S3 Bucket for Bible XML translations ---
+  TranslationsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "angeline-translations-${AWS::AccountId}"
+      LifecycleConfiguration:
+        Rules:
+          - Id: CleanupIncomplete
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+            Status: Enabled
+
+  # --- Lambda Function ---
+  AngelineFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.lambda_handler
+      CodeUri: lambda/
+      Environment:
+        Variables:
+          TELNYX_KEY: !Ref TelnyxKey
+          TELNYX_NUMBER: !Ref TelnyxNumber
+          DEFAULT_TRANS: !Ref DefaultTranslation
+          TRANS_BUCKET: !Ref TranslationsBucket
+          TRANS_PREFIX: "trans/"
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref TranslationsBucket
+      FunctionUrlConfig:
+        AuthType: NONE
+
+Outputs:
+  WebhookUrl:
+    Description: Telnyx webhook URL (set this in Telnyx dashboard)
+    Value: !GetAtt AngelineFunctionUrl.FunctionUrl
+  TranslationsBucket:
+    Description: Upload trans/ XML files here
+    Value: !Ref TranslationsBucket
