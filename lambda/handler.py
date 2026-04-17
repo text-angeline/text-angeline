@@ -25,20 +25,15 @@ def receive_sms(event, context):
             print("user_input:", user_input)
             print("user_number:", user_number)
 
-            ## Parse → Fetch → Build → Send
+            ## Parse > Fetch > Build > Send
             request = parse_input(user_input)
-
-            if request["type"] == "command":
-                if request["message"]:
-                    send_message("MMS", request["message"], user_number)
-            else:
-                root = fetch_text(request["trans_key"])
-                payload = build_payload(root, request)
-                protocol = determine_protocol(payload)
-                try:
-                    send_message(protocol, payload, user_number)
-                except Exception:
-                    raise AngelineError("Request too large for this translation")
+            root = fetch_text(request["trans_key"])
+            payload = build_payload(root, request)
+            protocol = determine_protocol(payload)
+            try:
+                send_message(protocol, payload, user_number)
+            except Exception:
+                raise AngelineError("Request too large for this translation")
 
         except AngelineError as e:
             if e.message:

@@ -5,7 +5,6 @@ import re
 import boto3
 import telnyx
 import xml.etree.ElementTree as ET
-from datetime import datetime
 
 ### Configuration settings
 telnyx.api_key = os.environ.get("TELNYX_KEY", "")
@@ -116,10 +115,6 @@ trans_dict = {
 
 ## Book
 book_dict_tup = {
-    # Controls
-    ("help",): "HELP",
-    ("start",): "START",
-    ("stop",): "STOP",
     # Books
     ("gn", "gen", "gene", "gens", "genes", "genesis"): "Genesis",
     ("ex", "exo", "exod", "exodu", "exods", "exodus"): "Exodus",
@@ -239,15 +234,6 @@ def parse_input(user_input):
 
     book = book_dict[book_key]
 
-    ## Commands (not errors - normal control flow)
-    if book == "HELP":
-        return {
-            "type": "command",
-            "message": "        AngeLine\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\nCopyright (c) {datetime.now().year} Dane Hobrecht. All Rights Reserved."
-        }
-    if book in ("START", "STOP"):
-        return {"type": "command", "message": ""}
-
     ## Parse reference and translation from the rest
     # Try to detect translation suffix (last word if it's a known translation code)
     bible_trans = DEFAULT_TRANS
@@ -304,7 +290,6 @@ def parse_input(user_input):
         raise AngelineError(f"Request too large; Consider visiting {book_url}")
 
     return {
-        "type": "lookup",
         "book": book,
         "trans_key": trans_dict[bible_trans],
         "chapters": chapters
@@ -409,8 +394,6 @@ def determine_protocol(payload):
 
 ### Send text message
 def send_message(protocol, payload, user_number):
-    # Append "opt-out" prompt for compliance
-    payload += "\n\n* Reply STOP to block, or HELP for assistance"
     # System log
     print(payload)
     telnyx.Message.create(
@@ -429,9 +412,6 @@ class AngelineError(Exception):
 
 if __name__ == "__main__":
     request = parse_input(input("dev_input = "))
-    if request["type"] == "lookup":
-        root = fetch_text(request["trans_key"])
-        payload = build_payload(root, request)
-        print(payload)
-    else:
-        print(request.get("message", ""))
+    root = fetch_text(request["trans_key"])
+    payload = build_payload(root, request)
+    print(payload)
