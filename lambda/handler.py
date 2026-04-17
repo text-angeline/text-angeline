@@ -2,7 +2,10 @@
 
 import json
 import html
-from angeline import init, send_message, AngelineError
+from angeline import (
+    parse_input, fetch_text, build_payload,
+    determine_protocol, send_message, AngelineError
+)
 
 def receive_sms(event, context):
     try:
@@ -16,12 +19,27 @@ def receive_sms(event, context):
 
     if (event_type == "message.received"):
         try:
-            payload = data.get("payload", {})
-            user_input = html.escape(payload["text"])
-            user_number = payload["from"]["phone_number"]
+            telnyx_payload = data.get("payload", {})
+            user_input = html.escape(telnyx_payload["text"])
+            user_number = telnyx_payload["from"]["phone_number"]
             print("user_input:", user_input)
             print("user_number:", user_number)
-            init(user_input, user_number)
+
+            ## Parse → Fetch → Build → Send
+            request = parse_input(user_input)
+
+            if request["type"] == "command":
+                if request["message"]:
+                    send_message("MMS", request["message"], user_number)
+            else:
+                root = fetch_text(request["trans_key"])
+                payload = build_payload(root, request)
+                protocol = determine_protocol(payload)
+                try:
+                    send_message(protocol, payload, user_number)
+                except Exception:
+                    raise AngelineError("Request too large for this translation")
+
         except AngelineError as e:
             if e.message:
                 msg = f"Error: {e.message}. Please try again." if e.is_error else e.message

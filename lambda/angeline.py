@@ -185,60 +185,133 @@ book_dict_tup = {
     ("2 jn", "2 jhn", "2 john"): "2 John",
     ("3 jn", "3 jhn", "3 john"): "3 John",
     ("jd", "jud", "jude"): "Jude",
-    ("rv", "rev", "reve", "revel", "revln", "rvlns", "revelation", "revelations",) : "Revelation"
+    ("rv", "rev", "reve", "revel", "revln", "rvlns", "revelation", "revelations",): "Revelation"
 }
-book_dict = { key: value for keys, value in book_dict_tup.items() for key in keys }
+book_dict = {key: value for keys, value in book_dict_tup.items() for key in keys}
 
-### Pre-compiled input pattern
-pattern = re.compile(
-    r"^("
-        r"((?P<book_num>[1-3])(?: )?)?"
-        r"(?P<book_title>[a-zA-Z]{2,13}((?: )([a-zA-Z]{,2})(?: )[a-zA-Z]{,7})?)"
+### Parsing
 
-        r"(?:(?: )?(?P<Fch>\d+)"
-            r"(?:[\.:](?P<FchFvrBeg>\d+))?(?:-(?P<FchFvrEnd>\d+))?"
-            r"(?:,(?: )?(?P<FchSvrBeg>\d+))?(?:-(?P<FchSvrEnd>\d+))?"
-            r"(?:,(?: )?(?P<FchTvrBeg>\d+))?(?:-(?P<FchTvrEnd>\d+))?"
-        r")?"
-
-        r"((?:;)(?: )?(?P<Sch>\d+)"
-            r"(?:[\.:](?P<SchFvrBeg>\d+))?(?:-(?P<SchFvrEnd>\d+))?"
-            r"(?:,(?: )?(?P<SchSvrBeg>\d+))?(?:-(?P<SchSvrEnd>\d+))?"
-            r"(?:,(?: )?(?P<SchTvrBeg>\d+))?(?:-(?P<SchTvrEnd>\d+))?"
-        r")?"
-
-        r"((?:;)(?: )?(?P<Tch>\d+)"
-            r"(?:[\.:](?P<TchFvrBeg>\d+))?(?:-(?P<TchFvrEnd>\d+))?"
-            r"(?:,(?: )?(?P<TchSvrBeg>\d+))?(?:-(?P<TchSvrEnd>\d+))?"
-            r"(?:,(?: )?(?P<TchTvrBeg>\d+))?(?:-(?P<TchTvrEnd>\d+))?"
-        r")?"
-
-        r"(?:(?: )?(?P<bible_trans>[0-9a-zA-Z]{1,6}))?"
-    r")$"
+## Chapter reference pattern (applied per chunk after splitting on ";")
+_ch_pattern = re.compile(
+    r"^(?P<ch>\d+)"
+    r"(?:[\.:](?P<verses>.+))?"
+    r"$"
 )
 
-### Raise exception
-class AngelineError(Exception):
-    def __init__(self, message="", is_error=True):
-        self.message = message
-        self.is_error = is_error
-        super().__init__(message)
+## Verse range pattern (applied per chunk after splitting on ",")
+_vr_pattern = re.compile(r"^(?P<beg>\d+)(?:-(?P<end>\d+))?$")
 
-### Send text message
-def send_message(protocol, payload, user_number):
-    # Append "opt-out" prompt for compliance
-    payload += "\n\n* Reply STOP to block, or HELP for assistance"
-    # System log
-    print(payload)
-    telnyx.Message.create(
-        from_=TELNYX_NUMBER,
-        to=user_number,
-        text=payload,
-        type_=protocol
+## Full input pattern (book + optional chapter/verses + optional translation)
+_input_pattern = re.compile(
+    r"^(?:(?P<book_num>[1-3]) ?)?"
+    r"(?P<book_title>[a-zA-Z]{2,13}(?:(?: [a-zA-Z]{,2}) [a-zA-Z]{,7})?)"
+    r"(?: ?(?P<reference>.+?) ?(?P<bible_trans>[a-zA-Z]{1,6}))?$"
+    r"|"
+    r"^(?:(?P<book_num2>[1-3]) ?)?"
+    r"(?P<book_title2>[a-zA-Z]{2,13}(?:(?: [a-zA-Z]{,2}) [a-zA-Z]{,7})?)"
+    r"(?: ?(?P<reference2>.+?))?$"
+)
+
+def parse_input(user_input):
+    """Parse user input into a structured request or command."""
+    cleaned = re.sub(r"\s+", " ", user_input.strip().lower())
+
+    ## Resolve book
+    # Try to extract book title (with optional number prefix)
+    book_match = re.match(
+        r"^(?:(?P<book_num>[1-3]) ?)?"
+        r"(?P<book_title>[a-zA-Z]{2,13}(?:(?: [a-zA-Z]{,2}) [a-zA-Z]{,7})?)"
+        r"(?P<rest>.*)$",
+        cleaned
     )
+    if not book_match:
+        raise AngelineError("Invalid format")
+
+    book_num = book_match.group("book_num")
+    book_title = book_match.group("book_title")
+    rest = book_match.group("rest").strip()
+
+    # Look up book
+    book_key = f"{book_num} {book_title}" if book_num else book_title
+    if book_key not in book_dict:
+        raise AngelineError("Couldn't locate book")
+
+    book = book_dict[book_key]
+
+    ## Commands (not errors — normal control flow)
+    if book == "HELP":
+        return {
+            "type": "command",
+            "message": "        AngeLine\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\nCopyright (c) 2025 Dane Hobrecht. All Rights Reserved."
+        }
+    if book in ("START", "STOP"):
+        return {"type": "command", "message": ""}
+
+    ## Parse reference and translation from the rest
+    # Try to detect translation suffix (last word if it's a known translation code)
+    bible_trans = DEFAULT_TRANS
+    reference_str = rest
+
+    if reference_str:
+        parts = reference_str.rsplit(" ", 1)
+        if len(parts) == 2 and parts[1] in trans_dict:
+            reference_str = parts[0]
+            bible_trans = parts[1]
+        elif len(parts) == 1 and parts[0] in trans_dict and not parts[0][0].isdigit():
+            # Bare translation code, no chapter reference
+            bible_trans = parts[0]
+            reference_str = ""
+
+    if bible_trans not in trans_dict:
+        raise AngelineError("Unsupported translation")
+
+    ## Parse chapter references (split on ";")
+    chapters = []
+    if reference_str:
+        for ch_chunk in reference_str.split(";"):
+            ch_chunk = ch_chunk.strip()
+            if not ch_chunk:
+                continue
+
+            ch_match = _ch_pattern.match(ch_chunk)
+            if not ch_match:
+                raise AngelineError("Invalid format")
+
+            ch_num = ch_match.group("ch")
+            verses_str = ch_match.group("verses")
+
+            # Parse verse ranges (split on ",")
+            verses = []
+            if verses_str:
+                for vr_chunk in verses_str.split(","):
+                    vr_chunk = vr_chunk.strip()
+                    vr_match = _vr_pattern.match(vr_chunk)
+                    if not vr_match:
+                        raise AngelineError("Invalid format")
+                    beg = vr_match.group("beg")
+                    end = vr_match.group("end")
+                    if end and int(beg) > int(end):
+                        raise AngelineError("Invalid range")
+                    if end and (int(end) - int(beg)) > 12:
+                        raise AngelineError("Range request too large")
+                    verses.append({"beg": beg, "end": end})
+
+            chapters.append({"ch": ch_num, "verses": verses})
+    else:
+        # Book only, no chapter — too large
+        book_url = f"https://www.biblegateway.com/passage/?search={book}%201".replace(" ", "%20")
+        raise AngelineError(f"Request too large; Consider visiting {book_url}")
+
+    return {
+        "type": "lookup",
+        "book": book,
+        "trans_key": trans_dict[bible_trans],
+        "chapters": chapters
+    }
 
 ### Fetch text
-def fetch_text(trans_key, user_number):
+def fetch_text(trans_key):
+    """Fetch translation XML from S3 with in-memory and disk caching."""
     # In-memory cache (survives across warm Lambda invocations)
     if trans_key in _xml_cache:
         return _xml_cache[trans_key]
@@ -262,161 +335,93 @@ def fetch_text(trans_key, user_number):
     except Exception:
         raise AngelineError("Couldn't fetch text")
 
-### Determine message protocol
-def determine_protocol(payload, user_number):
-    payload_size = len(payload)
-    for char in payload:
-        if (char not in GSM_CHAR_SET):
-            payload_size += 3
-    print("Approximate payload size:", payload_size)
-    if (payload_size <= 0):
-        raise AngelineError("Text returned empty; Consider a different translation")
-    elif (payload_size <= SMS_MAX_CAP):
-        protocol = "SMS"
-    elif (payload_size > SMS_MAX_CAP and payload_size <= MMS_MAX_CAP):
-        protocol = "MMS"
-    elif (payload_size > MMS_MAX_CAP):
-        # To-do: Implement chunking function
-        raise AngelineError("Request too large; Consider a smaller request")
-    return protocol
-
 ### Build text payload
-def build_payload(fetch_dict, user_number):
-    root = fetch_text(fetch_dict["trans_key"], user_number)
-    try:
-        payload = ""
-        request_order = ['F', 'S', 'T']
+def build_payload(root, request):
+    """Build the text payload from a structured request. Returns a string."""
+    book = request["book"]
+    lines = []
 
-        ## Book
-        if (fetch_dict["Fch"] is None):
-            book_url = f"https://www.biblegateway.com/passage/?search={fetch_dict['book']}%201".replace(' ', "%20")
-            raise AngelineError(f"Request too large; Consider visiting {book_url}")
+    for ch_idx, chapter in enumerate(request["chapters"]):
+        base_query = f".//BIBLEBOOK[@bname='{book}']/CHAPTER[@cnumber='{chapter['ch']}']"
 
-        ## Chapter
-        if (fetch_dict["Fch"] and fetch_dict["FchFvrBeg"] is None):
-            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict['Fch']}']"
-            chapter = root.find(base_query)
-            for verse in chapter.findall(".//VERS"):
+        if not chapter["verses"]:
+            ## Full chapter
+            ch_element = root.find(base_query)
+            if ch_element is None:
+                raise AngelineError("Text doesn't exist")
+            for verse in ch_element.findall(".//VERS"):
                 vr_num = verse.attrib.get("vnumber")
-                payload += f"{vr_num} {verse.text}\n"
+                lines.append(f"{vr_num} {verse.text}")
+        else:
+            ## Verse(s)
+            for vr_idx, vr in enumerate(chapter["verses"]):
+                if vr_idx > 0:
+                    lines.append("...")
 
-        ## Verse(s)
-        for ch_order in request_order:
-            base_query = f".//BIBLEBOOK[@bname='{fetch_dict['book']}']/CHAPTER[@cnumber='{fetch_dict[f'{ch_order}ch']}']"
-            for vr_order in request_order:
-                is_new = False
-                if (vr_order != 'F'):
-                    is_new = True
-                if (fetch_dict[f"{ch_order}ch{vr_order}vrBeg"]):
+                if vr["end"] is None:
                     # Individual
-                    if (fetch_dict[f"{ch_order}ch{vr_order}vrEnd"] is None):
-                        vr_num = fetch_dict[f"{ch_order}ch{vr_order}vrBeg"]
-                        verse = root.find(f"{base_query}/VERS[@vnumber='{vr_num}']")
-                        if (is_new):
-                            payload += "...\n"
-                        payload += f"{vr_num} {verse.text}\n"
-
+                    verse = root.find(f"{base_query}/VERS[@vnumber='{vr['beg']}']")
+                    if verse is None or verse.text is None:
+                        raise AngelineError("Text doesn't exist")
+                    lines.append(f"{vr['beg']} {verse.text}")
+                else:
                     ## Range
-                    if (fetch_dict[f"{ch_order}ch{vr_order}vrEnd"] is not None):
-                        vr_num_beg = int(fetch_dict[f"{ch_order}ch{vr_order}vrBeg"])
-                        vr_num_end = int(fetch_dict[f"{ch_order}ch{vr_order}vrEnd"])
-                        if (vr_num_beg > vr_num_end):
-                            raise AngelineError("Invalid range")
-                        elif ((vr_num_end - vr_num_beg) <= 12):
-                            if (is_new):
-                                payload += "...\n"
-                            for vr_num in range(vr_num_beg, (vr_num_end + 1)):
-                                verse = root.find(f"{base_query}/VERS[@vnumber='{vr_num}']")
-                                payload += f"{vr_num} {verse.text}\n"
-                        else:
-                            raise AngelineError("Range request too large")
+                    for vr_num in range(int(vr["beg"]), int(vr["end"]) + 1):
+                        verse = root.find(f"{base_query}/VERS[@vnumber='{vr_num}']")
+                        if verse is None or verse.text is None:
+                            raise AngelineError("Text doesn't exist")
+                        lines.append(f"{vr_num} {verse.text}")
 
-            ## Separate chapters
-            ch_index = request_order.index(ch_order)
-            if (ch_index < (len(request_order) - 1)):
-                ch_next = request_order[ch_index + 1]
-                if (fetch_dict[f"{ch_next}ch"]):
-                    payload += "---\n"
-    except AttributeError:
-        raise AngelineError("Text doesn't exist")
+        ## Separate chapters
+        if ch_idx < len(request["chapters"]) - 1:
+            lines.append("---")
 
+    payload = "\n".join(lines)
     # Cleanup extranneous whitespace/Psalm titles
     payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
-    # Determine message protocol based on payload size
-    protocol = determine_protocol(payload, user_number)
-    try:
-        send_message(protocol, payload, user_number)
-    except telnyx.error.InvalidRequestError:
-        raise AngelineError("Request too large for this translation")
+    return payload
 
-### Initial
-def init(user_input, user_number):
-    cleaned_user_input = re.sub(r"\s+", ' ', user_input.strip().lower())
-    match = pattern.match(cleaned_user_input)
-    if (match):
-        try:
-            book_num = match.group("book_num")
-            book_title = match.group("book_title")
-            fetch_dict = {
-                "Fch": match.group("Fch"),
-                "FchFvrBeg": match.group("FchFvrBeg"),
-                "FchFvrEnd": match.group("FchFvrEnd"),
-                "FchSvrBeg": match.group("FchSvrBeg"),
-                "FchSvrEnd": match.group("FchSvrEnd"),
-                "FchTvrBeg": match.group("FchTvrBeg"),
-                "FchTvrEnd": match.group("FchTvrEnd"),
-
-                "Sch": match.group("Sch"),
-                "SchFvrBeg": match.group("SchFvrBeg"),
-                "SchFvrEnd": match.group("SchFvrEnd"),
-                "SchSvrBeg": match.group("SchSvrBeg"),
-                "SchSvrEnd": match.group("SchSvrEnd"),
-                "SchTvrBeg": match.group("SchTvrBeg"),
-                "SchTvrEnd": match.group("SchTvrEnd"),
-
-                "Tch": match.group("Tch"),
-                "TchFvrBeg": match.group("TchFvrBeg"),
-                "TchFvrEnd": match.group("TchFvrEnd"),
-                "TchSvrBeg": match.group("TchSvrBeg"),
-                "TchSvrEnd": match.group("TchSvrEnd"),
-                "TchTvrBeg": match.group("TchTvrBeg"),
-                "TchTvrEnd": match.group("TchTvrEnd"),
-
-                "bible_trans": match.group("bible_trans"),
-            }
-        except AttributeError:
-            raise AngelineError("Couldn't parse request")
+### Determine message protocol
+def determine_protocol(payload):
+    """Determine message protocol based on payload size."""
+    payload_size = len(payload)
+    for char in payload:
+        if char not in GSM_CHAR_SET:
+            payload_size += 3
+    print("Approximate payload size:", payload_size)
+    if payload_size <= 0:
+        raise AngelineError("Text returned empty; Consider a different translation")
+    elif payload_size <= SMS_MAX_CAP:
+        return "SMS"
+    elif payload_size <= MMS_MAX_CAP:
+        return "MMS"
     else:
-        raise AngelineError("Invalid format")
+        # To-do: Implement chunking function
+        raise AngelineError("Request too large; Consider a smaller request")
 
-    ## Translation
-    if fetch_dict["bible_trans"] is None:
-        fetch_dict["trans_key"] = trans_dict[DEFAULT_TRANS]
-    elif fetch_dict["bible_trans"] in trans_dict:
-        fetch_dict["trans_key"] = trans_dict[fetch_dict["bible_trans"]]
-    else:
-        raise AngelineError("Unsupported translation")
+### Send text message
+def send_message(protocol, payload, user_number):
+    # Append "opt-out" prompt for compliance
+    payload += "\n\n* Reply STOP to block, or HELP for assistance"
+    # System log
+    print(payload)
+    telnyx.Message.create(
+        from_=TELNYX_NUMBER,
+        to=user_number,
+        text=payload,
+        type_=protocol
+    )
 
-    ## Controls/Book
-    try:
-        if (book_num is None):
-            if (book_dict[book_title] == "HELP"):
-                raise AngelineError("        AngeLine\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\nCopyright (c) 2024 Dane Hobrecht. All Rights Reserved.", is_error=False)
-            elif (book_dict[book_title] == "START"):
-                raise AngelineError("", is_error=False)
-            elif (book_dict[book_title] == "STOP"):
-                raise AngelineError("", is_error=False)
-            else:
-                # Ex: "John"
-                fetch_dict["book"] = book_dict[book_title]
-        else:
-            # Ex: "1 John"
-            fetch_dict["book"] = book_dict[f"{book_num} {book_title}"]
-    except KeyError:
-        raise AngelineError("Couldn't locate book")
-
-    # Build message payload
-    build_payload(fetch_dict, user_number)
+### Raise exception
+class AngelineError(Exception):
+    def __init__(self, message="", is_error=True):
+        self.message = message
+        self.is_error = is_error
+        super().__init__(message)
 
 # Allow development run (uncomment):
-# init(input("dev_input = "), "+19493573901")
+# request = parse_input(input("dev_input = "))
+# if request["type"] == "lookup":
+#     root = fetch_text(request["trans_key"])
+#     payload = build_payload(root, request)
+#     print(payload)
