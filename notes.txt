@@ -1,8 +1,0 @@
-# Deploy to GCF
-cd text-angeline
-zip -r function-source.zip angeline.py main.py config.json requirements.txt
-# To-do
-- Allow users to set a default translation based on the phone number
-# Activate python virtual environment
-python -m venv venv
-source venv/bin/activate

@@ -1,7 +1,0 @@
-six
-flask
-bleach
-telnyx
-qrcode
-requests
-functions-framework==3.*
