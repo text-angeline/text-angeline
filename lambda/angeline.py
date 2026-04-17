@@ -5,6 +5,7 @@ import re
 import boto3
 import telnyx
 import xml.etree.ElementTree as ET
+from datetime import datetime
 
 ### Configuration settings
 telnyx.api_key = os.environ.get("TELNYX_KEY", "")
@@ -242,7 +243,7 @@ def parse_input(user_input):
     if book == "HELP":
         return {
             "type": "command",
-            "message": "        AngeLine\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\nCopyright (c) 2025 Dane Hobrecht. All Rights Reserved."
+            "message": "        AngeLine\nThe text-messenger of God.\n\nOfficial website: Text-AngeLine.org\nContact support: support@text-angeline.org\nUsage guidelines: github.com/text-angeline\n\nCopyright (c) {datetime.now().year} Dane Hobrecht. All Rights Reserved."
         }
     if book in ("START", "STOP"):
         return {"type": "command", "message": ""}
