@@ -2,8 +2,6 @@
 
 import os
 import re
-import boto3
-import telnyx
 import xml.etree.ElementTree as ET
 
 ### Configuration settings
@@ -17,13 +15,16 @@ _s3 = None
 def _get_s3():
     global _s3
     if _s3 is None and S3_BUCKET:
+        import boto3
         _s3 = boto3.client("s3")
     return _s3
 
 def _init_telnyx():
+    import telnyx
     key = os.environ.get("TELNYX_KEY", "")
     if key:
         telnyx.api_key = key
+    return telnyx
 
 ### Global variables
 
@@ -321,13 +322,20 @@ def parse_input(user_input):
 
 ### Fetch text
 def fetch_text(trans_key):
-    """Fetch translation XML from S3 with in-memory and disk caching."""
+    """Fetch translation XML with in-memory caching. Tries local, then S3."""
     # In-memory cache (survives across warm Lambda invocations)
     if trans_key in _xml_cache:
         return _xml_cache[trans_key]
 
     try:
-        ## S3:
+        ## Local (development):
+        local_path = os.path.join(os.path.dirname(__file__), "..", "trans", trans_key)
+        if os.path.exists(local_path):
+            root = ET.parse(local_path).getroot()
+            _xml_cache[trans_key] = root
+            return root
+
+        ## S3 (production):
         os.makedirs(CACHE_DIR, exist_ok=True)
         cache_path = os.path.join(CACHE_DIR, trans_key.replace("/", "_"))
 
@@ -335,7 +343,7 @@ def fetch_text(trans_key):
         if not os.path.exists(cache_path):
             s3 = _get_s3()
             if not s3:
-                raise AngelineError("Translation storage not configured")
+                raise AngelineError("Couldn't fetch text")
             s3.download_file(S3_BUCKET, f"{S3_PREFIX}{trans_key}", cache_path)
 
         root = ET.parse(cache_path).getroot()
@@ -412,12 +420,12 @@ def determine_protocol(payload):
 
 ### Send text message
 def send_message(protocol, payload, user_number):
-    _init_telnyx()
+    tlx = _init_telnyx()
     # Append "opt-out" prompt for compliance
     payload += "\n\n* Reply STOP to block, or HELP for assistance"
     # System log
     print(payload)
-    telnyx.Message.create(
+    tlx.Message.create(
         from_=TELNYX_NUMBER,
         to=user_number,
         text=payload,
