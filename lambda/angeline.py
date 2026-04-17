@@ -7,13 +7,23 @@ import telnyx
 import xml.etree.ElementTree as ET
 
 ### Configuration settings
-telnyx.api_key = os.environ["TELNYX_KEY"]
-TELNYX_NUMBER = os.environ["TELNYX_NUMBER"]
 DEFAULT_TRANS = os.environ.get("DEFAULT_TRANS", "niv")
+TELNYX_NUMBER = os.environ.get("TELNYX_NUMBER", "")
 S3_BUCKET = os.environ.get("TRANS_BUCKET", "")
 S3_PREFIX = os.environ.get("TRANS_PREFIX", "trans/")
 
-s3 = boto3.client("s3") if S3_BUCKET else None
+_s3 = None
+
+def _get_s3():
+    global _s3
+    if _s3 is None and S3_BUCKET:
+        _s3 = boto3.client("s3")
+    return _s3
+
+def _init_telnyx():
+    key = os.environ.get("TELNYX_KEY", "")
+    if key:
+        telnyx.api_key = key
 
 ### Global variables
 
@@ -238,7 +248,7 @@ def parse_input(user_input):
 
     book = book_dict[book_key]
 
-    ## Commands (not errors — normal control flow)
+    ## Commands (not errors -normal control flow)
     if book == "HELP":
         return {
             "type": "command",
@@ -298,7 +308,7 @@ def parse_input(user_input):
 
             chapters.append({"ch": ch_num, "verses": verses})
     else:
-        # Book only, no chapter — too large
+        # Book only, no chapter -too large
         book_url = f"https://www.biblegateway.com/passage/?search={book}%201".replace(" ", "%20")
         raise AngelineError(f"Request too large; Consider visiting {book_url}")
 
@@ -323,7 +333,8 @@ def fetch_text(trans_key):
 
         # Disk cache (survives across warm invocations too)
         if not os.path.exists(cache_path):
-            if not s3 or not S3_BUCKET:
+            s3 = _get_s3()
+            if not s3:
                 raise AngelineError("Translation storage not configured")
             s3.download_file(S3_BUCKET, f"{S3_PREFIX}{trans_key}", cache_path)
 
@@ -401,6 +412,7 @@ def determine_protocol(payload):
 
 ### Send text message
 def send_message(protocol, payload, user_number):
+    _init_telnyx()
     # Append "opt-out" prompt for compliance
     payload += "\n\n* Reply STOP to block, or HELP for assistance"
     # System log
@@ -420,8 +432,8 @@ class AngelineError(Exception):
         super().__init__(message)
 
 # Allow development run (uncomment):
-# request = parse_input(input("dev_input = "))
-# if request["type"] == "lookup":
-#     root = fetch_text(request["trans_key"])
-#     payload = build_payload(root, request)
-#     print(payload)
+request = parse_input(input("dev_input = "))
+if request["type"] == "lookup":
+    root = fetch_text(request["trans_key"])
+    payload = build_payload(root, request)
+    print(payload)

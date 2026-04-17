@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  AngeLine — Bible verse SMS service.
+  AngeLine - Bible verse SMS service.
   Lambda Function URL (free) + S3 for translations.
 
 Parameters:
