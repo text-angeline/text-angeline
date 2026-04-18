@@ -35,8 +35,12 @@ def receive_sms(event, context):
             return {"statusCode": 200}
 
         p = data.get("payload", {})
-        user_input = p["text"]
+        user_input = p["text"].strip()
         user_number = p["from"]["phone_number"]
+
+        ## Telnyx handles these keywords — ignore to avoid spurious errors
+        if user_input.upper() in ("HELP", "STOP", "START"):
+            return {"statusCode": 200}
 
         req = parse_input(user_input)
         root = fetch_text(req["trans_key"])
