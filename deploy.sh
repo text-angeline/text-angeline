@@ -2,9 +2,17 @@
 ### "What hath God wrought"
 set -euo pipefail
 
-FUNCTION="angeline-AngelineFunction-frs1NjziBwiW"
-BUCKET="angeline-translations-973932300890"
+STACK="angeline"
 ZIP="deployment_package.zip"
+
+FUNCTION=$(aws cloudformation describe-stack-resources \
+    --stack-name "$STACK" --logical-resource-id AngelineFunction \
+    --query 'StackResources[0].PhysicalResourceId' --output text)
+
+BUCKET=$(aws cloudformation describe-stacks \
+    --stack-name "$STACK" \
+    --query "Stacks[0].Outputs[?OutputKey=='TranslationsBucket'].OutputValue" \
+    --output text)
 
 usage() {
     echo "Usage: ./deploy.sh [code|trans|all]"
