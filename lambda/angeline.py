@@ -1,19 +1,20 @@
 ### "What hath God wrought"
 
+from telnyx import Telnyx
+
 import os
 import re
 import boto3
-import telnyx
 import xml.etree.ElementTree as ET
 
 ### Configuration settings
-telnyx.api_key = os.environ.get("TELNYX_KEY", "")
 TELNYX_NUMBER = os.environ.get("TELNYX_NUMBER", "")
 DEFAULT_TRANS = os.environ.get("DEFAULT_TRANS", "niv")
 S3_BUCKET = os.environ.get("TRANS_BUCKET", "")
 S3_PREFIX = os.environ.get("TRANS_PREFIX", "trans/")
 
 s3 = boto3.client("s3") if S3_BUCKET else None
+client = Telnyx(api_key=os.environ.get("TELNYX_KEY"))
 
 ### Global variables
 
@@ -197,17 +198,6 @@ _ch_pattern = re.compile(
 ## Verse range pattern (applied per chunk after splitting on ",")
 _vr_pattern = re.compile(r"^(?P<beg>\d+)(?:-(?P<end>\d+))?$")
 
-## Full input pattern (book + optional chapter/verses + optional translation)
-_input_pattern = re.compile(
-    r"^(?:(?P<book_num>[1-3]) ?)?"
-    r"(?P<book_title>[a-zA-Z]{2,13}(?:(?: [a-zA-Z]{,2}) [a-zA-Z]{,7})?)"
-    r"(?: ?(?P<reference>.+?) ?(?P<bible_trans>[a-zA-Z]{1,6}))?$"
-    r"|"
-    r"^(?:(?P<book_num2>[1-3]) ?)?"
-    r"(?P<book_title2>[a-zA-Z]{2,13}(?:(?: [a-zA-Z]{,2}) [a-zA-Z]{,7})?)"
-    r"(?: ?(?P<reference2>.+?))?$"
-)
-
 def parse_input(user_input):
     """Parse user input into a structured request or command."""
     cleaned = re.sub(r"\s+", " ", user_input.strip().lower())
@@ -370,8 +360,8 @@ def build_payload(root, request):
             lines.append("---")
 
     payload = "\n".join(lines)
-    # Cleanup extranneous whitespace/Psalm titles
-    payload = re.sub(r'[^\n\S]+', ' ', payload.rsplit("Psalm", 2)[0].replace("`", "'").strip())
+    # Cleanup extraneous whitespace
+    payload = re.sub(r'[^\n\S]+', ' ', payload.replace("`", "'").strip())
     return payload
 
 ### Determine message protocol
@@ -393,15 +383,13 @@ def determine_protocol(payload):
         raise AngelineError("Request too large; Consider a smaller request")
 
 ### Send text message
-def send_message(protocol, payload, user_number):
-    # System log
+def send_message(payload, user_number):
     print(payload)
-    telnyx.Message.create(
-        from_=TELNYX_NUMBER,
-        to=user_number,
-        text=payload,
-        type_=protocol
-    )
+    client.messages.send(from_=TELNYX_NUMBER, to=user_number, text=payload)
+
+def send_error(message, user_number):
+    print(f"Sending error to {user_number}: {message}")
+    client.messages.send(from_=TELNYX_NUMBER, to=user_number, text=message)
 
 ### Raise exception
 class AngelineError(Exception):
@@ -415,3 +403,4 @@ if __name__ == "__main__":
     root = fetch_text(request["trans_key"])
     payload = build_payload(root, request)
     print(payload)
+

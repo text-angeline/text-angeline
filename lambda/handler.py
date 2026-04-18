@@ -1,52 +1,59 @@
 ### "What hath God wrought"
 
 import json
-import html
+import boto3
 from angeline import (
     parse_input, fetch_text, build_payload,
-    determine_protocol, send_message, AngelineError
+    determine_protocol, send_message, send_error,
+    AngelineError
 )
 
+lambda_client = boto3.client('lambda')
+
 def receive_sms(event, context):
+    ## Webhook entry — immediately delegate to async self-invoke and return 200
+    if "requestContext" in event:
+        lambda_client.invoke(
+            FunctionName=context.function_name,
+            InvocationType='Event',
+            Payload=json.dumps({"task_body": event.get("body", "{}")})
+        )
+        return {"statusCode": 200}
+
+    ## Async invocation — do the actual work
+    body_str = event.get("task_body")
+    if not body_str:
+        return {"statusCode": 200}
+
+    user_number = None
+
     try:
-        body = json.loads(event.get("body", "{}"))
-    except (json.JSONDecodeError, TypeError):
-        return {"statusCode": 400, "body": "Bad request"}
+        body = json.loads(body_str)
+        data = body.get("data", body)
 
-    # Telnyx wraps payload in "data" for webhook v2
-    data = body.get("data", body)
-    event_type = data.get("event_type")
+        if data.get("event_type") != "message.received":
+            return {"statusCode": 200}
 
-    if (event_type == "message.received"):
-        try:
-            telnyx_payload = data.get("payload", {})
-            user_input = html.escape(telnyx_payload["text"])
-            user_number = telnyx_payload["from"]["phone_number"]
-            print("user_input:", user_input)
-            print("user_number:", user_number)
+        p = data.get("payload", {})
+        user_input = p["text"]
+        user_number = p["from"]["phone_number"]
 
-            ## Parse > Fetch > Build > Send
-            request = parse_input(user_input)
-            root = fetch_text(request["trans_key"])
-            payload = build_payload(root, request)
-            protocol = determine_protocol(payload)
+        req = parse_input(user_input)
+        root = fetch_text(req["trans_key"])
+        text_out = build_payload(root, req)
+        determine_protocol(text_out)
+        send_message(text_out, user_number)
+
+    except AngelineError as e:
+        if user_number:
             try:
-                send_message(protocol, payload, user_number)
+                send_error(str(e), user_number)
             except Exception:
-                raise AngelineError("Request too large for this translation")
+                print(f"Failed to send error reply: {e}")
+        else:
+            print(f"AngelineError (no user to reply to): {e}")
+    except Exception as e:
+        print(f"Error: {e}")
 
-        except AngelineError as e:
-            if e.message:
-                msg = f"Error: {e.message}. Please try again." if e.is_error else e.message
-                send_message("MMS", msg, user_number)
-        except KeyError as e:
-            print("Error: Couldn't process webhook; User was not notified.", e)
-            return {"statusCode": 400, "body": "Missing field"}
-        except Exception as e:
-            print("Error:", e)
-            try:
-                send_message("MMS", "Error: Something went wrong. Please try again.", user_number)
-            except Exception:
-                print("Error: Couldn't send error message; User was not notified.")
+    return {"statusCode": 200}
 
-    return {"statusCode": 200, "body": "OK"}

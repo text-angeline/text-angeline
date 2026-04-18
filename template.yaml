@@ -51,6 +51,10 @@ Resources:
       Policies:
         - S3ReadPolicy:
             BucketName: !Ref TranslationsBucket
+        - Statement:
+            - Effect: Allow
+              Action: lambda:InvokeFunction
+              Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AWS::StackName}-*"
       FunctionUrlConfig:
         AuthType: NONE
 
