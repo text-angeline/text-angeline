@@ -234,10 +234,13 @@ def parse_input(user_input):
         if len(parts) == 2 and parts[1] in trans_dict:
             reference_str = parts[0]
             bible_trans = parts[1]
+        elif len(parts) == 2 and parts[1].isalpha():
+            raise AngelineError("Unsupported translation")
         elif len(parts) == 1 and parts[0] in trans_dict and not parts[0][0].isdigit():
-            # Bare translation code, no chapter reference
             bible_trans = parts[0]
             reference_str = ""
+        elif len(parts) == 1 and parts[0].isalpha():
+            raise AngelineError("Unsupported translation")
 
     if bible_trans not in trans_dict:
         raise AngelineError("Unsupported translation")
