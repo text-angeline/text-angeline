@@ -2,7 +2,7 @@
 ### "What hath God wrought"
 set -euo pipefail
 
-STACK="angeline"
+STACK="${ANGELINE_STACK:-angeline}"
 ZIP="deployment_package.zip"
 
 FUNCTION=$(aws cloudformation describe-stack-resources \
